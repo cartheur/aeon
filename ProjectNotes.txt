@@ -3,3 +3,5 @@ The Aeon AGI
 
 03.03.2023
 	928: I have begun the full implementation of the aeon agi in this project, after several iterations working out the requisites of compass and embodiment as a piece of software that talks to 'as if it is intelligent' is - in reality - not. This document will serve as the background motif of how the architeture and runtime was implemented as I walked through the drawing sheets of my patent. This strategy will become clear as this project log progresses.
+	1551: Some code will be used from older versions of aeon where it becomes required.
+
