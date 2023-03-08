@@ -15,15 +15,15 @@ namespace Aeon.Library
         /// </summary>
         /// <param name="aeon">The aeon involved in this request.</param>
         /// <param name="thisParticipant">The participant making the request.</param>
-        /// <param name="participapntQuery">The query that originated this node.</param>
+        /// <param name="participantQuery">The query that originated this node.</param>
         /// <param name="participantRequest">The request sent by the participant.</param>
         /// <param name="participantResult">The result to be sent back to the participant.</param>
         /// <param name="templateNode">The node to be processed.</param>
-        protected AeonHandler(Aeon aeon, Participant thisParticipant, ParticipantQuery participapntQuery, ParticipantRequest participantRequest, ParticipantResult participantResult, XmlNode templateNode)
+        protected AeonHandler(Aeon aeon, Participant thisParticipant, ParticipantQuery participantQuery, ParticipantRequest participantRequest, ParticipantResult participantResult, XmlNode templateNode)
             : base(aeon, templateNode.OuterXml)
         {
             ThisParticipant = thisParticipant;
-            ParticipantQuery = participapntQuery;
+            ParticipantQuery = participantQuery;
             ParticipantRequest = participantRequest;
             ParticipantResult = participantResult;
             TemplateNode = templateNode;
