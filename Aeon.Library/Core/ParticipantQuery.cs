@@ -4,12 +4,12 @@
 namespace Aeon.Library
 {
     /// <summary>
-    /// A container class for holding wildcard query matches encountered during a path interrogation.
+    /// A container class for holding wildcard participant-query matches encountered during a path interrogation.
     /// </summary>
     public class ParticipantQuery
     {
         /// <summary>
-        /// The trajectory that this query relates to.
+        /// The trajectory that this participant query relates to.
         /// </summary>
         public string Trajectory;
         /// <summary>
@@ -31,11 +31,15 @@ namespace Aeon.Library
         /// <summary>
         /// The "emotional" part of the normalized path contains a wildcard then this attribute will contain the block of text that the participant has inputted that is matched by the wildcard.
         /// </summary>
-        public List<string> EmotionStar = new List<string>(); 
+        public List<string> EmotionStar = new List<string>();
+        /// <summary>
+        /// The "knowldge-relational" part of the normalized path contains a wildcard then this attribute will contain the block of text that the participant has inputted that is matched by the wildcard.
+        /// </summary>
+        public List<string> KnowledgeStar = new List<string>();
         /// <summary>
         /// Initializes a new instance of the <see cref="ParticipantQuery"/> class.
         /// </summary>
-        /// <param name="trajectory">The trajectory that this query relates to.</param>
+        /// <param name="trajectory">The trajectory that this participant query relates to.</param>
         public ParticipantQuery(string trajectory)
         {
             Trajectory = trajectory;
