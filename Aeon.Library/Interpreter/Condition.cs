@@ -1,5 +1,5 @@
 //
-// This autonomous intelligent system software is the property of Cartheur Research, BV. Copyright 2022, all rights reserved.
+// This autonomous intelligent system software is the property of Cartheur Research, BV. Copyright 2023, all rights reserved.
 //
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -143,7 +143,7 @@ namespace Aeon.Library
 
                     if ((name.Length > 0) & (value.Length > 0))
                     {
-                        string actualValue = ThisUser.Predicates.GrabSetting(name);
+                        string actualValue = ThisParticipant.Predicates.GrabSetting(name);
                         Regex matcher = new Regex(value.Replace(" ", "\\s").Replace("*", "[\\sA-Z0-9]+"), RegexOptions.IgnoreCase);
                         if (matcher.IsMatch(actualValue))
                         {
@@ -164,7 +164,7 @@ namespace Aeon.Library
                                 {
                                     if (childLiNode.Attributes[0].Name.ToLower() == "value")
                                     {
-                                        string actualValue = ThisUser.Predicates.GrabSetting(name);
+                                        string actualValue = ThisParticipant.Predicates.GrabSetting(name);
                                         Regex matcher = new Regex(childLiNode.Attributes[0].Value.Replace(" ", "\\s").Replace("*", "[\\sA-Z0-9]+"), RegexOptions.IgnoreCase);
                                         if (matcher.IsMatch(actualValue))
                                         {
@@ -210,7 +210,7 @@ namespace Aeon.Library
 
                                 if ((name.Length > 0) & (value.Length > 0))
                                 {
-                                    string actualValue = ThisUser.Predicates.GrabSetting(name);
+                                    string actualValue = ThisParticipant.Predicates.GrabSetting(name);
                                     Regex matcher = new Regex(value.Replace(" ", "\\s").Replace("*","[\\sA-Z0-9]+"), RegexOptions.IgnoreCase);
                                     if (matcher.IsMatch(actualValue))
                                     {

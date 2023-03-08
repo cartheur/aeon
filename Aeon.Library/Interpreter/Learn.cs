@@ -6,14 +6,12 @@ using System.Xml;
 namespace Aeon.Library
 {
     /// <summary>
-    /// An element called bot, which may be considered a restricted version of get, is used to tell the interpreter that it should substitute the contents of a "bot predicate". The value of a bot predicate is set at load-time, and cannot be changed at run-time. The interpreter may decide how to set the values of bot predicate at load-time. If the bot predicate has no value defined, the interpreter should substitute an empty string. The bot element has a required name attribute that identifies the bot predicate. 
-    /// 
-    /// The bot element does not have any content. 
+    /// The learn element instructs the interpreter to retrieve a resource specified by a URI, and to process its object contents.
     /// </summary>
-    public class Bot : AeonHandler
+    public class Learn : AeonHandler
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Bot"/> class.
+        /// Initializes a new instance of the <see cref="Learn"/> class.
         /// </summary>
         /// <param name="aeon">The aeon involved in this request.</param>
         /// <param name="thisParticipant">The participant making the request.</param>
@@ -21,7 +19,7 @@ namespace Aeon.Library
         /// <param name="participantRequest">The request sent by the participant.</param>
         /// <param name="participantResult">The result to be sent back to the participant.</param>
         /// <param name="templateNode">The node to be processed.</param>
-        public Bot(Aeon aeon, Participant thisParticipant, ParticipantQuery participantQuery, ParticipantRequest participantRequest, ParticipantResult participantResult, XmlNode templateNode)
+        public Learn(Aeon aeon, Participant thisParticipant, ParticipantQuery participantQuery, ParticipantRequest participantRequest, ParticipantResult participantResult, XmlNode templateNode)
             : base(aeon, thisParticipant, participantQuery, participantRequest, participantResult, templateNode)
         {
         }
@@ -33,14 +31,25 @@ namespace Aeon.Library
         /// </returns>
         protected override string ProcessChange()
         {
-            if (TemplateNode.Name.ToLower() == "bot")
+            if (TemplateNode.Name.ToLower() == "learn")
             {
-                if (TemplateNode.Attributes != null && TemplateNode.Attributes.Count == 1)
+                // Currently only *.aeon files in the local filesystem can be referenced, as per design.
+                if (TemplateNode.InnerText.Length > 0)
                 {
-                    if (TemplateNode.Attributes[0].Name.ToLower() == "name")
+                    string path = TemplateNode.InnerText;
+                    FileInfo fi = new FileInfo(path);
+                    if (fi.Exists)
                     {
-                        string key = TemplateNode.Attributes["name"].Value;
-                        return ThisAeon.GlobalSettings.GrabSetting(key);
+                        XmlDocument doc = new XmlDocument();
+                        try
+                        {
+                            doc.Load(path);
+                            ThisAeon.LoadAeonFromXml(doc, path);
+                        }
+                        catch
+                        {
+                            Logging.WriteLog("Failed to learn something new from the following URI: " + path, Logging.LogType.Error, Logging.LogCaller.Learn);
+                        }
                     }
                 }
             }

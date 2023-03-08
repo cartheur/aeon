@@ -121,7 +121,7 @@ namespace Aeon.Library
         /// </summary>
         public bool IsAcceptingInput = true;
         /// <summary>
-        /// The message to show if a user tries to use aeon whilst set to not process participant input.
+        /// The message to show if a participant tries to use aeon whilst set to not process participant input.
         /// </summary>
         private string NotAcceptingInputMessage
         {
@@ -511,21 +511,21 @@ namespace Aeon.Library
 
         #region Conversation methods
         /// <summary>
-        /// Given some raw input and a unique ID creates a response for a new user.
+        /// Given some raw input and a unique ID creates a response for a new participant.
         /// </summary>
         /// <param name="rawInput">the raw input.</param>
-        /// <param name="userGuid">The ID for the user (referenced in the result object).</param>
-        /// <returns>Result to the user.</returns>
+        /// <param name="participantGuid">The ID for the participant (referenced in the result object).</param>
+        /// <returns>Result to the participant.</returns>
         public ParticipantResult Chat(string rawInput, string participantGuid)
         {
             ParticipantRequest request = new ParticipantRequest(rawInput, new Participant(participantGuid, this), this);
             return Chat(request);
         }
         /// <summary>
-        /// Given a request containing user input, produces a result from aeon.
+        /// Given a request containing participant input, produces a result from aeon.
         /// </summary>
-        /// <param name="request">The request from the user.</param>
-        /// <returns>The result to be output to the user.</returns>
+        /// <param name="request">The request from the participant.</param>
+        /// <returns>The result to be output to the participant.</returns>
         public ParticipantResult Chat(ParticipantRequest request)
         {
             var result = new ParticipantResult(request.ThisParticipant, this, request, CharacteristicEquation);
@@ -544,7 +544,7 @@ namespace Aeon.Library
                     string trajectoryGenerated;
                     if (EmotionUsed)
                     {
-                        trajectoryGenerated = loader.GenerateTrajectory(sentence, request.ThisParticipant.GetLastAeonOutput(), request.ThisParticipant.Topic, request.v.Emotion, true);
+                        trajectoryGenerated = loader.GenerateTrajectory(sentence, request.ThisParticipant.GetLastAeonOutput(), request.ThisParticipant.Topic, request.ThisParticipant.Emotion, true);
                         result.NormalizedTrajectories.Add(trajectoryGenerated);
                     }
                     else
@@ -600,9 +600,9 @@ namespace Aeon.Library
         /// </summary>
         /// <param name="node">The node to evaluate.</param>
         /// <param name="query">The query that produced this node.</param>
-        /// <param name="request">The request from the user.</param>
-        /// <param name="result">The result to be sent to the user.</param>
-        /// <param name="user">The user who originated the request.</param>
+        /// <param name="request">The request from the participant.</param>
+        /// <param name="result">The result to be sent to the participant.</param>
+        /// <param name="participant">The participant who originated the request.</param>
         /// <returns>The output string.</returns>
         protected string ProcessNode(XmlNode node, ParticipantQuery query, ParticipantRequest request, ParticipantResult result, Participant participant)
         {
@@ -676,7 +676,7 @@ namespace Aeon.Library
                         tagHandler = new Person2(this, participant, query, request, result, node);
                         break;
                     case "random":
-                        tagHandler = new Random(this, participant, query, request, result, node);
+                        tagHandler = new RandomTag(this, participant, query, request, result, node);
                         break;
                     case "sentence":
                         tagHandler = new Sentence(this, participant, query, request, result, node);
@@ -732,7 +732,7 @@ namespace Aeon.Library
                     {
                         if (childNode.NodeType != XmlNodeType.Text)
                         {
-                            childNode.InnerXml = ProcessNode(childNode, query, request, result, user);
+                            childNode.InnerXml = ProcessNode(childNode, query, request, result, participant);
                         }
                     }
                 }
@@ -746,7 +746,7 @@ namespace Aeon.Library
                 // Recursively check.
                 foreach (XmlNode childNode in resultNode.ChildNodes)
                 {
-                    recursiveResult.Append(ProcessNode(childNode, query, request, result, user));
+                    recursiveResult.Append(ProcessNode(childNode, query, request, result, participant));
                 }
                 return recursiveResult.ToString();
             }
@@ -756,12 +756,12 @@ namespace Aeon.Library
         /// Searches the custom tag collection and processes the aeon files if an appropriate tag handler is found.
         /// </summary>
         /// <param name="participant">The participant who originated the request.</param>
-        /// <param name="query">The query that produced this node.</param>
+        /// <param name="participantQuery">The query that produced this node.</param>
         /// <param name="request">The request from the participant.</param>
         /// <param name="result">The result to be sent to the participant.</param>
         /// <param name="node">The node to evaluate.</param>
         /// <returns>The output string.</returns>
-        public AeonHandler GetBespokeTags(Participant participant, ParticipantQuery query, ParticipantRequest request, ParticipantResult result, XmlNode node)
+        public AeonHandler GetBespokeTags(Participant participant, ParticipantQuery participantQuery, ParticipantRequest request, ParticipantResult result, XmlNode node)
         {
             if (_customTags.ContainsKey(node.Name.ToLower()))
             {
@@ -772,7 +772,7 @@ namespace Aeon.Library
                     return null;
                 }
                 newCustomTag.ThisParticipant = participant;
-                newCustomTag.ParticipantQuery = query;
+                newCustomTag.ParticipantQuery = participantQuery;
                 newCustomTag.ParticipantRequest = request;
                 newCustomTag.ParticipantResult = result;
                 newCustomTag.TemplateNode = node;

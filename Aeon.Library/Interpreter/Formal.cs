@@ -1,5 +1,5 @@
 //
-// This autonomous intelligent system software is the property of Cartheur Research, BV. Copyright 2022, all rights reserved.
+// This autonomous intelligent system software is the property of Cartheur Research, BV. Copyright 2023, all rights reserved.
 //
 using System.Text;
 using System.Xml;
