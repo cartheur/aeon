@@ -73,7 +73,7 @@ namespace Aeon.Library
         /// </summary>
         public SettingsDictionary Substitutions;
         /// <summary>
-        /// Drawing 100, Feature 104. The default predicates to set up for a user.
+        /// Drawing 100, Feature 104. The default predicates to set up for a participant.
         /// </summary>
         public SettingsDictionary DefaultPredicates;
         /// <summary>
@@ -107,15 +107,15 @@ namespace Aeon.Library
         /// </summary>
         private readonly Dictionary<string, Assembly> _lateBindingAssemblies = new Dictionary<string, Assembly>();
         /// <summary>
-        /// Flag to show if aeon is accepting user input.
+        /// Flag to show if aeon is accepting participant input.
         /// </summary>
-        public bool IsAcceptingUserInput = true;
+        public bool IsAcceptingParticipantInput = true;
         /// <summary>
         /// The number of categories aeon has in her brain.
         /// </summary>
         public int Size;
         /// <summary>
-        /// If set to false the input from aeon code files will undergo the same normalization process that user input goes through. If true aeon will assume the code structure is correct. Defaults to true.
+        /// If set to false the input from aeon code files will undergo the same normalization process that participant input goes through. If true aeon will assume the code structure is correct. Defaults to true.
         /// </summary>
         public bool TrustCodeFiles = true;
         /// <summary>
@@ -153,7 +153,7 @@ namespace Aeon.Library
             }
         }
         /// <summary>
-        /// Will match all the illegal characters that might be input by the user.
+        /// Will match all the illegal characters that might be input by the participant.
         /// </summary>
         public Regex Strippers
         {
@@ -417,9 +417,9 @@ namespace Aeon.Library
             {
                 GlobalSettings.AddSetting("maxlogbuffersize", "64");
             }
-            if (!GlobalSettings.ContainsSettingCalled("notacceptinguserinputmessage"))
+            if (!GlobalSettings.ContainsSettingCalled("notacceptingparticipantinputmessage"))
             {
-                GlobalSettings.AddSetting("notacceptinguserinputmessage", "Aeon is not accepting user input.");
+                GlobalSettings.AddSetting("notacceptingparticipantinputmessage", "Aeon is not accepting participant input.");
             }
             if (!GlobalSettings.ContainsSettingCalled("stripperregex"))
             {

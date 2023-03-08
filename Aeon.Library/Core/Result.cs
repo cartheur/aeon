@@ -11,15 +11,15 @@ namespace Aeon.Library
     public class Result
     {
         /// <summary>
-        /// The user's aeon that is providing the answer.
+        /// The participant's aeon that is providing the answer.
         /// </summary>
         public Aeon ThisAeon;
         /// <summary>
-        /// The user for whom this is a result.
+        /// The participant for whom this is a result.
         /// </summary>
         public Participant ThisParticipant;
         /// <summary>
-        /// The request from the user which contains user input.
+        /// The request from the participant which contains participant input.
         /// </summary>
         public Request ParticipantRequest;
         /// <summary>
@@ -109,15 +109,15 @@ namespace Aeon.Library
         /// </summary>
         public List<string> OutputSentences = new List<string>();
         /// <summary>
-        /// The individual sentences that constitute the raw input from the user.
+        /// The individual sentences that constitute the raw input from the participant.
         /// </summary>
         public List<string> InputSentences = new List<string>();
         /// <summary>
         /// Initializes a new instance of the <see cref="Result"/> class.
         /// </summary>
-        /// <param name="thisUser">The user for whom this is a result.</param>
+        /// <param name="thisParticipant">The participant for whom this is a result.</param>
         /// <param name="aeon">The brain providing the result.</param>
-        /// <param name="userRequest">The request that originated this result.</param>
+        /// <param name="participantRequest">The request that originated this result.</param>
         /// <param name="trajectoryEquation">The characteristic equation for the trajectory.</param>
         public Result(Participant thisParticipant, Aeon aeon, Request participantRequest, string trajectoryEquation)
         {

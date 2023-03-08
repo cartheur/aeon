@@ -184,9 +184,9 @@ namespace Aeon.Library
         /// </summary>
         /// <param name="node">The category xml node.</param>
         /// <param name="topicName">The topic.</param>
-        /// <param name="isUserInput">Marks the path to be created as originating from user input - so normalize out the * and _ wildcards used by *.aeon.</param>
+        /// <param name="isParticipantInput">Marks the path to be created as originating from participant input - so normalize out the * and _ wildcards used by *.aeon.</param>
         /// <returns>The appropriately processed path.</returns>
-        public string GenerateTrajectory(XmlNode node, string topicName, bool isUserInput)
+        public string GenerateTrajectory(XmlNode node, string topicName, bool isParticipantInput)
         {
             // Get the required nodes.
             XmlNode pattern = FindNode("pattern", node);
@@ -199,7 +199,7 @@ namespace Aeon.Library
                 thatText = that.InnerText;
             }
 
-            return GenerateTrajectory(patternText, thatText, topicName, isUserInput);
+            return GenerateTrajectory(patternText, thatText, topicName, isParticipantInput);
         }
         /// <summary>
         /// Generates a path from the passed arguments.
@@ -207,9 +207,9 @@ namespace Aeon.Library
         /// <param name="pattern">The pattern.</param>
         /// <param name="that">The that.</param>
         /// <param name="topicName">The topic.</param>
-        /// <param name="isUserInput">Marks the path to be created as originating from user input - so normalize out the * and _ wildcards used by the aeon code.</param>
+        /// <param name="isParticipantInput">Marks the path to be created as originating from participant input - so normalize out the * and _ wildcards used by the aeon code.</param>
         /// <returns>The appropriately processed path.</returns>
-        public string GenerateTrajectory(string pattern, string that, string topicName, bool isUserInput)
+        public string GenerateTrajectory(string pattern, string that, string topicName, bool isParticipantInput)
         {
             // To hold the normalized path entered.
             StringBuilder normalizedTrajectory = new StringBuilder();
@@ -217,7 +217,7 @@ namespace Aeon.Library
             string normalizedThat;
             string normalizedTopic;
 
-            if ((_aeon.TrustCodeFiles) & (!isUserInput))
+            if ((_aeon.TrustCodeFiles) & (!isParticipantInput))
             {
                 normalizedPattern = pattern.Trim();
                 normalizedThat = that.Trim();
@@ -225,9 +225,9 @@ namespace Aeon.Library
             }
             else
             {
-                normalizedPattern = Normalize(pattern, isUserInput).Trim();
-                normalizedThat = Normalize(that, isUserInput).Trim();
-                normalizedTopic = Normalize(topicName, isUserInput).Trim();
+                normalizedPattern = Normalize(pattern, isParticipantInput).Trim();
+                normalizedThat = Normalize(that, isParticipantInput).Trim();
+                normalizedTopic = Normalize(topicName, isParticipantInput).Trim();
             }
             // Check sizes.
             if (normalizedPattern.Length > 0)
@@ -263,9 +263,9 @@ namespace Aeon.Library
         /// <param name="that">The that.</param>
         /// <param name="topicName">The topic.</param>
         /// <param name="emotion">The emotion of aeon.</param>
-        /// <param name="isUserInput">Marks the path to be created as originating from user input - so normalize out the * and _ wildcards used by the aeon code.</param>
+        /// <param name="isParticipantInput">Marks the path to be created as originating from participant input - so normalize out the * and _ wildcards used by the aeon code.</param>
         /// <returns>The appropriately processed path.</returns>
-        public string GenerateTrajectory(string pattern, string that, string topicName, string emotion, bool isUserInput)
+        public string GenerateTrajectory(string pattern, string that, string topicName, string emotion, bool isParticipantInput)
         {
             // To hold the normalized path entered.
             StringBuilder normalizedTrajectory = new StringBuilder();
@@ -274,7 +274,7 @@ namespace Aeon.Library
             string normalizedTopic;
             string normalizedEmotion;
 
-            if ((_aeon.TrustCodeFiles) & (!isUserInput))
+            if ((_aeon.TrustCodeFiles) & (!isParticipantInput))
             {
                 normalizedPattern = pattern.Trim();
                 normalizedThat = that.Trim();
@@ -283,10 +283,10 @@ namespace Aeon.Library
             }
             else
             {
-                normalizedPattern = Normalize(pattern, isUserInput).Trim();
-                normalizedThat = Normalize(that, isUserInput).Trim();
-                normalizedTopic = Normalize(topicName, isUserInput).Trim();
-                normalizedEmotion = Normalize(emotion, isUserInput).Trim();
+                normalizedPattern = Normalize(pattern, isParticipantInput).Trim();
+                normalizedThat = Normalize(that, isParticipantInput).Trim();
+                normalizedTopic = Normalize(topicName, isParticipantInput).Trim();
+                normalizedEmotion = Normalize(emotion, isParticipantInput).Trim();
             }
             // Check sizes.
             if (normalizedPattern.Length > 0)
@@ -326,9 +326,9 @@ namespace Aeon.Library
         /// Given an input, provide a normalized output.
         /// </summary>
         /// <param name="input">The string to be normalized.</param>
-        /// <param name="isUserInput">True if the string being normalized is part of the user input path - flags that we need to normalize out * and _ chars.</param>
+        /// <param name="isParticipantInput">True if the string being normalized is part of the participant input path - flags that we need to normalize out * and _ chars.</param>
         /// <returns>The normalized string.</returns>
-        public string Normalize(string input, bool isUserInput)
+        public string Normalize(string input, bool isParticipantInput)
         {
             StringBuilder result = new StringBuilder();
             // Objects for normalization of the input.
@@ -341,7 +341,7 @@ namespace Aeon.Library
             foreach (string word in substitutedWords)
             {
                 string normalizedWord;
-                if (isUserInput)
+                if (isParticipantInput)
                 {
                     normalizedWord = stripper.Transform(word);
                 }

@@ -62,7 +62,7 @@ namespace Aeon.Library
             try
             {
                 var loader = new AeonLoader(ThisAeon);
-                ThisAeon.IsAcceptingUserInput = false;
+                ThisAeon.IsAcceptingParticipantInput = false;
                 // Load in the proper order.
                 if (ThisAeon.Name.ToLower() == "blank")
                 {
@@ -85,7 +85,7 @@ namespace Aeon.Library
                     loader.LoadAeon(configuration.PathToFragments);
                 }
                 Logging.WriteLog(@"Personality loaded, baseline personality is set to " + ThisAeon.Name.ToLower(), Logging.LogType.Information, Logging.LogCaller.SharedFunction);
-                ThisAeon.IsAcceptingUserInput = true;
+                ThisAeon.IsAcceptingParticipantInput = true;
             }
             catch (Exception ex)
             {
@@ -106,10 +106,10 @@ namespace Aeon.Library
             try
             {
                 var loader = new AeonLoader(ThisAeon);
-                ThisAeon.IsAcceptingUserInput = false;
+                ThisAeon.IsAcceptingParticipantInput = false;
                 loader.LoadAeon(configuration.PathToBlankFile);
                 Logging.WriteLog(@"Blank robot loaded", Logging.LogType.Information, Logging.LogCaller.SharedFunction);
-                ThisAeon.IsAcceptingUserInput = true;
+                ThisAeon.IsAcceptingParticipantInput = true;
             }
             catch (Exception ex)
             {

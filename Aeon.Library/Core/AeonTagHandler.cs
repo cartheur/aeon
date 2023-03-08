@@ -14,18 +14,18 @@ namespace Aeon.Library
         /// Initializes a new instance of the <see cref="AeonTagHandler"/> class.
         /// </summary>
         /// <param name="aeon">The aeon involved in this request.</param>
-        /// <param name="thisUser">The user making the request.</param>
+        /// <param name="thisParticipant">The participant making the request.</param>
         /// <param name="query">The query that originated this node.</param>
-        /// <param name="userRequest">The request sent by the user.</param>
-        /// <param name="userResult">The result to be sent back to the user.</param>
+        /// <param name="participantRequest">The request sent by the participant.</param>
+        /// <param name="participantResult">The result to be sent back to the participant.</param>
         /// <param name="templateNode">The node to be processed.</param>
-        protected AeonTagHandler(Aeon aeon, Participant thisUser, SubQuery query, Request userRequest, Result userResult, XmlNode templateNode)
+        protected AeonTagHandler(Aeon aeon, Participant thisParticipant, SubQuery query, Request participantRequest, Result participantResult, XmlNode templateNode)
             : base(aeon, templateNode.OuterXml)
         {
-            ThisUser = thisUser;
+            ThisParticipant = thisParticipant;
             Query = query;
-            UserRequest = userRequest;
-            UserResult = userResult;
+            ParticipantRequest = participantRequest;
+            ParticipantResult = participantResult;
             TemplateNode = templateNode;
             XmlAttributeCollection xmlAttributeCollection = TemplateNode.Attributes;
             if (xmlAttributeCollection != null) xmlAttributeCollection.RemoveNamedItem("xmlns");
@@ -39,21 +39,21 @@ namespace Aeon.Library
         /// </summary>
         public bool IsRecursive = true;
         /// <summary>
-        /// A representation of the user making the request.
+        /// A representation of the participant making the request.
         /// </summary>
-        public Participant ThisUser;
+        public Participant ThisParticipant;
         /// <summary>
         /// The query that produced this node containing the wildcard matches.
         /// </summary>
         public SubQuery Query;
         /// <summary>
-        /// A representation of the input made by the user.
+        /// A representation of the input made by the participant.
         /// </summary>
-        public Request UserRequest;
+        public Request ParticipantRequest;
         /// <summary>
-        /// A representation of the result to be returned to the user.
+        /// A representation of the result to be returned to the participant.
         /// </summary>
-        public Result UserResult;
+        public Result ParticipantResult;
         /// <summary>
         /// The template node to be processed by the class.
         /// </summary>
