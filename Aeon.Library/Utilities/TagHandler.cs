@@ -29,13 +29,13 @@ public class TagHandler
     /// </summary>
     /// <param name="assemblies">All the assemblies the bot knows about.</param>
     /// <returns>The instantiated class.</returns>
-    public AeonTagHandler Instantiate(Dictionary<string, Assembly> assemblies)
+    public AeonHandler Instantiate(Dictionary<string, Assembly> assemblies)
     {
         if (assemblies.ContainsKey(AssemblyName))
         {
             Assembly tagDll = assemblies[AssemblyName];
             Type[] tagDllTypes = tagDll.GetTypes();
-            return (AeonTagHandler)tagDll.CreateInstance(ClassName);
+            return (AeonHandler)tagDll.CreateInstance(ClassName);
         }
         return null;
     }

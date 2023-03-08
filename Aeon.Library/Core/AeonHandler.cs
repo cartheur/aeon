@@ -6,24 +6,24 @@ using System.Xml;
 namespace Aeon.Library
 {
     /// <summary>
-    /// The template for all classes that handle the <aeon/> tags found within template nodes of a category.
+    /// The template for all classes that handle the <aeon/> logic found within template nodes of a category.
     /// </summary>
-    public abstract class AeonTagHandler : TextTransformer
+    public abstract class AeonHandler : TextTransformer
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AeonTagHandler"/> class.
+        /// Initializes a new instance of the <see cref="AeonHandler"/> class.
         /// </summary>
         /// <param name="aeon">The aeon involved in this request.</param>
         /// <param name="thisParticipant">The participant making the request.</param>
-        /// <param name="query">The query that originated this node.</param>
+        /// <param name="participapntQuery">The query that originated this node.</param>
         /// <param name="participantRequest">The request sent by the participant.</param>
         /// <param name="participantResult">The result to be sent back to the participant.</param>
         /// <param name="templateNode">The node to be processed.</param>
-        protected AeonTagHandler(Aeon aeon, Participant thisParticipant, SubQuery query, Request participantRequest, Result participantResult, XmlNode templateNode)
+        protected AeonHandler(Aeon aeon, Participant thisParticipant, SubQuery participapntQuery, Request participantRequest, Result participantResult, XmlNode templateNode)
             : base(aeon, templateNode.OuterXml)
         {
             ThisParticipant = thisParticipant;
-            Query = query;
+            ParticipantQuery = participapntQuery;
             ParticipantRequest = participantRequest;
             ParticipantResult = participantResult;
             TemplateNode = templateNode;
@@ -33,7 +33,7 @@ namespace Aeon.Library
         /// <summary>
         /// Default to use when late-binding.
         /// </summary>
-        protected AeonTagHandler() { }
+        protected AeonHandler() { }
         /// <summary>
         /// A flag to denote if inner tags are to be processed recursively before processing this tag.
         /// </summary>
@@ -45,7 +45,7 @@ namespace Aeon.Library
         /// <summary>
         /// The query that produced this node containing the wildcard matches.
         /// </summary>
-        public SubQuery Query;
+        public SubQuery ParticipantQuery;
         /// <summary>
         /// A representation of the input made by the participant.
         /// </summary>
