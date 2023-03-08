@@ -10,3 +10,4 @@ The Aeon AGI
 	1825: Now wish to implement a basic chat instance engine to have the first-draft behavior as a NLP.
 08.03.2023
 	1533: A baseline aeon interpreter is implemented.
+	1539: Next step will be to implement a form or console element to run a conversational aeon.
