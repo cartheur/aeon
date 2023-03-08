@@ -1,10 +1,6 @@
 ﻿//
-// This autonomous intelligent system software is the property of Cartheur Robotics, spol. s r.o. Copyright 2019, all rights reserved.
+// This AGI is the intellectual property of Dr. Christopher A. Tucker. Copyright 2023, all rights reserved. No rights are explicitly granted to persons who have obtained this source code.
 //
-using System;
-using System.IO;
-using System.Text;
-
 namespace Aeon.Library
 {
     /// <summary>
@@ -18,6 +14,10 @@ namespace Aeon.Library
         /// </summary>
         private static string LogModelName { get { return @"logfile"; } }
         private static string TranscriptModelName { get { return @"transcript"; } }
+        /// <summary>
+        /// The active configuration of the application.
+        /// </summary>
+        public static string ActiveConfiguration { get; set; }
         /// <summary>
         /// The type of model to use for logging.
         /// </summary>

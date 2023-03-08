@@ -1,10 +1,16 @@
 ﻿//
 // This AGI is the intellectual property of Dr. Christopher A. Tucker. Copyright 2023, all rights reserved. No rights are explicitly granted to persons who have obtained this source code.
 //
+using System.Collections.Generic;
+using System.Drawing;
+using System;
 using System.Globalization;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aeon.Library
 {
@@ -57,7 +63,7 @@ namespace Aeon.Library
     public class Aeon
     {
         /// <summary>
-        /// Gets or sets the name.
+        /// Gets or sets the name of the aeon.
         /// </summary>
         public string Name { get; set; }
         /// <summary>
@@ -87,7 +93,7 @@ namespace Aeon.Library
         /// <summary>
         /// Drawing 600, Feature 603. The timer responsible for determining to trigger and event that the aeon is alone.
         /// </summary>
-        public Timer AeonAloneTimer { get; set; }
+        public System.Timers.Timer AeonAloneTimer { get; set; }
         /// <summary>
         /// Drawing 700, Feature 710. The characteristic equation that will govern the aeon's runtime behavior.
         /// </summary>
@@ -110,6 +116,20 @@ namespace Aeon.Library
         /// Flag to show if aeon is accepting participant input.
         /// </summary>
         public bool IsAcceptingParticipantInput = true;
+        /// <summary>
+        /// Flag to show if aeon is accepting input.
+        /// </summary>
+        public bool IsAcceptingInput = true;
+        /// <summary>
+        /// The message to show if a user tries to use aeon whilst set to not process participant input.
+        /// </summary>
+        private string NotAcceptingInputMessage
+        {
+            get
+            {
+                return GlobalSettings.GrabSetting("notacceptinginputmessage");
+            }
+        }
         /// <summary>
         /// The number of categories aeon has in her brain.
         /// </summary>
@@ -486,6 +506,280 @@ namespace Aeon.Library
                 Splitters.Add("?");
                 Splitters.Add(";");
             }
+        }
+        #endregion
+
+        #region Conversation methods
+        /// <summary>
+        /// Given some raw input and a unique ID creates a response for a new user.
+        /// </summary>
+        /// <param name="rawInput">the raw input.</param>
+        /// <param name="userGuid">The ID for the user (referenced in the result object).</param>
+        /// <returns>Result to the user.</returns>
+        public ParticipantResult Chat(string rawInput, string participantGuid)
+        {
+            ParticipantRequest request = new ParticipantRequest(rawInput, new Participant(participantGuid, this), this);
+            return Chat(request);
+        }
+        /// <summary>
+        /// Given a request containing user input, produces a result from aeon.
+        /// </summary>
+        /// <param name="request">The request from the user.</param>
+        /// <returns>The result to be output to the user.</returns>
+        public ParticipantResult Chat(ParticipantRequest request)
+        {
+            var result = new ParticipantResult(request.ThisParticipant, this, request, CharacteristicEquation);
+            // Todo: Set the emotion, where used. It is now known to the core.
+            //result.ThisUser.Predicates.UpdateSetting("EMOTION", Mood.CurrentMood);
+
+            if (IsAcceptingInput)
+            {
+                // Normalize the input.
+                AeonLoader loader = new AeonLoader(this);
+                SplitIntoSentences splitter = new SplitIntoSentences(this);
+                string[] rawSentences = splitter.Transform(request.RawInput);
+                foreach (string sentence in rawSentences)
+                {
+                    result.InputSentences.Add(sentence);
+                    string trajectoryGenerated;
+                    if (EmotionUsed)
+                    {
+                        trajectoryGenerated = loader.GenerateTrajectory(sentence, request.ThisParticipant.GetLastAeonOutput(), request.ThisParticipant.Topic, request.v.Emotion, true);
+                        result.NormalizedTrajectories.Add(trajectoryGenerated);
+                    }
+                    else
+                    {
+                        trajectoryGenerated = loader.GenerateTrajectory(sentence, request.ThisParticipant.GetLastAeonOutput(), request.ThisParticipant.Topic, true);
+                        result.NormalizedTrajectories.Add(trajectoryGenerated);
+                    }
+
+                }
+                // Grab the templates for the various sentences.
+                foreach (string trajectory in result.NormalizedTrajectories)
+                {
+                    ParticipantQuery query = new ParticipantQuery(trajectory);
+                    query.Template = ThisNode.Evaluate(trajectory, query, request, MatchState.ParticipantInput, new StringBuilder());
+                    result.SubQueries.Add(query);
+                }
+                // Process the templates into appropriate output.
+                foreach (ParticipantQuery query in result.SubQueries)
+                {
+                    if (query.Template.Length > 0)
+                    {
+                        try
+                        {
+                            XmlNode templateNode = AeonHandler.GetNode(query.Template);
+                            string outputSentence = ProcessNode(templateNode, query, request, result, request.ThisParticipant);
+                            // Integrate the learned output with this query response.
+                            if (outputSentence.Length > 0)
+                            {
+                                result.OutputSentences.Add(outputSentence);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logging.WriteLog("A problem was encountered when trying to process the input: " + request.RawInput + " with the template: \"" + query.Template + ". The following exception message was noted: " + ex.Message, Logging.LogType.Warning, Logging.LogCaller.Aeon);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                result.OutputSentences.Add(NotAcceptingInputMessage);
+            }
+            // Return the indication from the process.
+            result.ReturnIndication();
+            // Populate the result object and note the performance.
+            result.Duration = DateTime.Now - request.StartedOn;
+            request.ThisParticipant.AddResult(result);
+
+            return result;
+        }
+        /// <summary>
+        /// Recursively evaluates the template nodes returned from aeon.
+        /// </summary>
+        /// <param name="node">The node to evaluate.</param>
+        /// <param name="query">The query that produced this node.</param>
+        /// <param name="request">The request from the user.</param>
+        /// <param name="result">The result to be sent to the user.</param>
+        /// <param name="user">The user who originated the request.</param>
+        /// <returns>The output string.</returns>
+        protected string ProcessNode(XmlNode node, ParticipantQuery query, ParticipantRequest request, ParticipantResult result, Participant participant)
+        {
+            // Check for timeout (to avoid infinite loops).
+            if (request.StartedOn.AddMilliseconds(request.ThisAeon.TimeOut) < DateTime.Now)
+            {
+                Logging.WriteLog("Request timeout. Participant: " + request.ThisParticipant.Name + " raw input: \"" + request.RawInput + "\" processing template: \"" + query.Template + "\"", Logging.LogType.Warning, Logging.LogCaller.Aeon);
+                request.HasTimedOut = true;
+                return string.Empty;
+            }
+
+            // Process the node.
+            string tagName = node.Name.ToLower();
+            if (tagName == "template")
+            {
+                StringBuilder templateResult = new StringBuilder();
+                if (node.HasChildNodes)
+                {
+                    // Recursively check. Stepping in here, how does it get four child nodes after parsing only one?
+                    foreach (XmlNode childNode in node.ChildNodes)
+                    {
+                        templateResult.Append(ProcessNode(childNode, query, request, result, participant));
+                        // Does this really step to the next child node?
+                    }
+                }
+                return templateResult.ToString();
+            }
+            AeonHandler tagHandler = GetBespokeTags(participant, query, request, result, node);
+
+            if (Equals(null, tagHandler))
+            {
+                switch (tagName)
+                {
+                    case "bot":
+                        tagHandler = new Bot(this, participant, query, request, result, node);
+                        break;
+                    case "condition":
+                        tagHandler = new Condition(this, participant, query, request, result, node);
+                        break;
+                    case "date":
+                        tagHandler = new Date(this, participant, query, request, result, node);
+                        break;
+                    case "formal":
+                        tagHandler = new Formal(this, participant, query, request, result, node);
+                        break;
+                    case "gender":
+                        tagHandler = new Gender(this, participant, query, request, result, node);
+                        break;
+                    case "get":
+                        tagHandler = new Get(this, participant, query, request, result, node);
+                        break;
+                    case "gossip":
+                        tagHandler = new Gossip(this, participant, query, request, result, node);
+                        break;
+                    case "id":
+                        tagHandler = new Id(this, participant, query, request, result, node);
+                        break;
+                    case "input":
+                        tagHandler = new Input(this, participant, query, request, result, node);
+                        break;
+                    case "learn":
+                        tagHandler = new Learn(this, participant, query, request, result, node);
+                        break;
+                    case "lowercase":
+                        tagHandler = new Lowercase(this, participant, query, request, result, node);
+                        break;
+                    case "person":
+                        tagHandler = new Person(this, participant, query, request, result, node);
+                        break;
+                    case "person2":
+                        tagHandler = new Person2(this, participant, query, request, result, node);
+                        break;
+                    case "random":
+                        tagHandler = new Random(this, participant, query, request, result, node);
+                        break;
+                    case "sentence":
+                        tagHandler = new Sentence(this, participant, query, request, result, node);
+                        break;
+                    case "set":
+                        tagHandler = new Set(this, participant, query, request, result, node);
+                        break;
+                    case "size":
+                        tagHandler = new Size(this, participant, query, request, result, node);
+                        break;
+                    case "sr":
+                        tagHandler = new Sr(this, participant, query, request, result, node);
+                        break;
+                    case "srai":
+                        tagHandler = new Srai(this, participant, query, request, result, node);
+                        break;
+                    case "star":
+                        tagHandler = new Star(this, participant, query, request, result, node);
+                        break;
+                    case "test":
+                        tagHandler = new Test();
+                        break;
+                    case "that":
+                        tagHandler = new That(this, participant, query, request, result, node);
+                        break;
+                    case "thatstar":
+                        tagHandler = new ThatStar(this, participant, query, request, result, node);
+                        break;
+                    case "think":
+                        tagHandler = new Think(this, participant, query, request, result, node);
+                        break;
+                    case "topicstar":
+                        tagHandler = new TopicStar(this, participant, query, request, result, node);
+                        break;
+                    case "uppercase":
+                        tagHandler = new Uppercase(this, participant, query, request, result, node);
+                        break;
+                    case "version":
+                        tagHandler = new Version(this, participant, query, request, result, node);
+                        break;
+                }
+            }
+            if (Equals(null, tagHandler))
+            {
+                return node.InnerText;
+            }
+            if (tagHandler.IsRecursive)
+            {
+                if (node.HasChildNodes)
+                {
+                    // Recursively check.
+                    foreach (XmlNode childNode in node.ChildNodes)
+                    {
+                        if (childNode.NodeType != XmlNodeType.Text)
+                        {
+                            childNode.InnerXml = ProcessNode(childNode, query, request, result, user);
+                        }
+                    }
+                }
+                return tagHandler.Transform();
+            }
+            string resultNodeInnerXml = tagHandler.Transform();
+            XmlNode resultNode = AeonHandler.GetNode("<node>" + resultNodeInnerXml + "</node>");
+            if (resultNode.HasChildNodes)
+            {
+                StringBuilder recursiveResult = new StringBuilder();
+                // Recursively check.
+                foreach (XmlNode childNode in resultNode.ChildNodes)
+                {
+                    recursiveResult.Append(ProcessNode(childNode, query, request, result, user));
+                }
+                return recursiveResult.ToString();
+            }
+            return resultNode.InnerXml;
+        }
+        /// <summary>
+        /// Searches the custom tag collection and processes the aeon files if an appropriate tag handler is found.
+        /// </summary>
+        /// <param name="participant">The participant who originated the request.</param>
+        /// <param name="query">The query that produced this node.</param>
+        /// <param name="request">The request from the participant.</param>
+        /// <param name="result">The result to be sent to the participant.</param>
+        /// <param name="node">The node to evaluate.</param>
+        /// <returns>The output string.</returns>
+        public AeonHandler GetBespokeTags(Participant participant, ParticipantQuery query, ParticipantRequest request, ParticipantResult result, XmlNode node)
+        {
+            if (_customTags.ContainsKey(node.Name.ToLower()))
+            {
+                TagHandler customTagHandler = _customTags[node.Name.ToLower()];
+                AeonHandler newCustomTag = customTagHandler.Instantiate(_lateBindingAssemblies);
+                if (Equals(null, newCustomTag))
+                {
+                    return null;
+                }
+                newCustomTag.ThisParticipant = participant;
+                newCustomTag.ParticipantQuery = query;
+                newCustomTag.ParticipantRequest = request;
+                newCustomTag.ParticipantResult = result;
+                newCustomTag.TemplateNode = node;
+                newCustomTag.ThisAeon = this;
+                return newCustomTag;
+            }
+            return null;
         }
         #endregion
     }

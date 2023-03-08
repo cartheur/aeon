@@ -15,7 +15,7 @@ namespace Aeon.Library
         /// <summary>
         /// The GUID that identifies this participant.
         /// </summary>
-        public string ParticipantName { get; set; }
+        public string Name { get; set; }
         /// <summary>
         /// A collection of all the result objects returned to the participant in this session.
         /// </summary>
@@ -58,7 +58,7 @@ namespace Aeon.Library
 		{
             if (participantName.Length > 0)
             {
-                ParticipantName = participantName;
+                Name = participantName;
                 ParticipantAeon = aeon;
                 Predicates = new SettingsDictionary(ParticipantAeon);
                 Predicates = ParticipantAeon.DefaultPredicates;

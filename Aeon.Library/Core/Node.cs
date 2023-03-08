@@ -94,7 +94,7 @@ namespace Aeon.Library
                 // Check for timeout.
                 if (request.StartedOn.AddMilliseconds(request.ThisAeon.TimeOut) < DateTime.Now)
                 {
-                    Logging.WriteLog("Request timeout. Participant: " + request.ThisParticipant.ParticipantName + " raw input: \"" + request.RawInput + "\"", Logging.LogType.Warning, Logging.LogCaller.Node);
+                    Logging.WriteLog("Request timeout. Participant: " + request.ThisParticipant.Name + " raw input: \"" + request.RawInput + "\"", Logging.LogType.Warning, Logging.LogCaller.Node);
                     request.HasTimedOut = true;
                     return string.Empty;
                 }
