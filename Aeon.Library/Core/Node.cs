@@ -87,7 +87,7 @@ namespace Aeon.Library
         /// <param name="matchstate">The part of the input path the node represents.</param>
         /// <param name="wildcard">The contents of the participant input absorbed by wildcards "_" and "*".</param>
         /// <returns>The template to process to generate the output.</returns>
-        public string Evaluate(string trajectory, SubQuery query, Request request, MatchState matchstate, StringBuilder wildcard)
+        public string Evaluate(string trajectory, ParticipantQuery query, ParticipantRequest request, MatchState matchstate, StringBuilder wildcard)
         {
             while (true)
             {

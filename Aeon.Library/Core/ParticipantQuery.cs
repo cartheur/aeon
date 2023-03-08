@@ -1,14 +1,12 @@
 //
 // This AGI is the intellectual property of Dr. Christopher A. Tucker. Copyright 2023, all rights reserved. No rights are explicitly granted to persons who have obtained this source code.
 //
-using System.Collections.Generic;
-
 namespace Aeon.Library
 {
     /// <summary>
-    /// A container class for holding wildcard matches encountered during a path interrogation.
+    /// A container class for holding wildcard query matches encountered during a path interrogation.
     /// </summary>
-    public class SubQuery
+    public class ParticipantQuery
     {
         /// <summary>
         /// The trajectory that this query relates to.
@@ -35,10 +33,10 @@ namespace Aeon.Library
         /// </summary>
         public List<string> EmotionStar = new List<string>(); 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SubQuery"/> class.
+        /// Initializes a new instance of the <see cref="ParticipantQuery"/> class.
         /// </summary>
         /// <param name="trajectory">The trajectory that this query relates to.</param>
-        public SubQuery(string trajectory)
+        public ParticipantQuery(string trajectory)
         {
             Trajectory = trajectory;
         }

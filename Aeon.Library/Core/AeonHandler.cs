@@ -19,7 +19,7 @@ namespace Aeon.Library
         /// <param name="participantRequest">The request sent by the participant.</param>
         /// <param name="participantResult">The result to be sent back to the participant.</param>
         /// <param name="templateNode">The node to be processed.</param>
-        protected AeonHandler(Aeon aeon, Participant thisParticipant, SubQuery participapntQuery, Request participantRequest, Result participantResult, XmlNode templateNode)
+        protected AeonHandler(Aeon aeon, Participant thisParticipant, ParticipantQuery participapntQuery, ParticipantRequest participantRequest, ParticipantResult participantResult, XmlNode templateNode)
             : base(aeon, templateNode.OuterXml)
         {
             ThisParticipant = thisParticipant;
@@ -45,15 +45,15 @@ namespace Aeon.Library
         /// <summary>
         /// The query that produced this node containing the wildcard matches.
         /// </summary>
-        public SubQuery ParticipantQuery;
+        public ParticipantQuery ParticipantQuery;
         /// <summary>
         /// A representation of the input made by the participant.
         /// </summary>
-        public Request ParticipantRequest;
+        public ParticipantRequest ParticipantRequest;
         /// <summary>
         /// A representation of the result to be returned to the participant.
         /// </summary>
-        public Result ParticipantResult;
+        public ParticipantResult ParticipantResult;
         /// <summary>
         /// The template node to be processed by the class.
         /// </summary>

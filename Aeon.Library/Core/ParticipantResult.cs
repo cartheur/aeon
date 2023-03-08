@@ -8,7 +8,7 @@ namespace Aeon.Library
     /// <summary>
     /// Encapsulates information about the result of a request to the mind.
     /// </summary>
-    public class Result
+    public class ParticipantResult
     {
         /// <summary>
         /// The participant's aeon that is providing the answer.
@@ -21,7 +21,7 @@ namespace Aeon.Library
         /// <summary>
         /// The request from the participant which contains participant input.
         /// </summary>
-        public Request ParticipantRequest;
+        public ParticipantRequest ParticipantRequest;
         /// <summary>
         /// The normalized sentence(s) (paths) fed into the brain.
         /// </summary>
@@ -103,7 +103,7 @@ namespace Aeon.Library
         /// <summary>
         /// The SubQuery objects processed by the brain which contain the templates that are to be converted into the collection of Sentences.
         /// </summary>
-        public List<SubQuery> SubQueries = new List<SubQuery>();
+        public List<ParticipantQuery> SubQueries = new List<ParticipantQuery>();
         /// <summary>
         /// The individual sentences produced by the brain that form the complete response.
         /// </summary>
@@ -113,13 +113,13 @@ namespace Aeon.Library
         /// </summary>
         public List<string> InputSentences = new List<string>();
         /// <summary>
-        /// Initializes a new instance of the <see cref="Result"/> class.
+        /// Initializes a new instance of the <see cref="ParticipantResult"/> class.
         /// </summary>
         /// <param name="thisParticipant">The participant for whom this is a result.</param>
         /// <param name="aeon">The brain providing the result.</param>
         /// <param name="participantRequest">The request that originated this result.</param>
         /// <param name="trajectoryEquation">The characteristic equation for the trajectory.</param>
-        public Result(Participant thisParticipant, Aeon aeon, Request participantRequest, string trajectoryEquation)
+        public ParticipantResult(Participant thisParticipant, Aeon aeon, ParticipantRequest participantRequest, string trajectoryEquation)
         {
             ThisParticipant = thisParticipant;
             ThisAeon = aeon;

@@ -19,7 +19,7 @@ namespace Aeon.Library
         /// <summary>
         /// A collection of all the result objects returned to the participant in this session.
         /// </summary>
-        public readonly List<Result> AeonReplies = new List<Result>();
+        public readonly List<ParticipantResult> AeonReplies = new List<ParticipantResult>();
         /// <summary>
         /// The value of the "topic" predicate.
         /// </summary>
@@ -41,7 +41,7 @@ namespace Aeon.Library
         /// <summary>
         /// The most recent result to be returned by aeon.
         /// </summary>
-        public Result LastAeonReply
+        public ParticipantResult LastAeonReply
         {
             get
             {
@@ -107,7 +107,7 @@ namespace Aeon.Library
         {
             if ((n >= 0) & (n < AeonReplies.Count))
             {
-                Result historicResult = AeonReplies[n];
+                ParticipantResult historicResult = AeonReplies[n];
                 if ((sentence >= 0) & (sentence < historicResult.OutputSentences.Count))
                 {
                     return historicResult.OutputSentences[sentence];
@@ -142,7 +142,7 @@ namespace Aeon.Library
         {
             if ((n >= 0) & (n < AeonReplies.Count))
             {
-                Result historicResult = AeonReplies[n];
+                ParticipantResult historicResult = AeonReplies[n];
                 if ((sentence >= 0) & (sentence < historicResult.InputSentences.Count))
                 {
                     return historicResult.InputSentences[sentence];
@@ -154,7 +154,7 @@ namespace Aeon.Library
         /// Adds the latest result from aeon to the results collection.
         /// </summary>
         /// <param name="latestResult">The latest result from aeon.</param>
-        public void AddResult(Result latestResult)
+        public void AddResult(ParticipantResult latestResult)
         {
             AeonReplies.Insert(0, latestResult);
         }

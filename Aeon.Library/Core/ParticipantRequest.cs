@@ -6,7 +6,7 @@ namespace Aeon.Library
     /// <summary>
     /// Encapsulates information about a request sent to aeon for knowledge processing.
     /// </summary>
-    public class Request
+    public class ParticipantRequest
     {
         /// <summary>
         /// The raw input from the participant.
@@ -27,18 +27,18 @@ namespace Aeon.Library
         /// <summary>
         /// The final result produced by this request.
         /// </summary>
-        public Result ParticipantResult;
+        public ParticipantResult ParticipantResult;
         /// <summary>
         /// Flag to show that the request has timed out.
         /// </summary>
         public bool HasTimedOut = false;
         /// <summary>
-        /// Initializes a new instance of the <see cref="Request"/> class.
+        /// Initializes a new instance of the <see cref="ParticipantRequest"/> class.
         /// </summary>
         /// <param name="rawInput">The raw input from the participant.</param>
         /// <param name="thisParticipant">The participant who made the request.</param>
         /// <param name="thisAeon">The presence for this request.</param>
-        public Request(string rawInput, Participant thisParticipant, Aeon thisAeon)
+        public ParticipantRequest(string rawInput, Participant thisParticipant, Aeon thisAeon)
         {
             RawInput = rawInput;
             ThisParticipant = thisParticipant;
