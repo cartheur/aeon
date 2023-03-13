@@ -285,6 +285,8 @@ namespace Aeon.Library
             GlobalSettings = new SettingsDictionary(this);
             PersonSubstitutions = new SettingsDictionary(this);
             Substitutions = new SettingsDictionary(this);
+            _customTags = new Dictionary<string, TagHandler>();
+            ThisNode = new Node();
             AeonStartedOn = DateTime.Now;
         }
 
