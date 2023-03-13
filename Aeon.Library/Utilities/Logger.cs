@@ -41,7 +41,7 @@ namespace Aeon.Library
         {
             if (TestExecution)
                 return TestingPath;
-            return Environment.CurrentDirectory;
+            return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\"));
         }
         /// <summary>
         /// The type of log to write.
