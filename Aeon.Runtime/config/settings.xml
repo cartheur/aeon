@@ -62,7 +62,7 @@
   <item name="timeoutmessage" value="The request has timed out."/>
   <item name="stripperregex" value="[^0-9a-zA-Z]"/>
   <item name="culture" value="en-US"/>
-  <item name="website" value="http://emotional.toys"/>
+  <item name="website" value="https://emotional.toys"/>
   <!--Presence personal properties-->
   <item name="age" value="seven"/>
   <item name="genus" value="autonomous intelligent system"/>
