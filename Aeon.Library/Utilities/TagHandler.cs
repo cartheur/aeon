@@ -27,7 +27,7 @@ public class TagHandler
     /// <summary>
     /// Provides an instantiation of the class represented by this tag handler.
     /// </summary>
-    /// <param name="assemblies">All the assemblies the bot knows about.</param>
+    /// <param name="assemblies">All the assemblies the presence knows about.</param>
     /// <returns>The instantiated class.</returns>
     public AeonHandler Instantiate(Dictionary<string, Assembly> assemblies)
     {

@@ -6,9 +6,9 @@ using System.Xml;
 namespace Aeon.Library
 {
     /// <summary>
-    /// The template-side that element indicates that an interpreter should substitute the contents of a previous bot output. 
+    /// The template-side that element indicates that an interpreter should substitute the contents of a previous presence output. 
     /// 
-    /// The template-side that has an optional index attribute that may contain either a single integer or a comma-separated pair of integers. The minimum value for either of the integers in the index is "1". The index tells the interpreter which previous bot output should be returned (first dimension), and optionally which "sentence" (see [8.3.2.]) of the previous bot output (second dimension). 
+    /// The template-side that has an optional index attribute that may contain either a single integer or a comma-separated pair of integers. The minimum value for either of the integers in the index is "1". The index tells the interpreter which previous presence output should be returned (first dimension), and optionally which "sentence" (see [8.3.2.]) of the previous presence output (second dimension). 
     /// 
     /// The interpreter should raise an error if either of the specified index dimensions is invalid at run-time. 
     /// 

@@ -91,10 +91,6 @@ namespace Aeon.Library
             /// </summary>
             Booth,
             /// <summary>
-            /// The bot.
-            /// </summary>
-            Bot,
-            /// <summary>
             /// The conversational aeon application.
             /// </summary>
             ConversationalAeonApplication,
@@ -178,6 +174,10 @@ namespace Aeon.Library
             /// The non emotive aeon.
             /// </summary>
             NonEmotiveAeon,
+            /// <summary>
+            /// The presence that is the core component of an aeon.
+            /// </summary>
+            Presence,
             /// <summary>
             /// The robot dialogue.
             /// </summary>

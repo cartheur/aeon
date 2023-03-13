@@ -355,11 +355,11 @@ namespace Aeon.Library
             }
             if (!GlobalSettings.ContainsSettingCalled("botmaster"))
             {
-                GlobalSettings.AddSetting("botmaster", "Unknown");
+                GlobalSettings.AddSetting("botmaster", "cartheur");
             }
             if (!GlobalSettings.ContainsSettingCalled("master"))
             {
-                GlobalSettings.AddSetting("botmaster", "Unknown");
+                GlobalSettings.AddSetting("botmaster", "cartheur");
             }
             if (!GlobalSettings.ContainsSettingCalled("author"))
             {
@@ -641,9 +641,6 @@ namespace Aeon.Library
             {
                 switch (tagName)
                 {
-                    case "bot":
-                        tagHandler = new Bot(this, participant, query, request, result, node);
-                        break;
                     case "condition":
                         tagHandler = new Condition(this, participant, query, request, result, node);
                         break;
@@ -679,6 +676,9 @@ namespace Aeon.Library
                         break;
                     case "person2":
                         tagHandler = new Person2(this, participant, query, request, result, node);
+                        break;
+                    case "presence":
+                        tagHandler = new Presence(this, participant, query, request, result, node);
                         break;
                     case "random":
                         tagHandler = new RandomTag(this, participant, query, request, result, node);

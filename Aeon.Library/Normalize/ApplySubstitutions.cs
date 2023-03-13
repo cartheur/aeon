@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 namespace Aeon.Library
 {
     /// <summary>
-    /// Checks the text for any matches in the bot's substitutions dictionary and makes any appropriate changes.
+    /// Checks the text for any matches in the presence's substitutions dictionary and makes any appropriate changes.
     /// </summary>
     public class ApplySubstitutions : TextTransformer
     {

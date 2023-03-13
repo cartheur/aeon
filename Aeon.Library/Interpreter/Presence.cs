@@ -6,14 +6,14 @@ using System.Xml;
 namespace Aeon.Library
 {
     /// <summary>
-    /// An element called bot, which may be considered a restricted version of get, is used to tell the interpreter that it should substitute the contents of a "bot predicate". The value of a bot predicate is set at load-time, and cannot be changed at run-time. The interpreter may decide how to set the values of bot predicate at load-time. If the bot predicate has no value defined, the interpreter should substitute an empty string. The bot element has a required name attribute that identifies the bot predicate. 
+    /// An element called presence, which may be considered a restricted version of get, is used to tell the interpreter that it should substitute the contents of a "presence predicate". The value of a presence predicate is set at load-time, and cannot be changed at run-time. The interpreter may decide how to set the values of presence predicate at load-time. If the presence predicate has no value defined, the interpreter should substitute an empty string. The presence element has a required name attribute that identifies the presence predicate. 
     /// 
-    /// The bot element does not have any content. 
+    /// The presence element does not have any content. 
     /// </summary>
-    public class Bot : AeonHandler
+    public class Presence : AeonHandler
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Bot"/> class.
+        /// Initializes a new instance of the <see cref="Presence"/> class.
         /// </summary>
         /// <param name="aeon">The aeon involved in this request.</param>
         /// <param name="thisParticipant">The participant making the request.</param>
@@ -21,7 +21,7 @@ namespace Aeon.Library
         /// <param name="participantRequest">The request sent by the participant.</param>
         /// <param name="participantResult">The result to be sent back to the participant.</param>
         /// <param name="templateNode">The node to be processed.</param>
-        public Bot(Aeon aeon, Participant thisParticipant, ParticipantQuery participantQuery, ParticipantRequest participantRequest, ParticipantResult participantResult, XmlNode templateNode)
+        public Presence(Aeon aeon, Participant thisParticipant, ParticipantQuery participantQuery, ParticipantRequest participantRequest, ParticipantResult participantResult, XmlNode templateNode)
             : base(aeon, thisParticipant, participantQuery, participantRequest, participantResult, templateNode)
         {
         }
@@ -33,7 +33,7 @@ namespace Aeon.Library
         /// </returns>
         protected override string ProcessChange()
         {
-            if (TemplateNode.Name.ToLower() == "bot")
+            if (TemplateNode.Name.ToLower() == "presence")
             {
                 if (TemplateNode.Attributes != null && TemplateNode.Attributes.Count == 1)
                 {
