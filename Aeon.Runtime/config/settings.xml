@@ -16,6 +16,8 @@
   <item name="reductionsdirectory" value="personality/reductions"/>
   <item name="mindpixeldirectory" value="personality/mindpixel"/>
   <item name="updatedirectory" value="personality/update"/>
+  <item name="logmodelfile" value="log"/>
+  <item name="transcriptmodelfile" value="transcript"/>
   <item name="splittersfile" value="splitters.xml"/>
   <item name="substitutionsfile" value="substitutions.xml"/>
   <item name="predicatesfile" value="predicates.xml"/>
