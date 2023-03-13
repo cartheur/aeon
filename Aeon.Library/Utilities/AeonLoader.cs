@@ -45,13 +45,13 @@ namespace Aeon.Library
                 }
                 else
                 {
-                    Logging.WriteLog("Could not find any data files in the specified directory (" + path + "). Make sure that these files end in a lowercase extension like *.aeon.", Logging.LogType.Information, Logging.LogCaller.AeonLoader);
+                    Logging.WriteLog("Could not find any data files in the specified directory (" + path + "). Make sure that these files end in a lowercase extension like *.aeon", Logging.LogType.Information, Logging.LogCaller.AeonLoader);
                     Aeon.PersonalityLoaded = false;
                 }
             }
             else
             {
-                Logging.WriteLog("The directory specified as the path to the *.aeon files (" + path + ") cannot be found by the AeonLoader object. Please make sure the directory where the *.aeon files are to be found is the same as the directory specified in the settings file.", Logging.LogType.Information, Logging.LogCaller.AeonLoader);
+                Logging.WriteLog("The directory specified as the path to the *.aeon files (" + path + ") cannot be found by the AeonLoader object. Please make sure the directory where the *.aeon files are to be found is the same as the directory specified in the settings file", Logging.LogType.Information, Logging.LogCaller.AeonLoader);
                 Aeon.PersonalityLoaded = false;
             }
         }
