@@ -36,9 +36,9 @@ namespace Aeon.Library
             ThisAeon = thisAeon;
             try
             {
-                // Load various default settings and text tools.
+                // Load necessary text tools for the conversational elements.
                 ThisAeon.PersonSubstitutions.LoadSettings(Path.Combine(configuration.PathToConfigFiles, ThisAeon.GlobalSettings.GrabSetting("personsubstitutionsfile")));
-                ThisAeon.DefaultPredicates.LoadSettings(Path.Combine(configuration.PathToConfigFiles, ThisAeon.GlobalSettings.GrabSetting("defaultpredicates")));
+                ThisAeon.DefaultPredicates.LoadSettings(Path.Combine(configuration.PathToConfigFiles, ThisAeon.GlobalSettings.GrabSetting("predicatesfile")));
                 ThisAeon.Substitutions.LoadSettings(Path.Combine(configuration.PathToConfigFiles, ThisAeon.GlobalSettings.GrabSetting("substitutionsfile")));
                 ThisAeon.LoadSplitters(Path.Combine(configuration.PathToConfigFiles, ThisAeon.GlobalSettings.GrabSetting("splittersfile")));
             }
@@ -68,7 +68,7 @@ namespace Aeon.Library
                 {
                     loader.LoadAeon(configuration.PathToBlankFile);
                 }
-                if (ThisAeon.Name.ToLower() == "rhoda")
+                if (ThisAeon.Name.ToLower() == "rhodo")
                 {
                     loader.LoadAeon(configuration.PathToReductions);
                     loader.LoadAeon(configuration.PathToMindpixel);

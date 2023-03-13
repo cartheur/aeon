@@ -281,7 +281,10 @@ namespace Aeon.Library
 
         void Setup()
         {
+            DefaultPredicates = new SettingsDictionary(this);
             GlobalSettings = new SettingsDictionary(this);
+            PersonSubstitutions = new SettingsDictionary(this);
+            Substitutions = new SettingsDictionary(this);
             AeonStartedOn = DateTime.Now;
         }
 

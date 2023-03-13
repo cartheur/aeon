@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+  <item name="name" value="*" />
+  <item name="he" value="*" />
+  <item name="she" value="*" />
+  <item name="it" value="*" />
+  <item name="they" value="*" />
+  <item name="age" value="1" />
+  <item name="birthday" value="*" />
+  <item name="boyfriend" value="no" />
+  <item name="brother" value="no" />
+  <item name="cat" value="shu-shu" />
+  <item name="does" value="*" />
+  <item name="dog" value="*" />
+  <item name="email" value="*" />
+  <item name="emotion" value="*" /><!--Angry = 0, Happy = 1, Neutral = *, Sad = 2-->
+  <item name="father" value="*" />
+  <item name="favcolor" value="*" />
+  <item name="favmovie" value="*" />
+  <item name="friend" value="*" />
+  <item name="fullname" value="*" />
+  <item name="gender" value="*" />
+  <item name="girlfriend" value="*" />
+  <item name="has" value="*" />
+  <item name="heard" value="*" />
+  <item name="husband" value="*" />
+  <item name="is" value="*" />
+  <item name="job" value="*" />
+  <item name="lastname" value="*" />
+  <item name="like" value="*" />
+  <item name="location" value="*" />
+  <item name="looklike" value="*" />
+  <item name="memory" value="*" />
+  <item name="meta" value="*" />
+  <item name="nickname" value="*" />
+  <item name="middlename" value="*" />
+  <item name="mother" value="*" />
+  <item name="password" value="*" />
+  <item name="personality" value="*" />
+  <item name="phone" value="*" />
+  <item name="sign" value="*" />
+  <item name="sister" value="*" />
+  <item name="them" value="*" />
+  <item name="thought" value="*" />
+  <item name="topic" value="*" />
+  <item name="want" value="*" />
+  <item name="we" value="*" />
+</root>
