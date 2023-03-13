@@ -75,6 +75,7 @@ namespace Aeon.Runtime
             StartUpTheme = Convert.ToBoolean(_thisAeon.GlobalSettings.GrabSetting("startuptheme"));
             StartUpThemeFile = _thisAeon.GlobalSettings.GrabSetting("startupthemefile");
             EmotiveEquation = _thisAeon.GlobalSettings.GrabSetting("emotiveequation");
+            TerminalMode = Convert.ToBoolean(_thisAeon.GlobalSettings.GrabSetting("terminalmode"));
             // Initialize the alone feature.
             _thisAeon.AeonAloneTimer = new System.Timers.Timer();
             _thisAeon.AeonAloneTimer.Elapsed += AloneEvent;

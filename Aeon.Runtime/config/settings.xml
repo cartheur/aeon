@@ -6,6 +6,7 @@
   <item name="product" value="Cartheur Animals"/>
   <item name="warning" value="This is an artifically-sentient program. Please interact responsibly."/>
   <item name="version" value="0.0.4"/>
+  <item name="terminalmode" value="true"/><!--To type to the aeon. This can only be set to true.-->
   <item name="name" value="Rhodo"/><!-- This name should not be changed. -->
   <item name="participantname" value="Chris"/><!-- Change to the participant name. -->
   <item name="emotionused" value="false"/><!-- Currently not implemented. -->
