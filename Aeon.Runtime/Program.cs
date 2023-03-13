@@ -129,7 +129,7 @@ namespace Aeon.Runtime
             if (TerminalMode)
             {
                 Console.WriteLine("You have selected terminal mode.");
-                if (!Library.Aeon.PersonalityLoaded)
+                if (_thisAeon.Size < 2)
                 {
                     _thisAeon.LoadBlank(Configuration);
                     Console.WriteLine("No personality files have been loaded. A blank aeon has been loaded in its place.");
