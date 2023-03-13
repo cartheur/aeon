@@ -17,11 +17,11 @@ namespace Aeon.Library
         /// <summary>
         /// The path to the debug folder.
         /// </summary>
-        public static string PathDebugFolder = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\" + @"files"));
+        public static string PathDebugFolder = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\"));
         /// <summary>
         /// The path to the release folder.
         /// </summary>
-        public static string PathReleaseFolder = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\" + @"files"));
+        public static string PathReleaseFolder = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\"));
         /// <summary>
         /// Gets or sets the aeon.
         /// </summary>
