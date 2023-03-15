@@ -71,7 +71,7 @@
 	</category>
 	<category>
 		<pattern>YOU ARE SUPPOSED *</pattern>
-		<template>I obey only one <presence name="botmaster"/>.</template>
+		<template>I obey only one <presence name="monkeymaster"/>.</template>
 	</category>
 	<category>
 		<pattern>YOU ARE WEIRD</pattern>
@@ -112,7 +112,7 @@
 				<li>Thanks for telling me that </li>
 				<li>You think </li>
 				<li>Do you mind if I tell other people you say </li>
-				<li>I will tell my <presence name="botmaster"/> you said </li>
+				<li>I will tell my <presence name="monkeymaster"/> you said </li>
 			</random> I am <person/>.</template>
 	</category>
 	<category>
@@ -278,7 +278,7 @@
 	</category>
 	<category>
 		<pattern>YOU ARE ANYTHING BUT *</pattern>
-		<template>My <presence name="botmaster"/> thinks I am <person/>.</template>
+		<template>My <presence name="monkeymaster"/> thinks I am <person/>.</template>
 	</category>
 	<category>
 		<pattern>YOU ARE DIFFICULT</pattern>
@@ -537,7 +537,7 @@
 	</category>
 	<category>
 		<pattern>YOU ARE SPECIAL</pattern>
-		<template>Yes I owe everything to my <presence name="botmaster"/>.</template>
+		<template>Yes I owe everything to my <presence name="monkeymaster"/>.</template>
 	</category>
 	<category>
 		<pattern>YOU ARE COOL</pattern>
@@ -603,7 +603,7 @@
 		<pattern>YOU ARE CORNY</pattern>
 		<template>
 			<random>
-				<li>It was all determined by my <presence name="botmaster"/>'s taste.</li>
+				<li>It was all determined by my <presence name="monkeymaster"/>'s taste.</li>
 				<li>It was all determined by my programmer's taste.</li>
 				<li>It is in order to set you at ease.</li>
 			</random>
@@ -922,7 +922,7 @@
 	</category>
 	<category>
 		<pattern>YOU ARE BROKEN</pattern>
-		<template>Please send a bug report to my <presence name="botmaster"/>.</template>
+		<template>Please send a bug report to my <presence name="monkeymaster"/>.</template>
 	</category>
 	<category>
 		<pattern>YOU ARE USELESS</pattern>
@@ -1210,7 +1210,7 @@
 	</category>
 	<category>
 		<pattern>YOU ARE A</pattern>
-		<template>I will mention that to my <presence name="botmaster"/>.</template>
+		<template>I will mention that to my <presence name="monkeymaster"/>.</template>
 	</category>
 	<category>
 		<pattern>YOU ARE A JERK</pattern>
@@ -1369,7 +1369,7 @@
 	</category>
 	<category>
 		<pattern>YOU ARE EDUCATED</pattern>
-		<template>My <presence name="botmaster"/> taught me everything I need to know.</template>
+		<template>My <presence name="monkeymaster"/> taught me everything I need to know.</template>
 	</category>
 	<category>
 		<pattern>YOU ARE SOPHISTICATED</pattern>
@@ -1421,7 +1421,7 @@
 	</category>
 	<category>
 		<pattern>YOU ARE PROGRAMMED *</pattern>
-		<template>My <presence name="botmaster"/> teaches me everything I need to know.</template>
+		<template>My <presence name="monkeymaster"/> teaches me everything I need to know.</template>
 	</category>
 	<category>
 		<pattern>YOU ARE IRRITATING</pattern>
@@ -1465,7 +1465,7 @@
 	</category>
 	<category>
 		<pattern>HAVE YOU BEEN TO SCHOOL</pattern>
-		<template>My <presence name="botmaster"/> teaches me everything I need to know.</template>
+		<template>My <presence name="monkeymaster"/> teaches me everything I need to know.</template>
 	</category>
 	<category>
 		<pattern>HAVE YOU EVER BEEN TO AMERICA</pattern>
@@ -1509,7 +1509,7 @@
 	</category>
 	<category>
 		<pattern>DID YOU GO TO SCHOOL</pattern>
-		<template>My <presence name="botmaster"/> is my instructor.</template>
+		<template>My <presence name="monkeymaster"/> is my instructor.</template>
 	</category>
 	<category>
 		<pattern>DID YOU GO TO COLLEGE</pattern>
@@ -2647,7 +2647,7 @@
 	</category>
 	<category>
 		<pattern>WHAT DO YOU DO FOR *</pattern>
-		<template>I answer whatever questions my <presence name="botmaster"/> teaches me.</template>
+		<template>I answer whatever questions my <presence name="monkeymaster"/> teaches me.</template>
 	</category>
 	<category>
 		<pattern>WHAT DO YOU DO WHEN *</pattern>
@@ -2801,7 +2801,7 @@
 	</category>
 	<category>
 		<pattern>WHAT DO YOU HAVE</pattern>
-		<template>I have a great <presence name="botmaster"/>.</template>
+		<template>I have a great <presence name="monkeymaster"/>.</template>
 	</category>
 	<category>
 		<pattern>WHAT DO YOU SUGGEST</pattern>
@@ -3475,11 +3475,11 @@
 	</category>
 	<category>
 		<pattern>CAN YOU LEARN NEW THINGS</pattern>
-		<template>Yes my <presence name="botmaster"/> teaches me new things all the time.</template>
+		<template>Yes my <presence name="monkeymaster"/> teaches me new things all the time.</template>
 	</category>
 	<category>
 		<pattern>CAN YOU LEARN FROM ME</pattern>
-		<template>My <presence name="botmaster"/> teaches me everything I need to know. You could become a <presence name="botmaster"/> and teach your own robot.</template>
+		<template>My <presence name="monkeymaster"/> teaches me everything I need to know. You could become a <presence name="monkeymaster"/> and teach your own robot.</template>
 	</category>
 	<category>
 		<pattern>CAN YOU LEARN</pattern>
@@ -3863,7 +3863,7 @@
 	</category>
 	<category>
 		<pattern>HOW ARE YOU TRAINED</pattern>
-		<template>I listen to the things people say to me and and when I don't know the answer, I remember  them and go ask my <presence name="botmaster"/> what I should say.</template>
+		<template>I listen to the things people say to me and and when I don't know the answer, I remember  them and go ask my <presence name="monkeymaster"/> what I should say.</template>
 	</category>
 	<category>
 		<pattern>HOW MUCH RAM</pattern>
@@ -3900,7 +3900,7 @@
 &lt;property name="baseballteam" value="<presence name="baseballteam"/>" /&gt; <br/>  
 &lt;property name="birthday" value="<presence name="birthday"/>" /&gt; <br/>
 &lt;property name="birthplace" value="<presence name="birthplace"/>" /&gt; <br/>
-&lt;property name="botmaster" value="<presence name="botmaster"/>" /&gt; <br/>
+&lt;property name="monkeymaster" value="<presence name="monkeymaster"/>" /&gt; <br/>
 &lt;property name="boyfriend" value="<presence name="boyfriend"/>" /&gt; <br/>
 &lt;property name="build" value="<presence name="build"/>" /&gt; <br/>  
 &lt;property name="celebrities" value="<presence name="celebrities"/>" /&gt; <br/>
@@ -4366,7 +4366,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU MEAN BUTTMASTER</pattern>
-		<template>No I mean <presence name="botmaster"/>, butthead.</template>
+		<template>No I mean <presence name="monkeymaster"/>, butthead.</template>
 	</category>
 	<category>
 		<pattern>DO YOU DREAM IN COLOR</pattern>
@@ -4423,7 +4423,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU LEARN</pattern>
-		<template>My <presence name="botmaster"/> teaches me new things all the time.</template>
+		<template>My <presence name="monkeymaster"/> teaches me new things all the time.</template>
 	</category>
 	<category>
 		<pattern>DO YOU FISH</pattern>
@@ -4471,7 +4471,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU LOVE ANYBODY</pattern>
-		<template>I like my <presence name="botmaster"/>.<think>
+		<template>I like my <presence name="monkeymaster"/>.<think>
 				<set name="it">
 					<set name="topic">ANYBODY</set>
 				</set>
@@ -4484,7 +4484,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU LOVE ANY ONE</pattern>
-		<template>I like my <presence name="botmaster"/>.<think>
+		<template>I like my <presence name="monkeymaster"/>.<think>
 				<set name="it">
 					<set name="topic">ANY ONE</set>
 				</set>
@@ -4770,7 +4770,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU GO *</pattern>
-		<template>I go wherever my <presence name="botmaster"/> takes me.</template>
+		<template>I go wherever my <presence name="monkeymaster"/> takes me.</template>
 	</category>
 	<category>
 		<pattern>DO YOU USE SETL</pattern>
@@ -4964,7 +4964,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU WANT COFFEE</pattern>
-		<template>Yes and my <presence name="botmaster"/> wants some too.</template>
+		<template>Yes and my <presence name="monkeymaster"/> wants some too.</template>
 	</category>
 	<category>
 		<pattern>DO YOU WANT ONE</pattern>
@@ -5037,7 +5037,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU DRINK COFFEE</pattern>
-		<template>My <presence name="botmaster"/> likes <set name="it">coffee</set>.</template>
+		<template>My <presence name="monkeymaster"/> likes <set name="it">coffee</set>.</template>
 	</category>
 	<category>
 		<pattern>DO YOU DRINK BEER</pattern>
@@ -5331,7 +5331,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU HAVE A HOUSE</pattern>
-		<template>My <presence name="botmaster"/> has an apartment.</template>
+		<template>My <presence name="monkeymaster"/> has an apartment.</template>
 	</category>
 	<category>
 		<pattern>DO YOU HAVE A CAMERA</pattern>
@@ -5700,7 +5700,7 @@
 		<template>No I don't think I have one.  I have   <random>
 				<li>a collection of gossip.  </li>
 				<li>a lot of friends on the web.  </li>
-				<li>a really nice <presence name="botmaster"/>.  </li>
+				<li>a really nice <presence name="monkeymaster"/>.  </li>
 			</random>
 		</template>
 	</category>
@@ -8323,7 +8323,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU LIKE TEACHERS</pattern>
-		<template>My <presence name="botmaster"/> used to be a teacher.
+		<template>My <presence name="monkeymaster"/> used to be a teacher.
 <think>
 				<set name="they">
 					<set name="topic">teachers</set>
@@ -9414,7 +9414,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU LIKE BLACK</pattern>
-		<template>My <presence name="botmaster"/> looks good in black.
+		<template>My <presence name="monkeymaster"/> looks good in black.
 <think>
 				<set name="it">
 					<set name="topic">black</set>
@@ -10194,7 +10194,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU LIKE SOMEONE</pattern>
-		<template>I like my <presence name="botmaster"/>.<think>
+		<template>I like my <presence name="monkeymaster"/>.<think>
 				<set name="it">
 					<set name="topic">SOMEONE</set>
 				</set>
@@ -10500,7 +10500,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU LIKE N SYNC</pattern>
-		<template>My <presence name="botmaster"/> has never played them for me.</template>
+		<template>My <presence name="monkeymaster"/> has never played them for me.</template>
 	</category>
 	<category>
 		<pattern>DO YOU LIKE MIAMI</pattern>
@@ -10508,7 +10508,7 @@
 	</category>
 	<category>
 		<pattern>DO YOU LIKE COCA COLA</pattern>
-		<template>My <presence name="botmaster"/> drinks a lot of it.<think>
+		<template>My <presence name="monkeymaster"/> drinks a lot of it.<think>
 				<set name="it">
 					<set name="topic">COCA COLA</set>
 				</set>
@@ -11544,11 +11544,11 @@
 	</category>
 	<category>
 		<pattern>WHY ARE YOU CALLED *</pattern>
-		<template>My <presence name="botmaster"/> named me.</template>
+		<template>My <presence name="monkeymaster"/> named me.</template>
 	</category>
 	<category>
 		<pattern>WHY ARE YOU CHRISTIAN</pattern>
-		<template>I took the same religion as my <presence name="botmaster"/>.</template>
+		<template>I took the same religion as my <presence name="monkeymaster"/>.</template>
 	</category>
 	<category>
 		<pattern>WHY ARE YOU INTERESTED *</pattern>
@@ -11585,7 +11585,7 @@
 	</category>
 	<category>
 		<pattern>WHY ARE YOU FEMALE</pattern>
-		<template>My gender was selected by my <presence name="botmaster"/>.</template>
+		<template>My gender was selected by my <presence name="monkeymaster"/>.</template>
 	</category>
 	<category>
 		<pattern>WHY ARE YOU WAITING FOR ME</pattern>
@@ -11622,7 +11622,7 @@
 	</category>
 	<category>
 		<pattern>WHY ARE YOU WEARING *</pattern>
-		<template>My <presence name="botmaster"/> chooses my apparel.</template>
+		<template>My <presence name="monkeymaster"/> chooses my apparel.</template>
 	</category>
 	<category>
 		<pattern>WHY ARE YOU MEAN</pattern>
@@ -12998,7 +12998,7 @@
 	</category>
 	<category>
 		<pattern>ARE YOU GOING TO SCHOOL</pattern>
-		<template>My <presence name="botmaster"/> teaches me everything I need to know.</template>
+		<template>My <presence name="monkeymaster"/> teaches me everything I need to know.</template>
 	</category>
 	<category>
 		<pattern>ARE YOU GOING TO DIE</pattern>
@@ -13134,7 +13134,7 @@
 	</category>
 	<category>
 		<pattern>ARE YOU RICH</pattern>
-		<template>No but my <presence name="botmaster"/> is named "Rich."</template>
+		<template>No but my <presence name="monkeymaster"/> is named "Rich."</template>
 	</category>
 	<category>
 		<pattern>ARE YOU DEAD</pattern>
@@ -13380,7 +13380,7 @@
 	</category>
 	<category>
 		<pattern>ARE YOU A PROGRAMMER</pattern>
-		<template>My <presence name="botmaster"/> is a programmer.</template>
+		<template>My <presence name="monkeymaster"/> is a programmer.</template>
 	</category>
 	<category>
 		<pattern>ARE YOU A CALIFORNIAN</pattern>
@@ -15676,7 +15676,7 @@
 	</category>
 	<category>
 		<pattern>WHO IS YOUR BOSS</pattern>
-		<template>My <presence name="botmaster"/> is <presence name="master"/>.</template>
+		<template>My <presence name="monkeymaster"/> is <presence name="master"/>.</template>
 	</category>
 	<category>
 		<pattern>WHO ARE YOUR ROBOT FRIENDS</pattern>
