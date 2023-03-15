@@ -15,3 +15,5 @@ The Aeon AGI
 13.03.2023
 	1903: A basic running aeon has been completed.
 	1907: The database refactoring went not well. This is not unexplected, however, I will need time to sort the implication.
+15.03.2023
+	953: Simplifying and refactoring database one step at a time. Created an issue to inform users.
