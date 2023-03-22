@@ -1,3 +1,5 @@
+[![GitHub issues](https://img.shields.io/github/issues/cartheur/aeon)](https://github.com/cartheur/aeon/issues)
+
 # aeon
 An artificial general intelligence (AGI) program
 
