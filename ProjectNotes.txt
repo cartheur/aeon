@@ -17,3 +17,6 @@ The Aeon AGI
 	1907: The database refactoring went not well. This is not unexplected, however, I will need time to sort the implication.
 15.03.2023
 	953: Simplifying and refactoring database one step at a time. Created an issue to inform users.
+22.03.2023
+	1126: Database problem is sorted. Adding scope so that the aeon is responsive to basic queries. A continuing effort.
+
