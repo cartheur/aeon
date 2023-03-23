@@ -19,4 +19,4 @@ The Aeon AGI
 	953: Simplifying and refactoring database one step at a time. Created an issue to inform users.
 22.03.2023
 	1126: Database problem is sorted. Adding scope so that the aeon is responsive to basic queries. A continuing effort.
-
+	1247: Added my contribtution toward the Mindpixel project, compiled in 2005.
