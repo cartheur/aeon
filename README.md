@@ -21,4 +21,8 @@ Although having been in existence for quite a few years, _this_ AGI is under dev
 
 ## How to use this AGI
 
-Clone the repo and run the Aeon.Runtime console application. 
+Clone the repo and run the Aeon.Runtime console application.
+
+## Updates
+
+23.03.2023: I have uploaded the compendium of the _Mindpixel_ database as I rendered it in XML-format.
