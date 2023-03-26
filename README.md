@@ -1,4 +1,4 @@
-[![GitHub license](https://img.shields.io/github/license/cartheur/aeon)](https://github.com/cartheur/aeon/blob/main/LICENSE.txt)
+[![GitHub license](https://img.shields.io/github/license/cartheur/aeon)](https://github.com/cartheur/aeon/blob/main/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/cartheur/aeon)](https://github.com/cartheur/aeon/issues)
 
 # aeon
