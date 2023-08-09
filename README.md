@@ -31,6 +31,7 @@ Clone the repo and run the Aeon.Runtime console application.
 ## Updates
 
 23.03.2023: I have uploaded the compendium of the _Mindpixel_ database as I rendered it in XML-format. Added documentation.
+09.08.2023: I have updated aspects of the runtime to optimize its response time.
 
 ## Backstory
 <p align=justify>
