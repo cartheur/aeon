@@ -1,5 +1,5 @@
 [![GitHub license](https://img.shields.io/github/license/cartheur/aeon)](https://github.com/cartheur/aeon/blob/main/LICENSE)
-[![Build status](https://github.com/github/cartheur/actions/workflows/dotnet-desktop.yml)]
+[![Build status](https://img.shields.io/github/actions/workflows/cartheur/aeon)(https://github.com/github/cartheur/actions/workflows/dotnet-desktop.yml)]
 [![GitHub issues](https://img.shields.io/github/issues/cartheur/aeon)](https://github.com/cartheur/aeon/issues)
 
 # aeon
@@ -34,8 +34,9 @@ Clone the repo and run the Aeon.Runtime console application. Ask questions if st
 
 ## Updates
 
-23.03.2023: I have uploaded the compendium of the _Mindpixel_ database as I rendered it in XML-format. Added documentation.
-09.08.2023: I have updated aspects of the runtime to optimize its response time.
+* 23.03.2023: I have uploaded the compendium of the _Mindpixel_ database as I rendered it in XML-format. Added documentation.
+* 09.08.2023: I have updated aspects of the runtime to optimize its response time.
+* 28.05.2024: Putting serious effort toward a public release of this (2002 - 2024) research project. 
 
 ## Backstory
 
