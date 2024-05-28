@@ -20,3 +20,6 @@ The Aeon AGI
 22.03.2023
 	1126: Database problem is sorted. Adding scope so that the aeon is responsive to basic queries. A continuing effort.
 	1247: Added my contribtution toward the Mindpixel project, compiled in 2005.
+28.05.2024
+	1701: Been driving development off-grid to a private effort and will start bringing-across a version for public review. This will take several weeks, I think, given my time needed with the company.
+	1705: Several flaws exist in this version and will uptick a new one shortly.
