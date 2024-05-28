@@ -1,5 +1,5 @@
 ﻿//
-// This autonomous intelligent system software is the property of Cartheur Research B.V. Copyright 2023, all rights reserved.
+// This autonomous intelligent system software is the property of Cartheur Research B.V. Copyright 2008 - 2024, all rights reserved.
 //
 namespace Aeon.Library
 {
