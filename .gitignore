@@ -388,12 +388,8 @@ FodyWeavers.xsd
 # Local History for Visual Studio Code
 .history/
 
-# Windows Installer files from build outputs
-*.cab
-*.msi
-*.msix
-*.msm
-*.msp
+# logfiles
 
-# JetBrains Rider
-*.sln.iml
+Aeon.Runtime/logs/log.txt
+Aeon.Runtime/logs/logfile.txt
+Aeon.Runtime/logs/transcript.txt
