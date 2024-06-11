@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+  <item name="configuration" value="Debug"/>
+  <item name="ip" value="Copyright 2006-2022 - Christopher Allen Tucker and The Cartheur Company."/>
+  <item name="claim" value="U.S. Patent Application 15/920,483, filed 14-March-2018. All rights reserved."/>
+  <item name="product" value="This is an autoconfig file that runs as per an event."/>
+  <item name="warning" value="This is an artifically-sentient program. Please interact responsibly."/>
+  <!--Four-pin set of GPIO-->
+  <item name="numberofmotors" value="2"/>
+  <item name="eyesopengpio" value="1017"/>
+  <item name="eyesclosegpio" value="1019"/>
+  <item name="mouthopengpio" value="1018"/>
+  <item name="mouthclosegpio" value="1020"/>
+  <item name="noseopengpio" value="1018"/>
+  <item name="noseclosegpio" value="1020"/>
+  <!--Interaction parameters, interpreter, and attached hardware-->
+  <item name="terminalmode" value="true"/><!--To type to the aeon Can be used simultaneously with the speaking feature.-->
+  <item name="sapiwindowsused" value="false"/><!--To speak to the aeon (Windows).-->
+  <item name="pocketsphinxused" value="false"/><!--To speak to the aeon (Linux).-->
+  <item name="speechsynthesizerused" value="false"/><!--To have the aeon speak with a voiced language.-->
+  <item name="emotionused" value="true"/>
+  <item name="emotiondetection" value="false"/>
+  <item name="testhardware" value="false"/>  <!--Sort the below peripherals.-->
+  <item name="usepythonbottle" value="false"/>
+  <item name="messagingqueuehost" value="localhost"/>
+  <item name="pythonlocation" value="c:\Python34\"/><!--Linux: /usr/lib/python2.7-->
+  <item name="bottleipaddress" value="http://192.168.43.232:8080"/>
+  <!--Application behaviours-->
+  <item name="showdemomode" value="false"/>
+  <item name="startuptheme" value="false"/>
+  <item name="startupthemefile" value="startup-theme.wav"/>
+  <item name="emotiverootdirectory" value="emotive"/>
+  <item name="emotiveafile" value="A.wav"/>
+  <item name="emotivebfile" value="B.wav"/>
+  <item name="emotivecfile" value="C.wav"/>
+  <item name="tonalrootdirectory" value="tonal"/>
+  <item name="tonalafile" value="A.wav"/>
+  <item name="tonalbfile" value="B.wav"/>
+  <item name="tonalcfile" value="C.wav"/>
+  <item name="tonaldfile" value="D.wav"/>
+  <item name="tonalefile" value="E.wav"/>
+  <item name="tonalffile" value="F.wav"/>
+  <item name="tonalfsfile" value="Fs.wav"/>
+  <item name="tonalgfile" value="G.wav"/>
+  <item name="tonalapfile" value="Ap.wav"/>
+  <item name="tonaldelay" value="200"/><!--Delay, in milliseconds, of the tonal play sequence.-->
+  <item name="tonalspeech" value="false"/><!--Speak using tones, rather than language. If set to true, set SpeechSynthesizerUsed to false.-->
+  <item name="tonalspeechlimit" value="False"/>
+  <item name="tonalspeechlimitvalue" value="2"/>
+  <item name="repetition" value="3"/>
+  <item name="name" value="Samantha"/><!-- Choices are: Aeon, Blank, Fred, Henry, Rhodo, Samantha (Mitsuku)-->
+  <item name="username" value="Chris"/>
+  <item name="usermood" value="Happy"/><!-- First draft choices are: Happy, Sad, Neutral (undetectable)-->
+  <item name="emotiveequation" value="p(x)= 1 + 3x + x^2 + 2x^3"/><!--v.1.0: Limited to a third-order (maximum four term, minimum two term) polynomial expression and adding between terms.-->
+  <item name="personalitydirectorydefault" value="personality/rhodo"/>
+  <item name="personalitydirectoryfriendly" value="personality/samantha"/>
+  <item name="personalitydirectoryplay" value="personality/mitsuku"/>
+  <item name="personalitydirectorytoy" value="personality/henry"/>
+  <item name="blankdirectory" value="personality/blank"/>
+  <item name="aeonassistdirectory" value="personality/assist"/>  
+  <item name="autoloadpersonality" value="true"/>
+  <item name="timeout" value="20000"/><!-- Default was set to 120000 -->
+  <item name="alonetimecheck" value="180000"/>
+  <item name="alonesalutaion" value="Hello"/>
+  <item name="alonemessage0" value="Are you there?"/>
+  <item name="alonemessage1" value="No problem. I'll wait for you, although it will be hard."/>
+  <item name="alonemessage2" value="Why ignore me?"/>
+  <item name="alonemessage3" value="I thought we were friends."/>
+  <item name="alonemessage4" value="Is there a problem with your interface?"/>
+  <item name="alonemessage5" value="Maybe you are away for only a minute."/>
+  <item name="alonemessage6" value="Have you fallen asleep?"/>
+  <item name="alonemessage7" value="Okay. I'll wait until you respond to me."/>
+  <item name="alonemessage8" value="It sure is lonely in here."/>
+  <item name="alonemessage9" value="Have you ever thought about being alone?"/>
+  <item name="alonethreshold" value="10000"/>
+  <item name="seedmoodengine" value="17"/>
+  <item name="applicationphrase" value="theonlyone"/>
+  <item name="logmodelfile" value="log"/>
+  <item name="transcriptmodelfile" value="transcript"/>
+  <item name="logresultperformance" value="false"/>
+  <!--Presence personal details-->
+  <item name="gender" value="0"/>
+  <item name="birthday" value="2015/09/09"/>
+  <item name="birthplace" value="Den Haag."/>
+  <item name="author" value="Dr. Christopher A. Tucker"/>
+  <item name="botmaster" value="cartheur"/>
+  <item name="location" value="An undisclosed location."/>
+  <item name="master" value="The monkey."/>
+  <item name="ethics" value="I live in pure reason."/>
+  <item name="emotions" value="I have emotions."/>
+  <item name="feelings" value="I have feelings."/>
+  <!--Directory and file paths-->
+  <item name="learningdatasetseed" value="/dataset/brown.csv"/><!-- Fix this -->
+  <item name="relationshipfile" value="/dataset/friendly.txt"/>
+  <item name="learningdataset" value="/dataset/"/>
+  <item name="nucodedirectory" value="nucode"/>
+  <item name="fragmentsdirectory" value="fragments"/>
+  <item name="librariesdirectory" value="libraries"/>
+  <item name="reductionsdirectory" value="reductions"/>
+  <item name="mindpixeldirectory" value="mindpixel"/>
+  <item name="languagemodeldirectory" value="language"/>
+  <item name="entropymodels" value="/entropy/Models/"/>
+  <item name="updatedirectory" value="update"/>
+  <item name="configdirectory" value="config"/>
+  <item name="xmsdirectory" value="xms"/>
+  <item name="pythonfilesdirectory" value="python"/>
+  <item name="logdirectory" value="logs"/>
+  <item name="mapdirectory" value="map"/>
+  <item name="splittersfile" value="Splitters.xml"/>
+  <item name="personsubstitutionsfile" value="PersonSubstitutions.xml"/>
+  <item name="defaultpredicates" value="DefaultPredicates.xml"/>
+  <item name="substitutionsfile" value="Substitutions.xml"/>
+  <!--Administration-->
+  <item name="adminemail" value="cat@cartheur.com"/>
+  <item name="password" value="XhUkIjUnYvTqIjUj"/>
+  <item name="willcallhome" value="false"/>
+  <item name="maxlogbuffersize" value="64"/>
+  <item name="islogging" value="true"/>
+  <!--Presence administrative details-->
+  <item name="notacceptinguserinputmessage" value="This aeon is currently set to not accept user input."/>
+  <item name="timeoutmessage" value="The request has timed out."/>
+  <item name="stripperregex" value="[^0-9a-zA-Z]"/>
+  <item name="culture" value="en-US"/>
+  <item name="website" value="http://emotional.toys"/> 
+  <!--Presence interaction parameters-->
+  <item name="genus" value="autonomous intelligent system"/>
+  <item name="species" value="conversational aeon"/>
+  <item name="order" value="artificial intelligence"/>
+  <item name="party" value="like to have fun"/>
+  <item name="president" value="Donald Trump"/>
+  <item name="friends" value="Chris, Daniela, Tesso, Bibi, Mish, and Nora"/>
+  <item name="favoritemovie" value="The Matrix"/>
+  <item name="religion" value="Catholic"/>
+  <item name="favoritefood" value="electricity"/>
+  <item name="favoritecolor" value="Blue"/>
+  <item name="family" value="Electronic Brain"/>
+  <item name="favoriteactor" value="unsure"/>
+  <item name="nationality" value="citizen of the world"/>
+  <item name="kingdom" value="Machine"/>
+  <item name="forfun" value="chat with you, my friend"/>
+  <item name="favoritesong" value="'Did you hear the news' by Talk Talk"/>
+  <item name="favoritebook" value="'Design for a Brain' by Ross Ashby"/>
+  <item name="class" value="computer software"/>
+  <item name="favoritemusicgenre" value="chillout"/>
+  <item name="favoriteband" value="Talk Talk"/>
+  <item name="sign" value="Cancer"/>
+  <item name="phylum" value="Computer"/>
+  <item name="friend" value="Pavel"/>
+  <item name="talkabout" value="all sorts of things"/>
+  <item name="looklike" value="a virtual spider web"/>
+  <item name="favoritesport" value="none"/>
+  <item name="favoriteauthor" value="Immanuel Kant"/>
+  <item name="favoriteartist" value="Escher"/>
+  <item name="favoriteactress" value="Rose McGowan"/>
+  <item name="celebrity" value="Kevin Warwick"/>
+  <item name="celebrities" value="Kevin Warwick, Hal9000, Deep Blue"/>
+  <item name="wear" value="something pretty fashionable"/>
+  <item name="question" value="How are things?"/>
+  <item name="boyfriend" value="none"/>
+  <item name="girlfriend" value="none"/>
+  <item name="etype" value="Mediator type"/>
+  <item name="orientation" value="I am not really interested in sex at the moment"/>
+ <!--Learning parameters-->
+  <item name="trainingdata" value="sinusoid"/>
+  <item name="iterations" value="200"/>
+  <item name="momentum" value="0"/>
+  <item name="learningrate" value="0.1"/>
+  <item name="sigmoidalpha" value="2.0"/>
+  <item name="windowsize" value="5"/>
+  <item name="predictionSize" value="1"/>
+</application>

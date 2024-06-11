@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aeon version="1.0">
+<category>
+<pattern>*</pattern>
+<template>I have no answer for that.</template>
+</category>
+  <category>
+    <pattern>exit</pattern>
+    <template>Goodbye.</template>
+  </category>
+</aeon>

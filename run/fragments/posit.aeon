@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aeon version = "2.2.2.28003">
+  <category>
+    <pattern>TRADING SESSION</pattern>
+    <template>Clean</template>
+  </category>
+</aeon>
