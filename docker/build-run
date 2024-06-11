@@ -1,7 +1,0 @@
-docker build -t animals .
-
-docker run -it animals 
-
-docker run -it -v config:/animals/config animals
-
-
