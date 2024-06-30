@@ -4,7 +4,7 @@
 
 # aeon
 
-An artificial general intelligence (AGI) program
+An artificial general intelligence (AGI) program, as presence.
 
 What is AGI?
 
