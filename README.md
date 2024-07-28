@@ -10,7 +10,7 @@ What is AGI?
 
 From Wikipedia:
 
-Artificial general intelligence (AGI) is the ability of an intelligent agent to understand or learn any intellectual task that human beings or other animals can. It is a primary goal of some artificial intelligence research and a common topic in science fiction and futures studies. AGI is also called strong AI, full AI, or general intelligent action, although some academic sources reserve the term "strong AI" for computer programs that experience sentience or consciousness.
+Artificial general intelligence (AGI) is the ability of an agent to understand or learn any intellectual task that human beings or other animals can. It is a primary goal of some artificial intelligence research and a common topic in science fiction and futures studies. AGI is also called strong AI, full AI, or general intelligent action, although some academic sources reserve the term "strong AI" for computer programs that experience sentience or consciousness.
 
 ## What is _an_ AGI?
 
