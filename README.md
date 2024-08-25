@@ -14,7 +14,7 @@ Artificial general intelligence (AGI) is the ability of an agent to understand o
 
 ## What is _an_ AGI?
 
-Artificial general intelligence (AGI) is the ability of an intelligent agent to understand or learn any intellectual task that human beings or other animals can.
+Artificial general intelligence (AGI) is the ability of an intelligent agent to understand or learn any intellectual task that human beings or other animals exhibit.
 
 ## Why _this_ AGI?
 
