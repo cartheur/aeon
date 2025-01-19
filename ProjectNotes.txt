@@ -23,3 +23,5 @@ The Aeon AGI
 28.05.2024
 	1701: Been driving development off-grid to a private effort and will start bringing-across a version for public review. This will take several weeks, I think, given my time needed with the company.
 	1705: Several flaws exist in this version and will uptick a new one shortly.
+19.01.2025
+	1650: Working to engage "learning mode" in this runtime. Needed to push the limits in a public release.
