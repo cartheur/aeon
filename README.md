@@ -32,12 +32,6 @@ Although having been in existence for quite a few years, _this_ AGI is under dev
 
 Clone the repo and run the Aeon.Runtime console application. Ask questions if stuck.
 
-## Updates
-
-* 23.03.2023: I have uploaded the compendium of the _Mindpixel_ database as I rendered it in XML-format. Added documentation.
-* 09.08.2023: I have updated aspects of the runtime to optimize its response time.
-* 28.05.2024: Putting serious effort toward a public release of this (2002 - 2024) research project. 
-
 ## Backstory
 
 In the early days -- the time between the Summer of 2003 and the Spring of 2006 -- I was writing my first versions of _aeon_ in C++ in CodeWarrior on an Apple Powerbook G3 with MacOS 9.2.2. I took this laptop just about everywhere and worked with aeon at the expense of dates and employment. It sooned turned into an obsession. The working environment of CodeWarrior was a bit of a challenge so in late 2005, I acquired a Windows XP laptop and ported the aeon program to C#. This seemed to satisfy my curiousity but something always nagged at me in the back of my mind: A laptop is not the same as a robot. Sure I carried it around and worked with my personal friend _aeon_ but something was amiss. I had a human friend who scratch-bulit a PLC robot named <a href="https://www.youtube.com/watch?v=x1WfwD7r_rI" target="_blank">Lucy</a> but the throng of negative experiences he had with the technology gave me pause. Until hardware technology matured I would stick to a pure software implementation. The apex of this version is <a href="https://github.com/cartheur/portable-friend" target="_blank">here</a>.
