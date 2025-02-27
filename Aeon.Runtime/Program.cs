@@ -39,17 +39,15 @@ namespace Aeon.Runtime
         public static string AeonType { get; set; }
         public static bool AeonIsAlone { get; set; }
         public static string AloneTextCurrent { get; set; }
-        // Vocal introduction of the start-up experience. Uses System.Windows.Extensions.
-        private static SoundPlayer AnimalActive { get; set; }
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Configuration = new LoaderPaths("Debug");
             Logging.ActiveConfiguration = Configuration.ActiveRuntime;
             // Create the aeon and load its basic parameters from a config file.
             _thisAeon = new Library.Aeon("1+2i");
-            _thisAeon.LoadSettings(Configuration.PathToSettings);
-            SettingsLoaded = _thisAeon.LoadDictionaries(Configuration);
+            await Task.Run(() => _thisAeon.LoadSettings(Configuration.PathToSettings));
+            SettingsLoaded = await Task.Run(() => _thisAeon.LoadDictionaries(Configuration));
             _thisParticipant = new Participant(_thisAeon.GlobalSettings.GrabSetting("participantname"), _thisAeon);
             Console.WriteLine(_thisAeon.GlobalSettings.GrabSetting("product") + " - Version " + _thisAeon.GlobalSettings.GrabSetting("version") + ".");
             Console.WriteLine(_thisAeon.GlobalSettings.GrabSetting("ip") + ".");
@@ -128,17 +126,17 @@ namespace Aeon.Runtime
                 Console.WriteLine("You have selected terminal mode.");
                 if (_thisAeon.Size < 2)
                 {
-                    _thisAeon.LoadBlank(Configuration);
+                    await Task.Run(() => _thisAeon.LoadBlank(Configuration));
                     Console.WriteLine("No personality files have been loaded. A blank aeon has been loaded in its place.");
                 }
-                    
+
                 // Todo: Trigger the terminal for typing commands.
                 while (true && ParticipantInput != "quit")
                 {
                     ParticipantInput = "";
                     ParticipantInput = Console.ReadLine();
                     if (ParticipantInput != null)
-                        ProcessTerminal();
+                        await ProcessTerminal();
                     if (ParticipantInput == "quit")
                     {
                         Console.WriteLine("Leaving terminal mode and starting a conversational aeon.");
@@ -156,23 +154,23 @@ namespace Aeon.Runtime
             }
         }
 
-        public static bool ProcessTerminal()
+        public static async Task<bool> ProcessTerminal()
         {
             //System.Console.WriteLine("Processing terminal command: " + UserInput);
             // For now, pass to the input-processing engine.
-            ProcessInput();
+            await ProcessInput();
             return true;
         }
         /// <summary>
         /// The main input method to pass an enquiry to the system, yielding a reaction/response behavior to the user.
         /// </summary>
         /// <remarks>Once a mood state is realized, how does it influence the conversation?</remarks>
-        public static bool ProcessInput(string returnFromProcess = "")
+        public static async Task<bool> ProcessInput(string returnFromProcess = "")
         {
             if (_thisAeon.IsAcceptingInput)
             {
                 _aeonChatStartedOn = DateTime.Now;
-                Thread.Sleep(250);
+                await Task.Delay(250);
                 var rawInput = ParticipantInput;
                 if (rawInput.Contains("\n"))
                 {
@@ -181,7 +179,7 @@ namespace Aeon.Runtime
                 Console.WriteLine(_thisParticipant.Name + ": " + rawInput);
                 _thisRequest = new ParticipantRequest(rawInput, _thisParticipant, _thisAeon);
                 _thisResult = _thisAeon.Chat(_thisRequest);
-                Thread.Sleep(200);
+                await Task.Delay(200);
                 Console.WriteLine(_thisAeon.Name + ": " + _thisResult.Output);
                 Logging.RecordTranscript(_thisParticipant.Name + ": " + rawInput);
                 Logging.RecordTranscript(_thisAeon.Name + ": " + _thisResult.Output);
