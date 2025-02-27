@@ -24,7 +24,6 @@ namespace Aeon.Runtime
         private static DateTime _aeonChatStartedOn;
         private static TimeSpan _aeonChatDuration;
         private static Thread _aeonAloneThread;
-        private static Thread _moodicThread;
         // Aeon's status.
         private static bool SettingsLoaded { get; set; }
         private static bool AeonLoaded { get; set; }
@@ -114,8 +113,7 @@ namespace Aeon.Runtime
             {
                 try
                 {
-                    AnimalActive = new SoundPlayer(Configuration.ActiveRuntime + @"\sounds\" + StartUpThemeFile);
-                    AnimalActive.Play();
+                    // Add modern play code here.
                 }
                 catch (Exception ex)
                 {
