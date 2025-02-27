@@ -188,6 +188,10 @@ namespace Aeon.Runtime
                 _thisAeon.AeonAloneStartedOn = DateTime.Now;
                 AeonIsAlone = false;
                 AeonResult = _thisResult.Output;// Here is what the aeon has said.
+                if (LearningModeActive)
+                {
+                    await LearningMode();
+                }
                 if (ParticipantInput == "exit")
                 {
                     Console.WriteLine("Detected 'exit'...quitting the application.");
