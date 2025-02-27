@@ -23,8 +23,9 @@ namespace Aeon.Library.Builder
 
             string fileName = Path.Combine(personalityDirectory, "config.aeon");
             XDocument xmlDocument = new XDocument(
-                new XElement("Config",
-                    new XElement("Data", input)
+                new XElement("category",
+                    new XElement("pattern", input),
+                    new XElement("template", "I'm sorry, I don't understand that.")
                 )
             );
 
