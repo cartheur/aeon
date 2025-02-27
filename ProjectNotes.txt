@@ -25,3 +25,5 @@ The Aeon AGI
 	1705: Several flaws exist in this version and will uptick a new one shortly.
 19.01.2025
 	1650: Working to engage "learning mode" in this runtime. Needed to push the limits in a public release.
+27.02.2025
+	1413: Learning mode is active for this code.
