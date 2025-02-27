@@ -6,17 +6,17 @@ namespace Aeon.Library.Builder
 {
     public class ConfigNew
     {
-        private readonly string _runtimeDirectory;
+        private readonly LoaderPaths _runtimeDirectory;
 
-        public ConfigNew(string runtimeDirectory)
+        public ConfigNew(LoaderPaths runtimeDirectory)
         {
             _runtimeDirectory = runtimeDirectory;
         }
         // The templateInput field has a variety of possibilities, given the context of the language.
         // 
-        public async Task CreateAeonFile(string patternInput, string templateInput, int instance)
+        public async Task<string> CreateAeonFile(string patternInput, string templateInput, int instance)
         {
-            string personalityDirectory = Path.Combine(_runtimeDirectory, "personality");
+            string personalityDirectory = Path.Combine(_runtimeDirectory.PathToDefaultPersonality);
             if (!Directory.Exists(personalityDirectory))
             {
                 Directory.CreateDirectory(personalityDirectory);
@@ -46,6 +46,7 @@ namespace Aeon.Library.Builder
             );
 
             await Task.Run(() => xmlDocument.Save(fileName));
+            return fileName;
         }
     }
 }

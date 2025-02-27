@@ -14,12 +14,14 @@ namespace Aeon.Runtime
     {
         // Configuration of the application.
         public static LoaderPaths Configuration;
+        public static AeonLoader AeonLoader;
         public static bool StartUpTheme { get; set; }
         public static string StartUpThemeFile { get; set; }
         public static bool TerminalMode { get; set; }
         public static Process TerminalProcess { get; set; }
         // Aeon's personal procedural items.
         private static Library.Aeon _thisAeon;
+        private static Library.Builder.ConfigNew _thisConfig;
         private static Participant _thisParticipant;
         private static ParticipantRequest _thisRequest;
         static ParticipantResult _thisResult;
@@ -85,6 +87,10 @@ namespace Aeon.Runtime
             SharedFunctions.ThisAeon = _thisAeon;
             // Utilize the correct settings based on the aeon personality.
             if (_thisAeon.Name == "Rhodo" && SettingsLoaded)
+            {
+                AeonLoaded = _thisAeon.LoadPersonality(Configuration);
+                _thisConfig = new Library.Builder.ConfigNew(Configuration);
+            }
                 AeonLoaded = _thisAeon.LoadPersonality(Configuration);
             if (_thisAeon.Name == "Blank" && SettingsLoaded)
                 AeonLoaded = _thisAeon.LoadBlank(Configuration);
@@ -190,7 +196,12 @@ namespace Aeon.Runtime
                 AeonResult = _thisResult.Output;// Here is what the aeon has said.
                 if (LearningModeActive)
                 {
-                    await LearningMode();
+                    if (ParticipantInput.Contains("learn"))
+                    {
+                        Console.WriteLine("Detected 'learn'...entering learning mode.");
+                        Thread.Sleep(2000);
+                        await LearningMode();
+                    }
                 }
                 if (ParticipantInput == "exit")
                 {
@@ -211,8 +222,10 @@ namespace Aeon.Runtime
         static async Task LearningMode()
         {
             // Learning mode.
-            // 1. Make a file or assembly with the addition.
+            // 1. Make a config file (or assembly) with the addition.
+            var filename = await _thisConfig.CreateAeonFile("Hello", "Hello, how can I help you today?", 1);
             // 2. Reload the file or assembly such that it is available for the next interaction.
+            AeonLoader.LoadAeonCodeFile(filename);
             // 3. Add the new file or assembly to the aeon's memory.
             await Task.CompletedTask;
         }
