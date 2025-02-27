@@ -22,7 +22,7 @@ namespace Aeon.Runtime
         private static Library.Aeon _thisAeon;
         private static Participant _thisParticipant;
         private static ParticipantRequest _thisRequest;
-        private static ParticipantResult _thisResult;
+        static ParticipantResult Result { get; set; }
         private static DateTime _aeonChatStartedOn;
         private static TimeSpan _aeonChatDuration;
         private static Thread _aeonAloneThread;
@@ -41,6 +41,7 @@ namespace Aeon.Runtime
         public static string AeonType { get; set; }
         public static bool AeonIsAlone { get; set; }
         public static string AloneTextCurrent { get; set; }
+        public static ParticipantResult Result1 { get => Result; set => Result = value; }
 
         static async Task Main(string[] args)
         {
@@ -156,18 +157,13 @@ namespace Aeon.Runtime
             }
         }
 
-        public static async Task<bool> ProcessTerminal()
+        static async Task<bool> ProcessTerminal()
         {
-            //System.Console.WriteLine("Processing terminal command: " + UserInput);
-            // For now, pass to the input-processing engine.
             await ProcessInput();
             return true;
         }
-        /// <summary>
-        /// The main input method to pass an enquiry to the system, yielding a reaction/response behavior to the user.
-        /// </summary>
-        /// <remarks>Once a mood state is realized, how does it influence the conversation?</remarks>
-        public static async Task<bool> ProcessInput(string returnFromProcess = "")
+        // Once a mood state is realized, how does it influence the conversation?
+        static async Task<bool> ProcessInput(string returnFromProcess = "")
         {
             if (_thisAeon.IsAcceptingInput)
             {
@@ -180,18 +176,18 @@ namespace Aeon.Runtime
                 }
                 Console.WriteLine(_thisParticipant.Name + ": " + rawInput);
                 _thisRequest = new ParticipantRequest(rawInput, _thisParticipant, _thisAeon);
-                _thisResult = _thisAeon.Chat(_thisRequest);
+                Result = _thisAeon.Chat(_thisRequest);
                 await Task.Delay(200);
-                Console.WriteLine(_thisAeon.Name + ": " + _thisResult.Output);
+                Console.WriteLine(_thisAeon.Name + ": " + Result.Output);
                 Logging.RecordTranscript(_thisParticipant.Name + ": " + rawInput);
-                Logging.RecordTranscript(_thisAeon.Name + ": " + _thisResult.Output);
+                Logging.RecordTranscript(_thisAeon.Name + ": " + Result.Output);
                 // Record performance vectors for the result.
                 _aeonChatDuration = DateTime.Now - _aeonChatStartedOn;
                 Logging.WriteLog("Result search was conducted in: " + _aeonChatDuration.Seconds + @"." + _aeonChatDuration.Milliseconds + " seconds", Logging.LogType.Information, Logging.LogCaller.AeonRuntime);
                 _thisAeon.AeonAloneTimer.Enabled = true;
                 _thisAeon.AeonAloneStartedOn = DateTime.Now;
                 AeonIsAlone = false;
-                AeonOutputDialogue = _thisResult.Output;
+                AeonOutputDialogue = Result.Output;
                 if (ParticipantInput == "exit")
                 {
                     Console.WriteLine("Detected 'exit'...quitting the application.");
@@ -207,12 +203,16 @@ namespace Aeon.Runtime
             return true;
         }
 
-        #region Social features
-        /// <summary>
-        /// The method to speak the alone message.
-        /// </summary>
-        /// <param name="alone">if set to <c>true</c> [alone].</param>
-        protected static void AloneMessage(bool alone)
+        #region Learning mode feature
+        static async Task LearningMode()
+        {
+            // Learning mode is active.
+            // This is a placeholder for the learning mode feature.
+        }
+        #endregion
+
+        #region Alone feature
+        static void AloneMessage(bool alone)
         {
             if (alone)
             {
@@ -223,10 +223,7 @@ namespace Aeon.Runtime
                 }
             }
         }
-        /// <summary>
-        /// Check if Aeon is in the state of being alone.
-        /// </summary>
-        public static void CheckIfAeonIsAlone()
+        static void CheckIfAeonIsAlone()
         {
             if (_thisAeon.IsAlone())
             {
@@ -236,11 +233,11 @@ namespace Aeon.Runtime
                 _thisAeon.AeonAloneStartedOn = DateTime.Now;
             }
         }
-        private static void AloneEvent(object source, ElapsedEventArgs e)
+        static void AloneEvent(object source, ElapsedEventArgs e)
         {
             CheckIfAeonIsAlone();
         }
-        private static void AeonAloneText()
+        static void AeonAloneText()
         {
             AloneMessageVariety = StaticRandom.Next(1, 1750);
             if (AloneMessageVariety.IsBetween(1, 250))
