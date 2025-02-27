@@ -186,7 +186,7 @@ namespace Aeon.Runtime
                 _thisAeon.AeonAloneTimer.Enabled = true;
                 _thisAeon.AeonAloneStartedOn = DateTime.Now;
                 AeonIsAlone = false;
-                AeonOutputDialogue = _thisResult.Output;
+                AeonResult = _thisResult.Output;
                 if (ParticipantInput == "exit")
                 {
                     Console.WriteLine("Detected 'exit'...quitting the application.");
