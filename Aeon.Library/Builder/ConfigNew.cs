@@ -13,7 +13,7 @@ namespace Aeon.Library.Builder
             _runtimeDirectory = runtimeDirectory;
         }
 
-        public void CreateAeonFile(string input)
+        public async Task CreateAeonFile(string patternInput, string templateInput)
         {
             string personalityDirectory = Path.Combine(_runtimeDirectory, "personality");
             if (!Directory.Exists(personalityDirectory))
@@ -24,12 +24,12 @@ namespace Aeon.Library.Builder
             string fileName = Path.Combine(personalityDirectory, "config.aeon");
             XDocument xmlDocument = new XDocument(
                 new XElement("category",
-                    new XElement("pattern", input),
-                    new XElement("template", "I'm sorry, I don't understand that.")
+                    new XElement("pattern", patternInput),
+                    new XElement("template", templateInput)
                 )
             );
 
-            xmlDocument.Save(fileName);
+            await Task.Run(() => xmlDocument.Save(fileName));
         }
     }
 }
