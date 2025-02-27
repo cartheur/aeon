@@ -30,4 +30,5 @@ The Aeon AGI
 	1432: Project is clean.
 	1518: Placeholders and trigger coded.
 	1640: A template for learning mode is ready for grooming and testing.
+	1657: Test confirmation of learning written. A shadow console might be a great idea.
 	
