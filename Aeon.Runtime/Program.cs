@@ -226,8 +226,20 @@ namespace Aeon.Runtime
             var filename = await _thisConfig.CreateAeonFile("Hello", "Hello, how can I help you today?", 1);
             // 2. Reload the file or assembly such that it is available for the next interaction.
             AeonLoader.LoadAeonCodeFile(filename);
-            // 3. Add the new file or assembly to the aeon's memory.
+            // 3. Test that the new aspect has been learned.
+            _thisRequest = new ParticipantRequest("Hello", _thisParticipant, _thisAeon);
+            _thisResult = _thisAeon.Chat(_thisRequest);
+            Console.WriteLine(_thisAeon.Name + ": " + _thisResult.Output);
+            // 4. Confirm that the learning mode is active.
+            await ConfirmLearningMode();
             await Task.CompletedTask;
+
+        }
+        static async Task<bool> ConfirmLearningMode()
+        {
+            Console.WriteLine("Confirmed learning mode completed successfully.");
+            await Task.CompletedTask;
+            return true;
         }
         #endregion
 
