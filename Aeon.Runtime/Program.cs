@@ -28,6 +28,7 @@ namespace Aeon.Runtime
         private static Thread _aeonAloneThread;
         // Aeon's status.
         private static bool SettingsLoaded { get; set; }
+        static bool LearningModeActive { get; set; }
         private static bool AeonLoaded { get; set; }
         public static string ParticipantInput { get; set; }
         public static string AeonResult { get; set; }
@@ -51,6 +52,7 @@ namespace Aeon.Runtime
             await Task.Run(() => _thisAeon.LoadSettings(Configuration.PathToSettings));
             SettingsLoaded = await Task.Run(() => _thisAeon.LoadDictionaries(Configuration));
             _thisParticipant = new Participant(_thisAeon.GlobalSettings.GrabSetting("participantname"), _thisAeon);
+            LearningModeActive = Convert.ToBoolean(_thisAeon.GlobalSettings.GrabSetting("learningmodeactive"));
             Console.WriteLine(_thisAeon.GlobalSettings.GrabSetting("product") + " - Version " + _thisAeon.GlobalSettings.GrabSetting("version") + ".");
             Console.WriteLine(_thisAeon.GlobalSettings.GrabSetting("ip") + ".");
             Console.WriteLine(_thisAeon.GlobalSettings.GrabSetting("claim") + ".");
