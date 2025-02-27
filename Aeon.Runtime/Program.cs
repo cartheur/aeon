@@ -168,7 +168,7 @@ namespace Aeon.Runtime
             {
                 _aeonChatStartedOn = DateTime.Now;
                 await Task.Delay(250);
-                var rawInput = ParticipantInput;
+                var rawInput = ParticipantInput;// Here in what is being said.
                 if (rawInput.Contains("\n"))
                 {
                     rawInput = rawInput.TrimEnd('\n');
@@ -186,7 +186,7 @@ namespace Aeon.Runtime
                 _thisAeon.AeonAloneTimer.Enabled = true;
                 _thisAeon.AeonAloneStartedOn = DateTime.Now;
                 AeonIsAlone = false;
-                AeonResult = _thisResult.Output;
+                AeonResult = _thisResult.Output;// Here is what the aeon has said.
                 if (ParticipantInput == "exit")
                 {
                     Console.WriteLine("Detected 'exit'...quitting the application.");
