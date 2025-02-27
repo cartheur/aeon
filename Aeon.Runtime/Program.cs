@@ -22,7 +22,7 @@ namespace Aeon.Runtime
         private static Library.Aeon _thisAeon;
         private static Participant _thisParticipant;
         private static ParticipantRequest _thisRequest;
-        static ParticipantResult Result { get; set; }
+        static ParticipantResult _thisResult;
         private static DateTime _aeonChatStartedOn;
         private static TimeSpan _aeonChatDuration;
         private static Thread _aeonAloneThread;
@@ -30,7 +30,7 @@ namespace Aeon.Runtime
         private static bool SettingsLoaded { get; set; }
         private static bool AeonLoaded { get; set; }
         public static string ParticipantInput { get; set; }
-        public static string AeonOutputDialogue { get; set; }
+        public static string AeonResult { get; set; }
         public static string AeonOutputDebug { get; set; }
         public static int AloneMessageOutput { get; set; }
         public static int PreviousAloneMessageOutput { get; set; }
@@ -41,7 +41,6 @@ namespace Aeon.Runtime
         public static string AeonType { get; set; }
         public static bool AeonIsAlone { get; set; }
         public static string AloneTextCurrent { get; set; }
-        public static ParticipantResult Result1 { get => Result; set => Result = value; }
 
         static async Task Main(string[] args)
         {
@@ -176,18 +175,18 @@ namespace Aeon.Runtime
                 }
                 Console.WriteLine(_thisParticipant.Name + ": " + rawInput);
                 _thisRequest = new ParticipantRequest(rawInput, _thisParticipant, _thisAeon);
-                Result = _thisAeon.Chat(_thisRequest);
+                _thisResult = _thisAeon.Chat(_thisRequest);
                 await Task.Delay(200);
-                Console.WriteLine(_thisAeon.Name + ": " + Result.Output);
+                Console.WriteLine(_thisAeon.Name + ": " + _thisResult.Output);
                 Logging.RecordTranscript(_thisParticipant.Name + ": " + rawInput);
-                Logging.RecordTranscript(_thisAeon.Name + ": " + Result.Output);
+                Logging.RecordTranscript(_thisAeon.Name + ": " + _thisResult.Output);
                 // Record performance vectors for the result.
                 _aeonChatDuration = DateTime.Now - _aeonChatStartedOn;
                 Logging.WriteLog("Result search was conducted in: " + _aeonChatDuration.Seconds + @"." + _aeonChatDuration.Milliseconds + " seconds", Logging.LogType.Information, Logging.LogCaller.AeonRuntime);
                 _thisAeon.AeonAloneTimer.Enabled = true;
                 _thisAeon.AeonAloneStartedOn = DateTime.Now;
                 AeonIsAlone = false;
-                AeonOutputDialogue = Result.Output;
+                AeonOutputDialogue = _thisResult.Output;
                 if (ParticipantInput == "exit")
                 {
                     Console.WriteLine("Detected 'exit'...quitting the application.");
