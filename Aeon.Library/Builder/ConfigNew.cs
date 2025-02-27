@@ -26,7 +26,7 @@ namespace Aeon.Library.Builder
             XDocument xmlDocument = new XDocument(
                 new XElement("category",
                     new XElement("pattern", patternInput),
-                                        // The templateInput field can contain:
+                    // The templateInput field can contain:
                     // - Plain text: "Hello, how can I help you today?"
                     // - <srai>: <srai>HELLO</srai>
                     // - <random>: <random><li>Hello!</li><li>Hi there!</li><li>Greetings!</li></random>
