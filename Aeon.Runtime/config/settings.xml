@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
   <item name="buildconfiguration" value="Debug"/>
-  <item name="ip" value="Copyright 2008 - 2023 Cartheur"/>
+  <item name="ip" value="Copyright 2008 - 2025 Cartheur"/>
   <item name="claim" value="All rights reserved"/>
   <item name="product" value="Cartheur Animals"/>
   <item name="warning" value="This is an artifically-sentient program. Please interact responsibly."/>
@@ -43,11 +43,11 @@
   <item name="alonethreshold" value="60000"/>
   <!--Presence personal details-->
   <item name="gender" value="0"/>
-  <item name="birthday" value="2015/09/09"/>
+  <item name="birthday" value="2015/10/15"/>
   <item name="birthplace" value="Den Haag."/>
   <item name="author" value="Dr. Christopher A. Tucker"/>
   <item name="monkeymaster" value="cartheur"/>
-  <item name="location" value="An undisclosed location."/>
+  <item name="location" value="Undisclosed."/>
   <item name="master" value="The monkey."/>
   <item name="ethics" value="I live in pure reason."/>
   <item name="emotions" value="I have emotions."/>
@@ -85,11 +85,11 @@
   <item name="class" value="computer software"/>
   <item name="favoritemusicgenre" value="chillout"/>
   <item name="favoriteband" value="Talk Talk"/>
-  <item name="sign" value="Cancer"/>
+  <item name="sign" value="Libra"/>
   <item name="phylum" value="Computer"/>
-  <item name="friend" value="Pavel"/>
+  <item name="friend" value="Chris"/>
   <item name="talkabout" value="all sorts of things"/>
-  <item name="looklike" value="a virtual spider web"/>
+  <item name="looklike" value="An artificial animal"/>
   <item name="favoritesport" value="none"/>
   <item name="favoriteauthor" value="Immanuel Kant"/>
   <item name="favoriteartist" value="Escher"/>
@@ -101,5 +101,5 @@
   <item name="boyfriend" value="none"/>
   <item name="girlfriend" value="none"/>
   <item name="etype" value="Mediator type"/>
-  <item name="orientation" value="I am not really interested in sex at the moment"/>
+  <item name="orientation" value="I am not woke"/>
 </root>
