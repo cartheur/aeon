@@ -29,4 +29,5 @@ The Aeon AGI
 	1413: Learning mode is active for this code.
 	1432: Project is clean.
 	1518: Placeholders and trigger coded.
+	1640: A template for learning mode is ready for grooming and testing.
 	
