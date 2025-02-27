@@ -35,7 +35,7 @@ namespace Aeon.Runtime
         public static int AloneMessageOutput { get; set; }
         public static int PreviousAloneMessageOutput { get; set; }
         public static int AloneMessageVariety { get; set; }
-        public static string LastOutput { get; set; }
+        static string LastOutput { get; set; }
         private static string EmotiveEquation { get; set; }
         public int AeonSize { get; set; }
         public static string AeonType { get; set; }
