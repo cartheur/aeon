@@ -14,7 +14,7 @@ namespace Aeon.Library.Builder
         }
         // The templateInput field has a variety of possibilities, given the context of the language.
         // 
-        public async Task CreateAeonFile(string patternInput, string templateInput)
+        public async Task CreateAeonFile(string patternInput, string templateInput, int instance)
         {
             string personalityDirectory = Path.Combine(_runtimeDirectory, "personality");
             if (!Directory.Exists(personalityDirectory))
@@ -22,7 +22,7 @@ namespace Aeon.Library.Builder
                 Directory.CreateDirectory(personalityDirectory);
             }
 
-            string fileName = Path.Combine(personalityDirectory, "config.aeon");
+            string fileName = Path.Combine(personalityDirectory, + instance + "-config.aeon");
             XDocument xmlDocument = new XDocument(
                 new XElement("category",
                     new XElement("pattern", patternInput),
