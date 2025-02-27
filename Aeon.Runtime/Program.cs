@@ -212,6 +212,7 @@ namespace Aeon.Runtime
         {
             // Learning mode is active.
             // This is a placeholder for the learning mode feature.
+            await Task.CompletedTask;
         }
         #endregion
 
