@@ -24,7 +24,7 @@
   <item name="predicatesfile" value="predicates.xml"/>
   <item name="substitutionsfile" value="substitutions.xml"/>
   <item name="personsubstitutionsfile" value="personsubstitutions.xml"/>
-  <item name="startuptheme" value="true"/>
+  <item name="startuptheme" value="false"/>
   <item name="startupthemefile" value="startup-theme.wav"/>
   <item name="emotiveequation" value="p(x)= 1 + 3x + x^2 + 2x^3"/><!--v.1.0: Limited to a third-order (maximum four term, minimum two term) polynomial expression and adding between terms.-->
   <item name="timeout" value="15000"/><!-- Default is 120000 -->
