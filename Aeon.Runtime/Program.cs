@@ -180,7 +180,6 @@ namespace Aeon.Runtime
                 Console.WriteLine(_thisAeon.Name + ": " + _thisResult.Output);
                 Logging.RecordTranscript(_thisParticipant.Name + ": " + rawInput);
                 Logging.RecordTranscript(_thisAeon.Name + ": " + _thisResult.Output);
-                // Record performance vectors for the result.
                 _aeonChatDuration = DateTime.Now - _aeonChatStartedOn;
                 Logging.WriteLog("Result search was conducted in: " + _aeonChatDuration.Seconds + @"." + _aeonChatDuration.Milliseconds + " seconds", Logging.LogType.Information, Logging.LogCaller.AeonRuntime);
                 _thisAeon.AeonAloneTimer.Enabled = true;
