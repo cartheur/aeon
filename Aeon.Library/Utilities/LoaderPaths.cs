@@ -117,7 +117,7 @@ namespace Aeon.Library
         {
             get
             {
-                return Path.Combine(ActiveRuntime, Path.Combine("config", "Settings.xml"));
+                return Path.Combine(ActiveRuntime, Path.Combine("config", "settings.xml"));
             }
         }
 
