@@ -210,8 +210,10 @@ namespace Aeon.Runtime
         #region Learning mode feature
         static async Task LearningMode()
         {
-            // Learning mode is active.
-            // This is a placeholder for the learning mode feature.
+            // Learning mode.
+            // 1. Make a file or assembly with the addition.
+            // 2. Reload the file or assembly such that it is available for the next interaction.
+            // 3. Add the new file or assembly to the aeon's memory.
             await Task.CompletedTask;
         }
         #endregion
