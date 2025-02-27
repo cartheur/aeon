@@ -171,7 +171,7 @@ namespace Aeon.Runtime
                 _aeonChatStartedOn = DateTime.Now;
                 await Task.Delay(250);
                 var rawInput = ParticipantInput;// Here in what is being said.
-                if (rawInput.Contains("\n"))
+                if (rawInput.Contains('\n'))
                 {
                     rawInput = rawInput.TrimEnd('\n');
                 }
