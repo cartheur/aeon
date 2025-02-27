@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Windows.Extensions" Version="7.0.0" />
+    <PackageReference Include="System.Windows.Extensions" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,14 +16,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="personality\mindpixel\" />
-    <Folder Include="personality\blank\" />
-    <Folder Include="personality\libraries\" />
-    <Folder Include="personality\fragments\" />
-    <Folder Include="personality\update\" />
-    <Folder Include="personality\rhodo\" />
-    <Folder Include="personality\reductions\" />
-    <Folder Include="sounds\" />
+    <None Update="config\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="personality\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
