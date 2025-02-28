@@ -26,8 +26,8 @@ namespace Aeon.Library
         /// <param name="participantRequest">The request sent by the participant.</param>
         /// <param name="participantResult">The result to be sent back to the participant.</param>
         /// <param name="templateNode">The node to be processed.</param>
-        public Formal(Aeon aeon, Participant thisUser, ParticipantQuery query, ParticipantRequest participantRequest, ParticipantResult participantResult, XmlNode templateNode)
-            : base(aeon, thisUser, query, participantRequest, participantResult, templateNode)
+        public Formal(Aeon aeon, Participant thisParticipant, ParticipantQuery participantQuery, ParticipantRequest participantRequest, ParticipantResult participantResult, XmlNode templateNode)
+            : base(aeon, thisParticipant, participantQuery, participantRequest, participantResult, templateNode)
         {
         }
         /// <summary>

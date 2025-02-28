@@ -15,7 +15,7 @@ namespace Aeon.Library
         {
             if (TemplateNode.Name.ToLower() == "system")
             {
-                return "Override default tag implementation works correctly";
+                return "Override default tag implementation works correctly.";
             }
             return string.Empty;
         }

@@ -16,11 +16,11 @@ namespace Aeon.Library
         /// <param name="aeon">The aeon involved in this request.</param>
         /// <param name="thisParticipant">The user making the request.</param>
         /// <param name="participantQuery">The query that originated this node.</param>
-        /// <param name="userRequest">The request sent by the user.</param>
-        /// <param name="userResult">The result to be sent back to the user.</param>
+        /// <param name="participantRequest">The request sent by the user.</param>
+        /// <param name="participantResult">The result to be sent back to the user.</param>
         /// <param name="templateNode">The node to be processed.</param>
-        public Script(Aeon aeon, Participant thisParticipant, ParticipantQuery participantQuery, ParticipantRequest userRequest, ParticipantResult userResult, XmlNode templateNode)
-            : base(aeon, thisParticipant, participantQuery, userRequest, userResult, templateNode)
+        public Script(Aeon aeon, Participant thisParticipant, ParticipantQuery participantQuery, ParticipantRequest participantRequest, ParticipantResult participantResult, XmlNode templateNode)
+            : base(aeon, thisParticipant, participantQuery, participantRequest, participantResult, templateNode)
         {
         }
         /// <summary>
