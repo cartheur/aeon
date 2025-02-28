@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using System.Xml.Linq;
 
 namespace Aeon.Library.Builder
@@ -14,7 +12,7 @@ namespace Aeon.Library.Builder
         }
         // The templateInput field has a variety of possibilities, given the context of the language.
         // 
-        public async Task<string> CreateAeonFile(string patternInput, string templateInput, int instance)
+        public string CreateAeonFile(string patternInput, string templateInput, int instance)
         {
             string personalityDirectory = Path.Combine(_runtimeDirectory.PathToLearnedFiles);
             if (!Directory.Exists(personalityDirectory))
@@ -45,7 +43,7 @@ namespace Aeon.Library.Builder
                 )
             );
 
-            await Task.Run(() => xmlDocument.Save(fileName));
+            xmlDocument.Save(fileName);
             return fileName;
         }
     }
