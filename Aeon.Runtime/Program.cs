@@ -223,7 +223,7 @@ namespace Aeon.Runtime
         {
             // Learning mode.
             // 1. Make a config file (or assembly) with the addition.
-            var filename = await _thisConfig.CreateAeonFile("Hello", "Hello, how can I help you today?", 1);
+            var filename = _thisConfig.CreateAeonFile("Hello", "Hello, how can I help you today?", 1);
             // 2. Reload the file or assembly such that it is available for the next interaction.
             AeonLoader.LoadAeonCodeFile(filename);
             // 3. Test that the new aspect has been learned.

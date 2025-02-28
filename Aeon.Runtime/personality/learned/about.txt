@@ -1,0 +1,6 @@
+February 2025
+
+About how learning works in the application
+
+The aeon is triggered by the word 'learn' at the console or spoken (with a command prefix) by which it will add a stored reponse to the phrase having been learned. The file will only be available to the runtime engine and will be forgotten if turned-off, like a real animal.
+
