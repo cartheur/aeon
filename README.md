@@ -14,7 +14,7 @@ Although having been in existence for quite a few years, _this_ AGI is under dev
 
 ### How to use this Program
 
-Clone the repo and run the Aeon.Runtime console application.
+Clone the repo and run the Aeon.Runtime console application. Note that as I am working through the learning mode, the code can appear unstable. This is not the case but this delicate feature is what is the meat of the matter.
 
 ### Backstory
 
