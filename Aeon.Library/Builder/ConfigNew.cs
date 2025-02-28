@@ -11,7 +11,6 @@ namespace Aeon.Library.Builder
             _runtimeDirectory = runtimeDirectory;
         }
         // The templateInput field has a variety of possibilities, given the context of the language.
-        // 
         public string CreateAeonFile(string patternInput, string templateInput, int instance)
         {
             string personalityDirectory = Path.Combine(_runtimeDirectory.PathToLearnedFiles);
@@ -42,7 +41,6 @@ namespace Aeon.Library.Builder
                     new XElement("template", templateInput)
                 )
             );
-
             xmlDocument.Save(fileName);
             return fileName;
         }
