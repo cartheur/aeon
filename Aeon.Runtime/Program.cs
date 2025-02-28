@@ -27,6 +27,7 @@ namespace Aeon.Runtime
         private static DateTime _aeonChatStartedOn;
         private static TimeSpan _aeonChatDuration;
         private static Thread _aeonAloneThread;
+        private static int _instance = 1;
         // Aeon's status.
         private static bool SettingsLoaded { get; set; }
         static bool LearningModeActive { get; set; }
@@ -62,9 +63,7 @@ namespace Aeon.Runtime
             Console.WriteLine(_thisAeon.GlobalSettings.GrabSetting("warning"));
             Thread.Sleep(700);
             Console.WriteLine("------ Begin help ------");
-            Console.WriteLine("If running in terminal mode, type 'quit' to leave and resume an aeon.");
-            Thread.Sleep(700);
-            Console.WriteLine("While in terminal mode, type 'exit' to quit the application entirely.");
+            Console.WriteLine("While in terminal mode, type 'exit' to quit the application.");
             Thread.Sleep(700);
             Console.WriteLine("If you want to dissolve your aeon while in non-terminal mode, type 'aeon quit'.");
             Console.WriteLine("------ End help------");
@@ -195,7 +194,7 @@ namespace Aeon.Runtime
                 AeonIsAlone = false;
                 AeonResult = _thisResult.Output;// Here is what the aeon has said.
                 if (LearningModeActive)
-                {
+                {                       
                     if (ParticipantInput.Contains("learn"))
                     {
                         Console.WriteLine("Detected 'learn'...entering learning mode.");
@@ -223,7 +222,7 @@ namespace Aeon.Runtime
         {
             // Learning mode.
             // 1. Make a config file (or assembly) with the addition.
-            var filename = _thisConfig.CreateAeonFile("Hello", "Hello, how can I help you today?", 1);
+            var filename = _thisConfig.CreateAeonFile("Hello", "Hello, how can I help you today?", _instance);
             // 2. Reload the file or assembly such that it is available for the next interaction.
             AeonLoader.LoadAeonCodeFile(filename);
             // 3. Test that the new aspect has been learned.
@@ -239,6 +238,7 @@ namespace Aeon.Runtime
         {
             Console.WriteLine("Confirmed learning mode completed successfully.");
             await Task.CompletedTask;
+            _instance++;
             return true;
         }
         #endregion
