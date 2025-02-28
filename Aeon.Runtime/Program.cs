@@ -221,7 +221,7 @@ namespace Aeon.Runtime
         static async Task LearningMode()
         {
             // Learning mode.
-            // 1. Make a config file (or assembly) with the addition.
+            // 1. Make a config file (or assembly) with the addition. Change the pattern input to someething meaningful.
             var filename = _thisConfig.CreateAeonFile("Hello", "Hello, how can I help you today?", _instance);
             // 2. Reload the file or assembly such that it is available for the next interaction.
             AeonLoader.LoadAeonCodeFile(filename);
