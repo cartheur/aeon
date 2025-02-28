@@ -78,6 +78,17 @@ namespace Aeon.Library
             }
         }
         /// <summary>
+        /// Gets the path to learned files.
+        /// </summary>
+        public string PathToLearnedFiles
+        {
+            get
+            {
+                var path = Path.Combine(ActiveRuntime, SharedFunctions.ThisAeon.GlobalSettings.GrabSetting("learndirectory"));
+                return new Uri(path).LocalPath;
+            }
+        }
+        /// <summary>
         /// Gets the path to mindpixel.
         /// </summary>
         public string PathToMindpixel

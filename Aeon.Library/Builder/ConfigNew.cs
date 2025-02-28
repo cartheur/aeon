@@ -16,7 +16,7 @@ namespace Aeon.Library.Builder
         // 
         public async Task<string> CreateAeonFile(string patternInput, string templateInput, int instance)
         {
-            string personalityDirectory = Path.Combine(_runtimeDirectory.PathToDefaultPersonality);
+            string personalityDirectory = Path.Combine(_runtimeDirectory.PathToLearnedFiles);
             if (!Directory.Exists(personalityDirectory))
             {
                 Directory.CreateDirectory(personalityDirectory);

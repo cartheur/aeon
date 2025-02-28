@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
   <item name="buildconfiguration" value="Debug"/>
-  <item name="ip" value="Copyright 2008 - 2025 Cartheur"/>
+  <item name="ip" value="Copyright 2003 - 2025 Cartheur"/>
   <item name="claim" value="All rights reserved"/>
   <item name="product" value="Cartheur Animals"/>
   <item name="warning" value="This is an artifically-sentient program. Please interact responsibly."/>
@@ -16,6 +16,7 @@
   <item name="fragmentsdirectory" value="personality/fragments"/>
   <item name="librariesdirectory" value="personality/libraries"/>
   <item name="reductionsdirectory" value="personality/reductions"/>
+  <item name="learndirectory" value="personality/learned"/>
   <item name="mindpixeldirectory" value="personality/mindpixel"/>
   <item name="updatedirectory" value="personality/update"/>
   <item name="logmodelfile" value="log"/>
