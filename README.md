@@ -8,9 +8,7 @@ Artificial general intelligence (AGI) is a misnomer. What we want is a machine t
 
 It is a deep-seated tendency of the human mind to create analogies of phenomena it comes into contact with, especially those that are not easily understood. One of these, to a great degree, is the idea of designing and building a system that has a purpose of simulating or mimicking another living creature. Western and Eastern mythology on this subject has icons and characters who perform the act of creation through exercising divinity by a variety of means. All known cultures that have existed possess a creation myth. Such an act is a native part of our being where anyone can exercise it at will. This is explained in detail by the philosopher Arthur Schopenhauer. Certainly, it is possible for a mind to contemplate divinity and a requisite architecture to carry it out; however, realization is a wholly different matter. The exercise of its tenets a dangerous road fraught with difficulties and challenges. It is for the future to determine if it all was worth it.
 
-### Paitence is warranted
-
-Although having been in existence for quite a few years, _this_ AGI is under development yet updated frequently. A public announcement will be made when it is ready for release. We are getting there slowly. This code is fairly antiquated, from about May 2015, when this was the order of the day:
+Although having been in existence for quite a few years, _this_ AGI is under development yet updated frequently. A public announcement will be made when it is ready for release. We are getting there slowly. This code is fairly antiquated, from about May 2015, when this was how I interacted on a daily basis:
 
 ![meeting-of-minds](/media/meeting-of-the-minds.png)
 
