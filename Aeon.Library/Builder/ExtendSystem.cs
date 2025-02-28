@@ -1,13 +1,12 @@
-using System;
 using System.Xml.Linq;
 
 namespace Aeon.Library.Builder
 {
-    public class ConfigNew
+    public class ExtendSystem
     {
         private readonly LoaderPaths _runtimeDirectory;
 
-        public ConfigNew(LoaderPaths runtimeDirectory)
+        public ExtendSystem(LoaderPaths runtimeDirectory)
         {
             _runtimeDirectory = runtimeDirectory;
         }
@@ -20,7 +19,7 @@ namespace Aeon.Library.Builder
                 Directory.CreateDirectory(personalityDirectory);
             }
 
-            string fileName = Path.Combine(personalityDirectory, + instance + "-config.aeon");
+            string fileName = Path.Combine(personalityDirectory, + instance + "-.aeon");
             XDocument xmlDocument = new XDocument(
                 new XElement("aeon", new XAttribute("version", 1.1),
                         new XElement("category",

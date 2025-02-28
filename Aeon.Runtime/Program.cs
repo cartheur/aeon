@@ -1,5 +1,5 @@
 ﻿//
-// This Program is the intellectual property of Dr. Christopher A. Tucker and Cartheur Research, B.V. Copyright 2003 - 2025, all rights reserved. No rights are explicitly granted to persons who have obtained this source code whose sole purpose is to illustrate the method of attaining AGI. Contact the company at: cartheur.research@pm.me.
+// Copyright 2003 - 2025, all rights reserved. No rights are explicitly granted to persons who have obtained this source code whose sole purpose is to illustrate the method of attaining AGI. Contact m.e. at: cartheur@pm.me.
 //
 // Learning mode is active.
 //
@@ -20,7 +20,7 @@ namespace Aeon.Runtime
         public static Process TerminalProcess { get; set; }
         // Aeon's personal procedural items.
         private static Library.Aeon _thisAeon;
-        private static Library.Builder.ConfigNew _thisConfig;
+        private static Library.Builder.ExtendSystem _thisConfig;
         private static Participant _thisParticipant;
         private static ParticipantRequest _thisRequest;
         static ParticipantResult _thisResult;
@@ -88,7 +88,7 @@ namespace Aeon.Runtime
             if (_thisAeon.Name == "Rhodo" && SettingsLoaded)
             {
                 AeonLoaded = _thisAeon.LoadPersonality(Configuration);
-                _thisConfig = new Library.Builder.ConfigNew(Configuration);
+                _thisConfig = new Library.Builder.ExtendSystem(Configuration);
             }
                 AeonLoaded = _thisAeon.LoadPersonality(Configuration);
             if (_thisAeon.Name == "Blank" && SettingsLoaded)
