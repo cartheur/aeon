@@ -1,11 +1,10 @@
 ﻿//
-// This AGI is the intellectual property of Dr. Christopher A. Tucker and Cartheur Research, B.V. Copyright 2008 - 2025, all rights reserved. No rights are explicitly granted to persons who have obtained this source code whose sole purpose is to illustrate the method of attaining AGI. Contact the company at: cartheur.research@pm.me.
+// This Program is the intellectual property of Dr. Christopher A. Tucker and Cartheur Research, B.V. Copyright 2003 - 2025, all rights reserved. No rights are explicitly granted to persons who have obtained this source code whose sole purpose is to illustrate the method of attaining AGI. Contact the company at: cartheur.research@pm.me.
 //
 // Learning mode is active.
 //
 using Aeon.Library;
 using System.Diagnostics;
-using System.Media;
 using System.Timers;
 
 namespace Aeon.Runtime
@@ -51,6 +50,7 @@ namespace Aeon.Runtime
             Logging.ActiveConfiguration = Configuration.ActiveRuntime;
             // Create the aeon and load its basic parameters from a config file.
             _thisAeon = new Library.Aeon("1+2i");
+            AeonLoader = new AeonLoader(_thisAeon);
             await Task.Run(() => _thisAeon.LoadSettings(Configuration.PathToSettings));
             SettingsLoaded = await Task.Run(() => _thisAeon.LoadDictionaries(Configuration));
             _thisParticipant = new Participant(_thisAeon.GlobalSettings.GrabSetting("participantname"), _thisAeon);
