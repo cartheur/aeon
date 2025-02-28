@@ -1,8 +1,4 @@
-[![GitHub license](https://img.shields.io/github/license/cartheur/aeon)](https://github.com/cartheur/aeon/blob/main/LICENSE)
-![Build status](https://github.com/cartheur/aeon/actions/workflows/dotnet-desktop.yml/badge.svg)
-[![GitHub issues](https://img.shields.io/github/issues/cartheur/aeon)](https://github.com/cartheur/aeon/issues)
-
-# aeon
+## aeon
 
 An artificial general intelligence (AGI) program, as presence.
 
