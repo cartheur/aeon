@@ -27,23 +27,6 @@ namespace Aeon.Library
         /// </summary>
         public static string TranscriptModelFile { get; set; }
         /// <summary>
-        /// Whether or not running tests.
-        /// </summary>
-        public static bool TestExecution { get; set; }
-        /// <summary>
-        /// The path for logging and transcripting when testing.
-        /// </summary>
-        public static string TestingPath { get; set; }
-        /// <summary>
-        /// The file path for executing assemblies. Set <see cref="TestExecution"/> to true and indicate the <see cref="TestingPath"/>.
-        /// </summary>
-        public static string FilePath()
-        {
-            if (TestExecution)
-                return TestingPath;
-            return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\"));
-        }
-        /// <summary>
         /// The type of log to write.
         /// </summary>
         public enum LogType
@@ -266,7 +249,7 @@ namespace Aeon.Library
             }
             LastMessage = message;
 			// Use FilePath() when outside of a test framework.
-            StreamWriter stream = new StreamWriter(FilePath() + @"\logs\" + LogModelFile + @".txt", true);
+            StreamWriter stream = new StreamWriter(Path.Combine(Environment.CurrentDirectory, "logs", LogModelFile + @".txt"));
             switch (logType)
             {
                 case LogType.Error:
@@ -301,7 +284,7 @@ namespace Aeon.Library
         {
             try
             {
-                StreamWriter stream = new StreamWriter(FilePath() + @"\logs\transcript.txt", true);
+                StreamWriter stream = new StreamWriter(Path.Combine(Environment.CurrentDirectory, "logs", TranscriptModelFile + @".txt"));
                 if (!_fileCreated && fileNumber == 0)
                 {
                     // File has not been created previously, write the header to the file.
@@ -312,7 +295,7 @@ namespace Aeon.Library
                 if (fileNumber != 0)
                 {
                     stream.Dispose();
-                    stream = new StreamWriter(FilePath() + @"\logs\transcript" + fileNumber + ".txt", true);
+                    stream = new StreamWriter(Path.Combine(Environment.CurrentDirectory, "logs", TranscriptModelFile + fileNumber + @".txt"));
                     if (!_fileCreated)
                     {
                         stream.WriteLine(@"August 2017" + Environment.NewLine + @"A transcript log for an interative conversation between two aeons, in pursuit of validation / critique of a paper as well as outlining an example of ethical application.");
@@ -343,8 +326,7 @@ namespace Aeon.Library
             }
             try
             {
-				// Use FilePath() when outside of a test framework.
-                StreamWriter stream = new StreamWriter(FilePath() + @"\logs\" + TranscriptModelFile + @".txt", true);
+				StreamWriter stream = new StreamWriter(Path.Combine(Environment.CurrentDirectory, "logs", TranscriptModelFile + @".txt"));
                 stream.WriteLine(DateTime.Now + " - " + message);
                 stream.Close();
             }
@@ -360,7 +342,7 @@ namespace Aeon.Library
         /// <param name="objects">The objects.</param>
         public static void Debug(params object[] objects)
         {
-            StreamWriter stream = new StreamWriter(FilePath() + @"\logs\debugdump.txt", true);
+            StreamWriter stream = new StreamWriter(Path.Combine(Environment.CurrentDirectory, "logs", "debugdump" + @".txt"));
             foreach (object obj in objects)
             {
                 stream.WriteLine(obj);
