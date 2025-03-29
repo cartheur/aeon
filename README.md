@@ -1,5 +1,7 @@
 ## aeon
 
+![CI](https://github.com/cartheur/aeon/actions/workflows/ci.yml/badge.svg)
+
 An artificial general intelligence (AGI) program, as presence.
 
 _What is AGI?_
