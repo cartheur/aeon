@@ -393,3 +393,4 @@ FodyWeavers.xsd
 Aeon.Runtime/logs/log.txt
 Aeon.Runtime/logs/logfile.txt
 Aeon.Runtime/logs/transcript.txt
+.vscode/launch.json
