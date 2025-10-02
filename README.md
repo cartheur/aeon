@@ -6,6 +6,8 @@ A machine intelligence (MI) program, as presence.
 
 ### Getting Started
 
+This program is cross-platform between Windows and Linux. You can set the system with the `#define` pragma. Voice recognition and speech synthesis only works on the Windows platform at the time. However, typing into a terminal will work on both systems. Simply set the `config.xml` tag. 
+
 This program will build but will not run, as it is missing files. You can see the files listed in the Cartheur.Aeon.csproj file. Head over to the [Rhodo](https://github.com/emotional-toys/animals-rhodo-personality) personality repo, clone it, and place these files in the root directory. Then enjoy the Cartheur Aeon experience.
 
 _What is MI?_
