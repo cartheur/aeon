@@ -12,10 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="Cartheur.Animals.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="config\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -74,5 +70,10 @@
     <Content Include="update\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Cartheur.Animals">
+      <HintPath>Cartheur.Animals.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
