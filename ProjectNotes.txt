@@ -1,36 +1,6 @@
-March 2023
+October 2025
 The Aeon AGI
 
-03.03.2023
-	928: I have begun the full implementation of the aeon agi in this project, after several iterations working out the requisites of compass and embodiment as a piece of software that talks to 'as if it is intelligent' is - in reality - not. This document will serve as the background motif of how the architeture and runtime was implemented as I walked through the drawing sheets of my patent. This strategy will become clear as this project log progresses.
-	1551: Some code will be used from older versions of aeon where it becomes required.
-	1750: Today's work of implementation is complete and pushed to the repo.
-06.03.2023
-	1734: Spent the weekend examining the diagrams.
-	1825: Now wish to implement a basic chat instance engine to have the first-draft behavior as a NLP.
-08.03.2023
-	1533: A baseline aeon interpreter is implemented.
-	1539: Next step will be to implement a form or console element to run a conversational aeon.
-	1823: Elemental interpreter implemented and a basic console runtime. Project builds, xext session is testing the code.
-13.03.2023
-	1903: A basic running aeon has been completed.
-	1907: The database refactoring went not well. This is not unexplected, however, I will need time to sort the implication.
-15.03.2023
-	953: Simplifying and refactoring database one step at a time. Created an issue to inform users.
-22.03.2023
-	1126: Database problem is sorted. Adding scope so that the aeon is responsive to basic queries. A continuing effort.
-	1247: Added my contribtution toward the Mindpixel project, compiled in 2005.
-28.05.2024
-	1701: Been driving development off-grid to a private effort and will start bringing-across a version for public review. This will take several weeks, I think, given my time needed with the company.
-	1705: Several flaws exist in this version and will uptick a new one shortly.
-19.01.2025
-	1650: Working to engage "learning mode" in this runtime. Needed to push the limits in a public release.
-27.02.2025
-	1413: Learning mode is active for this code.
-	1432: Project is clean.
-	1518: Placeholders and trigger coded.
-	1640: A template for learning mode is ready for grooming and testing.
-	1657: Test confirmation of learning written. A shadow console might be a great idea.
-28.02.2025
-	1105: Working-out the program via debugging. Using shared machine resources.
+01.10.2025
+	705: Adding a stable version of aeon with a Rhodo personality, on a separate repo.
 	
