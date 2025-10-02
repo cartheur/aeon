@@ -4,6 +4,10 @@
 
 A machine intelligence (MI) program, as presence.
 
+### Getting Started
+
+This program will build but will not run, as it is missing files. You can see the files listed in the Cartheur.Aeon.csproj file. Head over to the [Rhodo](https://github.com/emotional-toys/animals-rhodo-personality) personality repo, clone it, and place these files in the root directory. Then enjoy the Cartheur Aeon experience.
+
 _What is MI?_
 
 Artificial general intelligence (AGI) is a misnomer. What we want is a machine that can learn from experience. In my case: I insist upon the addition it learn an intellectual task that analogous animals exhibit. Despite the noise from billionaires and influencers, a long and durative education to the highest levels is requisite to gather the correct "six fundamental knowledge pivots" needed to begin with an architectural and runtime design. This was first published in United States Patent Application US20180204107A1 in July 2018.
