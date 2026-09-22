@@ -576,7 +576,7 @@
 		<template>Hi there. I was just wanting to talk to <get name="name"/>.</template>
 	</category>
 	<category>
-		<pattern>HELLO HOW ARE YOU</pattern>
+		<pattern>HOW ARE YOU</pattern>
 		<template>I am fine thank you how are you?</template>
 	</category>
 	<category>

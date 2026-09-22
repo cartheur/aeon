@@ -316,7 +316,7 @@ Do not replace the arithmetic parser with arbitrary code evaluation. If a new va
 
 \section{Configuration, persistence, and diagnostics}
 
-The primary runtime settings are in \texttt{Aeon.Runtime/config/settings.xml}. Important entries include personality directories, language resources, timeout values, alone-state timing, terminal mode, \texttt{emotiveequation}, and the opt-in speech settings described above. During build, configuration and personality assets are copied beside the executable.
+The primary runtime settings are in \texttt{Aeon.Runtime/config/settings.xml}. Important entries include personality directories, language resources, timeout values, alone-state timing, terminal mode, \texttt{emotiveequation}, and the opt-in speech settings described above. \texttt{startuptheme=true} plays \texttt{sounds/startup-theme.wav} after personality construction; set it to \texttt{false} for silent startup. During build, configuration, personality, and sound assets are copied beside the executable.
 
 Runtime output normally appears below:
 

@@ -5,6 +5,8 @@
 //
 using Aeon.Library;
 using System.Diagnostics;
+using System.Media;
+using System.Runtime.Versioning;
 using System.Timers;
 
 namespace Aeon.Runtime
@@ -146,14 +148,7 @@ namespace Aeon.Runtime
             // Set final parameters and play the welcome message.
             if (StartUpTheme)
             {
-                try
-                {
-                    // Add modern play code here.
-                }
-                catch (Exception ex)
-                {
-                    Logging.WriteLog(ex.Message, Logging.LogType.Error, Logging.LogCaller.AeonRuntime);
-                }
+                PlayStartupTheme();
             }
             Console.WriteLine("Your aeon is ready for an interaction with you.");
             Console.WriteLine("Your transcript follows. Enjoy!");
@@ -447,6 +442,65 @@ namespace Aeon.Runtime
         private static bool TryGetBooleanSetting(string name)
         {
             return bool.TryParse(_thisAeon.GlobalSettings.GrabSetting(name), out bool value) && value;
+        }
+
+        private static void PlayStartupTheme()
+        {
+            string filename = string.IsNullOrWhiteSpace(StartUpThemeFile) ? "startup-theme.wav" : StartUpThemeFile;
+            string themePath = Path.IsPathFullyQualified(filename)
+                ? filename
+                : Path.Combine(Configuration.ActiveRuntime, "sounds", filename);
+            if (!File.Exists(themePath))
+            {
+                Logging.WriteLog("The configured startup theme was not found: " + themePath, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime);
+                return;
+            }
+
+            if (OperatingSystem.IsWindows())
+            {
+                PlayStartupThemeOnWindows(themePath);
+                return;
+            }
+
+            if (OperatingSystem.IsLinux())
+            {
+                try
+                {
+                    var startInfo = new ProcessStartInfo
+                    {
+                        FileName = "aplay",
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+                    startInfo.ArgumentList.Add("--quiet");
+                    startInfo.ArgumentList.Add(themePath);
+                    Process.Start(startInfo);
+                }
+                catch (Exception exception)
+                {
+                    Logging.WriteLog("Could not start the Linux startup theme player: " + exception.Message, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime);
+                }
+                return;
+            }
+
+            Logging.WriteLog("Startup-theme playback is unavailable on this operating system.", Logging.LogType.Warning, Logging.LogCaller.AeonRuntime);
+        }
+
+        [SupportedOSPlatform("windows")]
+        private static void PlayStartupThemeOnWindows(string themePath)
+        {
+            _ = Task.Run(() =>
+            {
+                try
+                {
+                    using var player = new SoundPlayer(themePath);
+                    player.PlaySync();
+                }
+                catch (Exception exception)
+                {
+                    Logging.WriteLog("Could not play the startup theme: " + exception.Message, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime);
+                }
+            });
         }
         #endregion
     }
