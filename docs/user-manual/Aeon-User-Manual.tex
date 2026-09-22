@@ -195,7 +195,24 @@ The classifier operates after the current response is produced. A \texttt{charac
 
 \subsection{Output adapters}
 
-The library defines \texttt{OutputPresentation}, \texttt{IOutputAdapter}, and \texttt{OutputDispatcher}. A presentation contains speaker, text, requested modalities, optional emotive indication, and optional instructional displacement. The bundled \texttt{TerminalOutputAdapter} supports only text. Voice, tactile, gesture, animation, and hardware are contracts for extension; they are not bundled device implementations.
+The library defines \texttt{OutputPresentation}, \texttt{IOutputAdapter}, and \texttt{OutputDispatcher}. A presentation contains speaker, text, requested modalities, optional emotive indication, and optional instructional displacement. The bundled \texttt{TerminalOutputAdapter} supports text. The runtime also includes an opt-in \texttt{SpeechOutputAdapter}: Windows uses its local SAPI voice through PowerShell, while Linux starts a configured AeonVoice-compatible executable. Tactile, gesture, animation, and hardware remain extension contracts rather than bundled device implementations.
+
+\subsection{Speech output}
+
+Speech is off by default. Set \texttt{voiceenabled} to \texttt{true} in \texttt{Aeon.Runtime/config/settings.xml}, then select \texttt{auto}, \texttt{windows-sapi}, or \texttt{aeonvoice} for \texttt{voicebackend}. \texttt{auto} selects SAPI on Windows and AeonVoice on Linux. Windows SAPI uses the operating system's default installed voice.
+
+On Linux, \texttt{aeonvoicecommand} must name an executable available on \texttt{PATH} (or an absolute executable path). Aeon sends one response as UTF-8 standard input; the executable must read that input and synthesize it. This deliberately avoids treating response text as a shell argument. A small wrapper is often the cleanest way to adapt a particular AeonVoice installation.
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=XML]
+<item name="voiceenabled" value="true"/>
+<item name="voicebackend" value="aeonvoice"/>
+<item name="aeonvoicecommand" value="aeonvoice"/>
+<item name="voicetimeoutmilliseconds" value="30000"/>
+\end{lstlisting}
+\end{minipage}
+
+Each utterance is capped at 4,096 characters. The timeout is clamped to 1,000--120,000 milliseconds. Speech runs asynchronously, and launch, timeout, or non-zero-exit failures are logged without ending the dialogue session. Enable it only after manually confirming that the configured local command produces audio. The dispatcher likewise contains failures from any adapter so terminal output can continue.
 
 \section{Personality authoring}
 
@@ -296,7 +313,7 @@ Do not replace the arithmetic parser with arbitrary code evaluation. If a new va
 
 \section{Configuration, persistence, and diagnostics}
 
-The primary runtime settings are in \texttt{Aeon.Runtime/config/settings.xml}. Important entries include personality directories, language resources, timeout values, alone-state timing, terminal mode, and \texttt{emotiveequation}. During build, configuration and personality assets are copied beside the executable.
+The primary runtime settings are in \texttt{Aeon.Runtime/config/settings.xml}. Important entries include personality directories, language resources, timeout values, alone-state timing, terminal mode, \texttt{emotiveequation}, and the opt-in speech settings described above. During build, configuration and personality assets are copied beside the executable.
 
 Runtime output normally appears below:
 

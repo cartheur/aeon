@@ -44,7 +44,10 @@ namespace Aeon.Runtime
         public static string AeonType { get; set; }
         public static bool AeonIsAlone { get; set; }
         public static string AloneTextCurrent { get; set; }
-        private static readonly OutputDispatcher Output = new OutputDispatcher(new IOutputAdapter[] { new TerminalOutputAdapter() });
+        private static readonly OutputDispatcher Output = new OutputDispatcher(
+            new IOutputAdapter[] { new TerminalOutputAdapter() },
+            (adapter, exception) => Logging.WriteLog("Output adapter " + adapter.GetType().Name + " failed: " + exception.Message, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime));
+        private static bool VoiceOutputEnabled { get; set; }
 
         static async Task Main(string[] args)
         {
@@ -94,6 +97,7 @@ namespace Aeon.Runtime
             EmotiveEquation = _thisAeon.GlobalSettings.GrabSetting("emotiveequation");
             _thisAeon.CharacteristicEquation = EmotiveEquation;
             TerminalMode = Convert.ToBoolean(_thisAeon.GlobalSettings.GrabSetting("terminalmode"));
+            ConfigureSpeechOutput();
             // Initialize the alone feature.
             _thisAeon.AeonAloneTimer = new System.Timers.Timer();
             _thisAeon.AeonAloneTimer.Elapsed += AloneEvent;
@@ -264,7 +268,7 @@ namespace Aeon.Runtime
                 Output.Present(new OutputPresentation(
                     _thisAeon.Name,
                     _thisResult.Output,
-                    OutputModality.Text,
+                    RequestedOutputModalities,
                     _thisAeon.Mood.GetCurrentIndication(),
                     _thisResult.InstructionalDisplacement));
                 Logging.RecordTranscript(_thisParticipant.Name + ": " + rawInput);
@@ -390,10 +394,55 @@ namespace Aeon.Runtime
                 Output.Present(new OutputPresentation(
                     _thisAeon.Name,
                     AloneTextCurrent,
-                    OutputModality.Text,
+                    RequestedOutputModalities,
                     _thisAeon.Mood.GetCurrentIndication()));
                 Logging.RecordTranscript(prompt);
             }
+        }
+
+        private static OutputModality RequestedOutputModalities => VoiceOutputEnabled
+            ? OutputModality.Text | OutputModality.Voice
+            : OutputModality.Text;
+
+        private static void ConfigureSpeechOutput()
+        {
+            VoiceOutputEnabled = TryGetBooleanSetting("voiceenabled");
+            if (!VoiceOutputEnabled)
+            {
+                return;
+            }
+
+            string backendSetting = _thisAeon.GlobalSettings.GrabSetting("voicebackend");
+            SpeechBackend? backend = backendSetting.Trim().ToLowerInvariant() switch
+            {
+                "windows-sapi" when OperatingSystem.IsWindows() => SpeechBackend.WindowsSapi,
+                "aeonvoice" when OperatingSystem.IsLinux() => SpeechBackend.AeonVoice,
+                "auto" or "" when OperatingSystem.IsWindows() => SpeechBackend.WindowsSapi,
+                "auto" or "" when OperatingSystem.IsLinux() => SpeechBackend.AeonVoice,
+                _ => null
+            };
+            if (backend is null)
+            {
+                VoiceOutputEnabled = false;
+                Logging.WriteLog("Voice output is enabled but no supported backend is configured for this operating system.", Logging.LogType.Warning, Logging.LogCaller.AeonRuntime);
+                return;
+            }
+
+            int timeoutMilliseconds = 30000;
+            if (int.TryParse(_thisAeon.GlobalSettings.GrabSetting("voicetimeoutmilliseconds"), out int configuredTimeout))
+            {
+                timeoutMilliseconds = Math.Clamp(configuredTimeout, 1000, 120000);
+            }
+            Output.Add(new SpeechOutputAdapter(
+                backend.Value,
+                _thisAeon.GlobalSettings.GrabSetting("aeonvoicecommand"),
+                TimeSpan.FromMilliseconds(timeoutMilliseconds),
+                message => Logging.WriteLog(message, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime)));
+        }
+
+        private static bool TryGetBooleanSetting(string name)
+        {
+            return bool.TryParse(_thisAeon.GlobalSettings.GrabSetting(name), out bool value) && value;
         }
         #endregion
     }

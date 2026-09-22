@@ -41,10 +41,13 @@ namespace Aeon.Library
     public sealed class OutputDispatcher
     {
         private readonly List<IOutputAdapter> _adapters = new List<IOutputAdapter>();
+        private readonly object _sync = new object();
+        private readonly Action<IOutputAdapter, Exception> _onAdapterFailure;
 
         /// <summary>Initializes a dispatcher with optional adapters.</summary>
-        public OutputDispatcher(IEnumerable<IOutputAdapter> adapters = null)
+        public OutputDispatcher(IEnumerable<IOutputAdapter> adapters = null, Action<IOutputAdapter, Exception> onAdapterFailure = null)
         {
+            _onAdapterFailure = onAdapterFailure;
             if (adapters != null)
             {
                 _adapters.AddRange(adapters.Where(adapter => adapter != null));
@@ -55,18 +58,41 @@ namespace Aeon.Library
         public void Add(IOutputAdapter adapter)
         {
             ArgumentNullException.ThrowIfNull(adapter);
-            _adapters.Add(adapter);
+            lock (_sync)
+            {
+                _adapters.Add(adapter);
+            }
         }
 
         /// <summary>Routes the presentation to each compatible adapter.</summary>
         public void Present(OutputPresentation presentation)
         {
             ArgumentNullException.ThrowIfNull(presentation);
-            foreach (IOutputAdapter adapter in _adapters.ToArray())
+            IOutputAdapter[] adapters;
+            lock (_sync)
             {
-                if ((adapter.SupportedModalities & presentation.Modalities) != 0)
+                adapters = _adapters.ToArray();
+            }
+
+            foreach (IOutputAdapter adapter in adapters)
+            {
+                try
                 {
-                    adapter.Present(presentation);
+                    if ((adapter.SupportedModalities & presentation.Modalities) != 0)
+                    {
+                        adapter.Present(presentation);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    try
+                    {
+                        _onAdapterFailure?.Invoke(adapter, exception);
+                    }
+                    catch
+                    {
+                        // Failure reporting is isolated just like device output.
+                    }
                 }
             }
         }

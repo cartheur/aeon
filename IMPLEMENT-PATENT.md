@@ -2,7 +2,7 @@
 
 Engineering assessment of `docs/patent/US20180204107A1.pdf` against this repository's checked-in .NET runtime, reconciled after implementation steps 1–7.
 
-**Current implementation completeness: 90% (30.5 of 34 weighted feature units).**
+**Current implementation completeness: 91% (31.0 of 34 weighted feature units).**
 
 This is an engineering progress tally, not a legal claim chart or an opinion about patent scope, validity, or infringement. It measures executable capabilities only:
 
@@ -20,10 +20,10 @@ The 34-unit baseline excludes generic execution details and avoids counting the 
 | Fig. 2 — input processing | 5 | 4 | 1 | 4.5 | 90% |
 | Fig. 3 — trajectory processing and learning | 5 | 4 | 0 | 4.0 | 80% |
 | Fig. 4 — emotional engine | 4 | 4 | 0 | 4.0 | 100% |
-| Fig. 5 — output and embodiment | 5 | 1 | 4 | 3.0 | 60% |
+| Fig. 5 — output and embodiment | 5 | 2 | 3 | 3.5 | 70% |
 | Fig. 6 — alone state and response memory | 4 | 4 | 0 | 4.0 | 100% |
 | Fig. 7 — instructional displacement | 4 | 4 | 0 | 4.0 | 100% |
-| **Total** | **34** | **28** | **5** | **30.5** | **90%** |
+| **Total** | **34** | **29** | **4** | **31.0** | **91%** |
 
 ## Executable interaction path
 
@@ -87,7 +87,7 @@ The current trajectory is appended after its template has been processed. Theref
 | Capability | Status | Evidence |
 | --- | --- | --- |
 | Textual response output | Complete | `TerminalOutputAdapter` is registered with the runtime’s `OutputDispatcher` and presents dialogue and alone prompts. |
-| Voice/audial output | Partial | `IOutputAdapter` and `OutputModality.Voice` define a contextual integration contract; no speech engine is included. |
+| Voice/audial output | Complete | Opt-in `SpeechOutputAdapter` speaks asynchronously through Windows SAPI or a configured Linux AeonVoice executable. Utterances use standard input, are length-limited, and have a bounded timeout. |
 | Tactile/vibrational output | Partial | `OutputModality.Tactile` is routable; no device adapter is included. |
 | Gesture/animation output | Partial | Distinct `Gesture` and `Animation` modalities can receive emotive and classifier context; no renderer is included. |
 | Robot/external-hardware interaction | Partial | `OutputModality.Hardware` provides the adapter boundary; no hardware driver is included. |
@@ -151,7 +151,7 @@ Validated after the full seven-step implementation:
 - `dotnet build Aeon.Runtime/Aeon.Runtime.csproj`
 - `git diff --check`
 
-The smoke program covers participant predicate isolation, command/dialogue routing, command-driven and persisted emotive-weight training, alone-prompt formatting, bounded trajectory persistence, reviewed learning validation, mood inventory/state/indication, constrained mood/trajectory/characteristic feedback selection, interpreter integration, instruction-tag extraction, safe equation classification, and modality-aware output dispatch.
+The smoke program covers participant predicate isolation, command/dialogue routing, command-driven and persisted emotive-weight training, alone-prompt formatting, bounded trajectory persistence, reviewed learning validation, mood inventory/state/indication, constrained mood/trajectory/characteristic feedback selection, interpreter integration, instruction-tag extraction, safe equation classification, and modality-aware output dispatch including adapter-failure isolation. Speech is disabled by default and requires a local operating-system speech backend, so the test suite validates the device-independent dispatch and containment behavior rather than producing audio.
 
 ## Follow-on roadmap and reassessment rule
 
@@ -160,6 +160,9 @@ The first two follow-on improvements are complete. Remaining work is behavior-le
 1. **Completed — command/dialogue routing foundation.** Slash commands have an explicit branch and dialogue has a bounded subject–verb–predicate representation. A grammatical intention catalogue remains future work.
 2. **Completed — explicit trainable emotive weighting.** `/trainmood <0-1>` calibrates the current mood using a bounded running average; the model persists locally in `data/emotive-weights.json`.
 3. **Completed — tag-aware characteristic feedback.** Template instruction tags are correlated into classification, and a preceding characteristic block can select an annotated response variant.
-4. Add concrete voice, tactile, gesture/animation, or hardware adapters with device-level tests.
+4. **Completed — concrete voice output.** `SpeechOutputAdapter` uses Windows SAPI or a configured AeonVoice-compatible Linux executable. It is opt-in, asynchronous, bounded to 4,096 characters, and receives utterances through standard input rather than a shell command line.
+5. **Completed — structured output resilience testing.** The smoke program verifies that a failing adapter is reported and does not prevent another compatible adapter from presenting the response.
+6. **Completed — runtime hardening for external output.** Speech process launch, exit status, timeout, and configuration/platform mismatches are contained and logged without interrupting the dialogue loop.
+7. Select a concrete tactile, gesture/animation, or hardware target and implement one adapter with an integration test on that target.
 
 Update this document only when a capability gains behavior-level evidence or loses an integration. Keep the 34-unit baseline unless a capability is split into independently testable units; record the split and recalculate every affected subtotal.

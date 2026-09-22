@@ -133,6 +133,17 @@ outputDispatcher.Present(outputPresentation);
 Assert(recordingOutputAdapter.Presentations.Count == 1 && ReferenceEquals(recordingOutputAdapter.Presentations[0], outputPresentation), "Output dispatch should deliver a contextual response to compatible adapters.");
 outputDispatcher.Present(new OutputPresentation("Aeon", "Unsupported", OutputModality.Tactile));
 Assert(recordingOutputAdapter.Presentations.Count == 1, "Output dispatch should not send a modality to an incompatible adapter.");
+var adapterFailures = new List<Exception>();
+var resilientOutputDispatcher = new OutputDispatcher(
+    new IOutputAdapter[] { new ThrowingOutputAdapter(), recordingOutputAdapter },
+    (_, exception) => adapterFailures.Add(exception));
+resilientOutputDispatcher.Present(new OutputPresentation("Aeon", "Still delivered", OutputModality.Text));
+Assert(adapterFailures.Count == 1 && recordingOutputAdapter.Presentations.Count == 2, "An output adapter failure should be reported without preventing compatible adapters from presenting.");
+var reportingFailureDispatcher = new OutputDispatcher(
+    new IOutputAdapter[] { new ThrowingOutputAdapter(), recordingOutputAdapter },
+    (_, _) => throw new InvalidOperationException("Simulated failure-reporting failure."));
+reportingFailureDispatcher.Present(new OutputPresentation("Aeon", "Still delivered after reporting failure", OutputModality.Text));
+Assert(recordingOutputAdapter.Presentations.Count == 3, "A failure in adapter reporting should not prevent later compatible adapters from presenting.");
 
 var learningProposal = LearningProposal.Create("  hello there  ", "  Hello back.  ");
 Assert(learningProposal.Pattern == "hello there", "Learning should retain a reviewed, trimmed participant phrase.");
@@ -219,5 +230,15 @@ sealed class RecordingOutputAdapter : IOutputAdapter
     public void Present(OutputPresentation presentation)
     {
         Presentations.Add(presentation);
+    }
+}
+
+sealed class ThrowingOutputAdapter : IOutputAdapter
+{
+    public OutputModality SupportedModalities => OutputModality.Text;
+
+    public void Present(OutputPresentation presentation)
+    {
+        throw new InvalidOperationException("Simulated adapter failure.");
     }
 }
