@@ -87,7 +87,7 @@ The current trajectory is appended after its template has been processed. Theref
 | Capability | Status | Evidence |
 | --- | --- | --- |
 | Textual response output | Complete | `TerminalOutputAdapter` is registered with the runtime’s `OutputDispatcher` and presents dialogue and alone prompts. |
-| Voice/audial output | Complete | Opt-in `SpeechOutputAdapter` speaks asynchronously through Windows SAPI or the self-contained `Cartheur.AeonVoice.Private` Linux package. The package synthesizes a bounded WAV from the selected Toptygin or Leena profile, then the configured local player presents it. |
+| Voice/audial output | Complete | Opt-in `SpeechOutputAdapter` speaks asynchronously through Windows SAPI or eSpeak NG on Linux. Authorized Linux builds may include `Cartheur.AeonVoice.Private` to synthesize a bounded WAV from Toptygin or Leena; if it is absent or fails, the runtime falls back to eSpeak NG. |
 | Tactile/vibrational output | Partial | `OutputModality.Tactile` is routable; no device adapter is included. |
 | Gesture/animation output | Partial | Distinct `Gesture` and `Animation` modalities can receive emotive and classifier context; no renderer is included. |
 | Robot/external-hardware interaction | Partial | `OutputModality.Hardware` provides the adapter boundary; no hardware driver is included. |
@@ -160,7 +160,7 @@ The first two follow-on improvements are complete. Remaining work is behavior-le
 1. **Completed — command/dialogue routing foundation.** Slash commands have an explicit branch and dialogue has a bounded subject–verb–predicate representation. A grammatical intention catalogue remains future work.
 2. **Completed — explicit trainable emotive weighting.** `/trainmood <0-1>` calibrates the current mood using a bounded running average; the model persists locally in `data/emotive-weights.json`.
 3. **Completed — tag-aware characteristic feedback.** Template instruction tags are correlated into classification, and a preceding characteristic block can select an annotated response variant.
-4. **Completed — concrete voice output.** `SpeechOutputAdapter` uses Windows SAPI or `Cartheur.AeonVoice.Private` on Linux. It is opt-in, asynchronous, bounded to 4,096 characters, and synthesizes a temporary WAV from a bundled Toptygin or Leena profile before invoking the configured local player.
+4. **Completed — concrete voice output.** `SpeechOutputAdapter` uses Windows SAPI or eSpeak NG on Linux. Authorized builds may opt into `Cartheur.AeonVoice.Private` for Toptygin or Leena synthesis; absence or failure of that package falls back to eSpeak NG.
 5. **Completed — structured output resilience testing.** The smoke program verifies that a failing adapter is reported and does not prevent another compatible adapter from presenting the response.
 6. **Completed — runtime hardening for external output.** Speech process launch, exit status, timeout, and configuration/platform mismatches are contained and logged without interrupting the dialogue loop.
 7. Select a concrete tactile, gesture/animation, or hardware target and implement one adapter with an integration test on that target.

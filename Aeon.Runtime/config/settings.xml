@@ -9,9 +9,11 @@
   <item name="learningmodeactive" value="true"/>
   <item name="terminalmode" value="true"/><!--To type to the aeon. This can only be set to true.-->
   <item name="voiceenabled" value="false"/><!-- Set true to speak responses through the selected local backend. -->
-  <item name="voicebackend" value="auto"/><!-- auto, windows-sapi (Windows), or aeonvoice (Linux). -->
+  <item name="voicebackend" value="auto"/><!-- auto, windows-sapi (Windows), aeonvoice, or espeak (Linux). -->
   <item name="voiceprofile" value="Toptygin"/><!-- Linux AeonVoice profile: Toptygin or Leena. -->
   <item name="linuxaudioplayer" value="aplay"/><!-- Linux executable that plays WAV files. -->
+  <item name="espeakcommand" value="espeak-ng"/><!-- Linux fallback speech command. -->
+  <item name="espeakvoice" value="en-us"/><!-- eSpeak NG voice profile. -->
   <item name="voicetimeoutmilliseconds" value="30000"/><!-- Per-utterance safety limit, clamped to 1000-120000. -->
   <item name="name" value="Rhodo"/><!-- This name should not be changed. -->
   <item name="participantname" value="Chris"/><!-- Change to the participant name. -->

@@ -30,6 +30,31 @@ dotnet run --project Aeon.Runtime/Aeon.Runtime.csproj --configuration Release --
 
 Enter a message and press Enter. Type `exit` to end the console session, or `quit` to leave terminal mode. Transcripts and diagnostic logs are written below the runtime output directory: `bin/<configuration>/net10.0/logs`.
 
+## Linux speech output
+
+Text output works without additional software. To enable speech on Linux without access to any private package, install eSpeak NG and enable the bundled fallback in `Aeon.Runtime/config/settings.xml`:
+
+```bash
+sudo apt install espeak-ng
+```
+
+```xml
+<item name="voiceenabled" value="true"/>
+<item name="voicebackend" value="espeak"/>
+```
+
+Then run Aeon normally. The default fallback uses `espeak-ng` and the `en-us` voice; customize `espeakcommand` or `espeakvoice` in the same settings file if needed. Set `voicebackend` to `auto` to prefer the optional AeonVoice backend when it has been included, while retaining eSpeak NG as the fallback.
+
+### Optional AeonVoice profiles
+
+Authorized Linux x64 users can include the private AeonVoice package for the Toptygin and Leena profiles. Copy `NuGet.Private.config.example` to `NuGet.Config`, authenticate to GitHub Packages using local credentials, and run:
+
+```bash
+dotnet run --project Aeon.Runtime/Aeon.Runtime.csproj --configuration Release -p:UsePrivateAeonVoice=true
+```
+
+This enhancement is optional: do not add the private feed or build property when using eSpeak NG alone.
+
 ## Verify the core
 
 Run the dependency-free smoke tests after changes to the interpreter or participant state:

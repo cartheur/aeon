@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <clear />
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+    <add key="github-cartheur-voice" value="https://nuget.pkg.github.com/cartheur-voice/index.json" />
+  </packageSources>
+  <packageSourceMapping>
+    <packageSource key="nuget.org">
+      <package pattern="*" />
+    </packageSource>
+    <packageSource key="github-cartheur-voice">
+      <package pattern="Cartheur.AeonVoice.Private" />
+    </packageSource>
+  </packageSourceMapping>
+</configuration>

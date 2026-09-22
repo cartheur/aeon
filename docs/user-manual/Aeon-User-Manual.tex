@@ -195,13 +195,13 @@ The classifier operates after the current response is produced. A \texttt{charac
 
 \subsection{Output adapters}
 
-The library defines \texttt{OutputPresentation}, \texttt{IOutputAdapter}, and \texttt{OutputDispatcher}. A presentation contains speaker, text, requested modalities, optional emotive indication, and optional instructional displacement. The bundled \texttt{TerminalOutputAdapter} supports text. The runtime also includes an opt-in \texttt{SpeechOutputAdapter}: Windows uses its local SAPI voice through PowerShell, while Linux uses the self-contained \texttt{Cartheur.AeonVoice.Private} package. Tactile, gesture, animation, and hardware remain extension contracts rather than bundled device implementations.
+The library defines \texttt{OutputPresentation}, \texttt{IOutputAdapter}, and \texttt{OutputDispatcher}. A presentation contains speaker, text, requested modalities, optional emotive indication, and optional instructional displacement. The bundled \texttt{TerminalOutputAdapter} supports text. The runtime also includes an opt-in \texttt{SpeechOutputAdapter}: Windows uses its local SAPI voice through PowerShell, while Linux uses eSpeak NG by default and can optionally use \texttt{Cartheur.AeonVoice.Private}. Tactile, gesture, animation, and hardware remain extension contracts rather than bundled device implementations.
 
 \subsection{Speech output}
 
-Speech is off by default. Set \texttt{voiceenabled} to \texttt{true} in \texttt{Aeon.Runtime/config/settings.xml}, then select \texttt{auto}, \texttt{windows-sapi}, or \texttt{aeonvoice} for \texttt{voicebackend}. \texttt{auto} selects SAPI on Windows and AeonVoice on Linux. Windows SAPI uses the operating system's default installed voice.
+Speech is off by default. Set \texttt{voiceenabled} to \texttt{true} in \texttt{Aeon.Runtime/config/settings.xml}, then select \texttt{auto}, \texttt{windows-sapi}, \texttt{aeonvoice}, or \texttt{espeak} for \texttt{voicebackend}. \texttt{auto} selects SAPI on Windows and attempts AeonVoice then eSpeak NG on Linux. Windows SAPI uses the operating system's default installed voice.
 
-On Linux x64, the private package contains the managed AeonVoice wrapper, native libraries, English resource data, and the \texttt{Toptygin} and \texttt{Leena} voice profiles. Aeon's project selects the \texttt{linux-x64} runtime identifier automatically on Linux so these native libraries deploy beside the runtime. Aeon synthesizes a temporary WAV with the selected \texttt{voiceprofile}, then invokes \texttt{linuxaudioplayer} to play it. The default player is \texttt{aplay}; set an absolute player path if it is not available on \texttt{PATH}.
+Linux users without private-package access need only install eSpeak NG and use \texttt{espeak} or \texttt{auto}; it reads the response on standard input with the configured \texttt{espeakvoice}. On Linux x64, authorized users can copy \texttt{NuGet.Private.config.example} to \texttt{NuGet.Config}, authenticate to GitHub Packages locally, and build with \texttt{-p:UsePrivateAeonVoice=true}. This adds the managed AeonVoice wrapper, native libraries, English resource data, and \texttt{Toptygin} and \texttt{Leena} profiles. Aeon then synthesizes a temporary WAV with \texttt{voiceprofile} and invokes \texttt{linuxaudioplayer} (default \texttt{aplay}). If the optional package is unavailable or fails, it falls back to eSpeak NG.
 
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[language=XML]
@@ -209,11 +209,13 @@ On Linux x64, the private package contains the managed AeonVoice wrapper, native
 <item name="voicebackend" value="aeonvoice"/>
 <item name="voiceprofile" value="Toptygin"/>
 <item name="linuxaudioplayer" value="aplay"/>
+<item name="espeakcommand" value="espeak-ng"/>
+<item name="espeakvoice" value="en-us"/>
 <item name="voicetimeoutmilliseconds" value="30000"/>
 \end{lstlisting}
 \end{minipage}
 
-Each utterance is capped at 4,096 characters. The timeout is clamped to 1,000--120,000 milliseconds. Speech runs asynchronously, and synthesis, launch, timeout, or non-zero-exit failures are logged without ending the dialogue session. Enable it only after manually confirming that the selected profile and local player produce audio. The dispatcher likewise contains failures from any adapter so terminal output can continue.
+Each utterance is capped at 4,096 characters. The timeout is clamped to 1,000--120,000 milliseconds. Speech runs asynchronously, and synthesis, launch, timeout, or non-zero-exit failures are logged without ending the dialogue session. Enable it only after manually confirming that eSpeak NG or the selected AeonVoice profile and local player produce audio. The dispatcher likewise contains failures from any adapter so terminal output can continue.
 
 \section{Personality authoring}
 

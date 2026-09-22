@@ -417,6 +417,7 @@ namespace Aeon.Runtime
             {
                 "windows-sapi" when OperatingSystem.IsWindows() => SpeechBackend.WindowsSapi,
                 "aeonvoice" when OperatingSystem.IsLinux() => SpeechBackend.AeonVoice,
+                "espeak" when OperatingSystem.IsLinux() => SpeechBackend.Espeak,
                 "auto" or "" when OperatingSystem.IsWindows() => SpeechBackend.WindowsSapi,
                 "auto" or "" when OperatingSystem.IsLinux() => SpeechBackend.AeonVoice,
                 _ => null
@@ -437,6 +438,8 @@ namespace Aeon.Runtime
                 backend.Value,
                 _thisAeon.GlobalSettings.GrabSetting("voiceprofile"),
                 _thisAeon.GlobalSettings.GrabSetting("linuxaudioplayer"),
+                _thisAeon.GlobalSettings.GrabSetting("espeakcommand"),
+                _thisAeon.GlobalSettings.GrabSetting("espeakvoice"),
                 TimeSpan.FromMilliseconds(timeoutMilliseconds),
                 message => Logging.WriteLog(message, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime)));
         }
