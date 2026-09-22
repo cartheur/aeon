@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <root>
   <item name="buildconfiguration" value="Debug"/>
-  <item name="ip" value="Copyright 2003 - 2026 Cartheur"/>
+  <item name="ip" value="Copyright 2003 - 2026 The Cartheur Company"/>
   <item name="claim" value="All rights reserved"/>
   <item name="product" value="Cartheur Animals"/>
   <item name="warning" value="This is an artifically-sentient program. Please interact responsibly."/>
-  <item name="version" value="0.0.4"/>
+  <item name="version" value="0.3.4"/>
   <item name="learningmodeactive" value="true"/>
   <item name="terminalmode" value="true"/><!--To type to the aeon. This can only be set to true.-->
   <item name="voiceenabled" value="false"/><!-- Set true to speak responses through the selected local backend. -->
