@@ -1,8 +1,6 @@
 //
 // Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
-using System.Xml.Linq;
-
 namespace Aeon.Library.Builder
 {
     public class ExtendSystem
@@ -13,39 +11,42 @@ namespace Aeon.Library.Builder
         {
             _runtimeDirectory = runtimeDirectory;
         }
+        /// <summary>
+        /// Saves a validated, reviewed learning proposal in the configured local learning directory.
+        /// </summary>
+        /// <param name="proposal">The participant-derived category to save.</param>
+        /// <param name="instance">The preferred positive file sequence number.</param>
+        /// <returns>The newly created local file path.</returns>
+        public string CreateAeonFile(LearningProposal proposal, int instance)
+        {
+            ArgumentNullException.ThrowIfNull(proposal);
+            if (instance < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(instance), "The learning file sequence must be positive.");
+            }
+
+            string personalityDirectory = Path.Combine(_runtimeDirectory.PathToLearnedFiles);
+            Directory.CreateDirectory(personalityDirectory);
+            for (int candidate = instance; ; candidate++)
+            {
+                string fileName = Path.Combine(personalityDirectory, "learned-" + candidate + ".aeon");
+                try
+                {
+                    using var stream = new FileStream(fileName, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+                    proposal.ToDocument().Save(stream);
+                    return fileName;
+                }
+                catch (IOException) when (File.Exists(fileName))
+                {
+                    // Preserve previous learning rather than overwriting it; try the next sequence number.
+                }
+            }
+        }
+
         // The templateInput field has a variety of possibilities, given the context of the language.
         public string CreateAeonFile(string patternInput, string templateInput, int instance)
         {
-            string personalityDirectory = Path.Combine(_runtimeDirectory.PathToLearnedFiles);
-            if (!Directory.Exists(personalityDirectory))
-            {
-                Directory.CreateDirectory(personalityDirectory);
-            }
-
-            string fileName = Path.Combine(personalityDirectory, + instance + "-.aeon");
-            XDocument xmlDocument = new XDocument(
-                new XElement("aeon", new XAttribute("version", 1.1),
-                        new XElement("category",
-                            new XElement("pattern", patternInput),
-                        // The templateInput field can contain:
-                        // - Plain text: "Hello, how can I help you today?"
-                        // - <srai>: <srai>HELLO</srai>
-                        // - <random>: <random><li>Hello!</li><li>Hi there!</li><li>Greetings!</li></random>
-                        // - <condition>: <condition name="userMood"><li value="happy">I'm glad to hear you're happy!</li><li value="sad">I'm sorry to hear you're feeling down.</li><li>How are you feeling today?</li></condition>
-                        // - <think>: <think><set name="topic">sports</set></think> Let's talk about sports.
-                        // - <set>: <set name="name">Alice</set> Nice to meet you, Alice.
-                        // - <get>: Hello, <get name="name"/>!
-                        // - <bot>: My name is <bot name="name"/>.
-                        // - <star>: You said: <star/>
-                        // - <that>: <that index="1,1">Yes</that>
-                        // - <date>: The current date and time is <date/>.
-                        // - <formal>: <formal>this is formal text.</formal>
-                        // - <uppercase>: <uppercase>this is uppercase text.</uppercase>
-                        // - <lowercase>: <lowercase>THIS IS LOWERCASE TEXT.</lowercase>
-                            new XElement("template", templateInput)
-                )));
-            xmlDocument.Save(fileName);
-            return fileName;
+            return CreateAeonFile(LearningProposal.Create(patternInput, templateInput), instance);
         }
     }
 }

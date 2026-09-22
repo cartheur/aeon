@@ -2,7 +2,7 @@
 
 Baseline assessment of `docs/patent/US20180204107A1.pdf` against this repository's executable .NET runtime.
 
-**Current implementation completeness: 53% (18.0 of 34 weighted feature units).**
+**Current implementation completeness: 54% (18.5 of 34 weighted feature units).**
 
 This is an engineering progress tally, not a legal claim chart or an opinion about patent scope, validity, or infringement. It tracks the technical capabilities described by the patent drawings and claims. A feature counts as:
 
@@ -18,12 +18,12 @@ The denominator deliberately excludes generic details that are not independently
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Fig. 1 — presence, startup, interaction flow | 7 | 6 | 0 | 6.0 | 86% |
 | Fig. 2 — input processing | 5 | 3 | 1 | 3.5 | 70% |
-| Fig. 3 — trajectory processing and learning | 5 | 2 | 2 | 3.0 | 60% |
+| Fig. 3 — trajectory processing and learning | 5 | 3 | 1 | 3.5 | 70% |
 | Fig. 4 — emotional engine | 4 | 0 | 0 | 0.0 | 0% |
 | Fig. 5 — output/embodiment | 5 | 1 | 0 | 1.0 | 20% |
 | Fig. 6 — alone state and response memory | 4 | 4 | 0 | 4.0 | 100% |
 | Fig. 7 — instructional displacement | 4 | 0 | 1 | 0.5 | 13% |
-| **Total** | **34** | **16** | **4** | **18.0** | **53%** |
+| **Total** | **34** | **17** | **3** | **18.5** | **54%** |
 
 Fig. 6 is now complete for this narrow tally: a configured prompt is emitted to the terminal and written to the transcript after alone detection. The stored history still does **not** influence behavior; that capability belongs to the separate Fig. 3 trajectory work.
 
@@ -51,7 +51,7 @@ Fig. 6 is now complete for this narrow tally: a configured prompt is emitted to 
 | Explicit command-versus-dialogue routing | Partial | Interpreter tags provide instruction behavior, but the runtime does not implement the patent's separate command detection and instruction-processing branch. |
 | Subject–verb–predicate/intention parse | Not implemented | No parser or intent model corresponding to Fig. 2's syntax parse and intention catalogue is executed. |
 
-### Fig. 3 — trajectory processing, storage, and learning (3.0 / 5)
+### Fig. 3 — trajectory processing, storage, and learning (3.5 / 5)
 
 | Capability | Status | Evidence |
 | --- | --- | --- |
@@ -59,7 +59,7 @@ Fig. 6 is now complete for this narrow tally: a configured prompt is emitted to 
 | Trajectory indication/encapsulation | Complete | `ParticipantResult.ReturnIndication` creates a serializable `TrajectoryIndication` with raw input, normalized paths, response sentences, timeout state, UTC timestamp, and an ordered sequence number. |
 | Ordered trajectory memory used for later context | Partial | Each participant now has a bounded 128-entry JSON history, reloaded at runtime startup and saved after each interaction. The interpreter does not yet use history to alter matching or decisions. |
 | Neural-network weighting/training | Not implemented | No neural-network implementation or invocation is present; the only proposed calls are commented out in `ReturnIndication`. |
-| Runtime growth by writing and reloading learned files | Partial | Learning mode creates a local `.aeon` file and reloads it, but it is triggered only by the literal `learn` input and writes a fixed `HELLO` category rather than deriving a learned trajectory. |
+| Runtime growth by writing and reloading learned files | Complete | `learn` opens a participant-driven review flow: a literal phrase and response are validated, previewed, explicitly confirmed, saved to a unique local `.aeon` file, then loaded into the current runtime. Wildcards, blank values, control characters, and unconfirmed entries are rejected. |
 
 ### Fig. 4 — emotional engine (0.0 / 4)
 
@@ -102,10 +102,11 @@ Fig. 6 is now complete for this narrow tally: a configured prompt is emitted to 
 
 1. **Completed — Fig. 6 prompt delivery.** The timer-selected message is presented and transcribed; the smoke tests cover its format.
 2. **Completed — Fig. 3 trajectory foundation.** Each interaction creates a serializable indication and appends it to bounded, participant-specific history that is saved and reloaded locally. It does not yet influence selection.
-3. Replace fixed learning-mode output with a reviewed, participant-derived learning workflow and tests. Keep generated content local and explicit.
+3. **Completed — reviewed local learning.** `learn` collects and validates a literal phrase/response pair, requires a `yes` review, saves it locally without overwriting prior categories, and loads it into the active runtime.
 4. Implement the **mood/emotive state model** (Fig. 4) before coupling it to response selection.
-5. Add the **Fig. 7 equation/classifier** only after trajectory and emotive inputs have concrete, testable representations.
-6. Add output adapters (voice, tactile, gesture, animation, hardware) behind interfaces so the terminal host remains a supported adapter.
+5. Connect **trajectory history and mood** to response selection so the new state can influence a response in a constrained, testable feedback loop.
+6. Add the **Fig. 7 equation/classifier** only after trajectory and emotive inputs have concrete, testable representations.
+7. Add output adapters (voice, tactile, gesture, animation, hardware) behind interfaces so the terminal host remains a supported adapter.
 
 ## Reassessment rule
 

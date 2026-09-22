@@ -179,6 +179,11 @@ namespace Aeon.Runtime
                         Console.WriteLine("Leaving terminal mode.");
                         break;
                     }
+                    if (LearningModeActive && ParticipantInput.Equals("learn", StringComparison.OrdinalIgnoreCase))
+                    {
+                        await LearningMode();
+                        continue;
+                    }
                     if (ParticipantInput.Length > 0)
                         await ProcessTerminal();
                 }
@@ -242,15 +247,6 @@ namespace Aeon.Runtime
                 AeonIsAlone = false;
                 AeonResult = _thisResult.Output;// Here is what the aeon has said.
                 SaveTrajectoryHistory();
-                if (LearningModeActive)
-                {                       
-                if (ParticipantInput.Equals("learn", StringComparison.OrdinalIgnoreCase))
-                {
-                        Console.WriteLine("Detected 'learn'...entering learning mode.");
-                        Thread.Sleep(2000);
-                        await LearningMode();
-                    }
-                }
             }
             else
             {
@@ -263,26 +259,62 @@ namespace Aeon.Runtime
         #region Learning mode feature
         static async Task LearningMode()
         {
-            // Learning mode.
-            // 1. Make a config file (or assembly) with the addition. Change the pattern input to someething meaningful.
-            var filename = _thisConfig.CreateAeonFile("Hello", "Hello, how can I help you today?", _instance);
-            // 2. Reload the file or assembly such that it is available for the next interaction.
-            AeonLoader.LoadAeonCodeFile(filename);
-            // 3. Test that the new aspect has been learned.
-            _thisRequest = new ParticipantRequest("Hello", _thisParticipant, _thisAeon);
-            _thisResult = _thisAeon.Chat(_thisRequest);
-            Console.WriteLine(_thisAeon.Name + ": " + _thisResult.Output);
-            // 4. Confirm that the learning mode is active.
-            await ConfirmLearningMode();
-            await Task.CompletedTask;
+            if (_thisConfig == null)
+            {
+                Console.WriteLine("Learning mode is unavailable because no writable personality is loaded.");
+                return;
+            }
 
-        }
-        static async Task<bool> ConfirmLearningMode()
-        {
-            Console.WriteLine("Confirmed learning mode completed successfully.");
+            Console.WriteLine("Learning mode: enter a phrase and its literal response. Leave either field blank to cancel.");
+            Console.Write("Phrase: ");
+            string pattern = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(pattern))
+            {
+                Console.WriteLine("Learning cancelled.");
+                return;
+            }
+            Console.Write("Response: ");
+            string response = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(response))
+            {
+                Console.WriteLine("Learning cancelled.");
+                return;
+            }
+
+            Library.Builder.LearningProposal proposal;
+            try
+            {
+                proposal = Library.Builder.LearningProposal.Create(pattern, response);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine("Learning cancelled: " + ex.Message);
+                return;
+            }
+
+            Console.WriteLine("Review learned category:");
+            Console.WriteLine("  Phrase: " + proposal.Pattern);
+            Console.WriteLine("  Response: " + proposal.Response);
+            Console.Write("Save this local category? Type yes to confirm: ");
+            if (!string.Equals(Console.ReadLine(), "yes", StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine("Learning cancelled; no file was created.");
+                return;
+            }
+
+            try
+            {
+                string filename = _thisConfig.CreateAeonFile(proposal, _instance);
+                AeonLoader.LoadAeonCodeFile(filename);
+                _instance++;
+                Console.WriteLine("Learned category saved locally and loaded: " + filename);
+            }
+            catch (Exception ex)
+            {
+                Logging.WriteLog("Could not save or load a reviewed learning proposal: " + ex.Message, Logging.LogType.Error, Logging.LogCaller.LearningThread);
+                Console.WriteLine("Learning could not be completed. See the log for details.");
+            }
             await Task.CompletedTask;
-            _instance++;
-            return true;
         }
         #endregion
 

@@ -1,4 +1,5 @@
 using Aeon.Library;
+using Aeon.Library.Builder;
 
 var aeon = new global::Aeon.Library.Aeon("1+2i");
 aeon.DefaultPredicates.AddSetting("topic", "*");
@@ -34,6 +35,27 @@ indicationResult.ReturnIndication();
 Assert(indicationResult.TrajectoryIndication.RawInput == "record this", "ReturnIndication should retain the raw participant input.");
 Assert(indicationResult.TrajectoryIndication.Paths.Count == 1, "ReturnIndication should retain normalized paths.");
 Assert(firstParticipant.TrajectoryHistory.Indications.Count == 1, "ReturnIndication should add the indication to the participant history.");
+
+var learningProposal = LearningProposal.Create("  hello there  ", "  Hello back.  ");
+Assert(learningProposal.Pattern == "hello there", "Learning should retain a reviewed, trimmed participant phrase.");
+Assert(learningProposal.Response == "Hello back.", "Learning should retain a reviewed, trimmed participant response.");
+Assert(learningProposal.ToDocument().Root?.Element("category")?.Element("template")?.Value == "Hello back.", "Learning proposals should serialize the literal response as XML text.");
+try
+{
+    LearningProposal.Create("\n", "response");
+    throw new InvalidOperationException("A blank learning phrase should be rejected.");
+}
+catch (ArgumentException)
+{
+}
+try
+{
+    LearningProposal.Create("hello *", "response");
+    throw new InvalidOperationException("A learned phrase must not create a wildcard category.");
+}
+catch (ArgumentException)
+{
+}
 
 string trajectoryTestDirectory = Path.Combine(Path.GetTempPath(), "aeon-trajectory-smoke-" + Guid.NewGuid().ToString("N"));
 string trajectoryTestPath = Path.Combine(trajectoryTestDirectory, "history.json");

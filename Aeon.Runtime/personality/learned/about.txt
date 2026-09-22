@@ -1,6 +1,5 @@
 February 2025
 
-About how learning works in the application
+About local learning in the application
 
-The aeon is triggered by the word 'learn' at the console or spoken (with a command prefix) by which it will add a stored reponse to the phrase having been learned. The file will only be available to the runtime engine and will be forgotten if turned-off, like a real animal.
-
+Type `learn` at the terminal to enter an explicit review flow. Enter one literal phrase and one literal response, review the pair, and type `yes` to save it. The runtime writes a uniquely named `.aeon` file only below its configured `personality/learned` directory, then loads that file for the current session. Blank or invalid entries, and any review that is not confirmed, create no file.
