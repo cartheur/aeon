@@ -1,0 +1,355 @@
+% Copyright 2003-2026 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=28mm]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,pdftitle={Aeon User Manual}}
+\definecolor{codegray}{rgb}{0.96,0.96,0.96}
+\lstset{basicstyle=\ttfamily\small,backgroundcolor=\color{codegray},frame=single,breaklines=true,columns=fullflexible}
+
+\title{\textbf{Aeon User Manual}\\\large Architecture, Authoring, and Extension Guide}
+\author{Christopher A. Tucker --- The Last Cyberneticist}
+\date{September 2026}
+
+\begin{document}
+\setlength{\emergencystretch}{3em}
+\maketitle
+\tableofcontents
+\newpage
+
+\section{Purpose and scope}
+
+Aeon is an experimental .NET conversational-agent runtime. It combines symbolic pattern matching, participant-local state, configurable text normalization, file-backed personalities, explicit mood state, bounded interaction history, and adapter-based output. Its purpose is to make a small cognitive--emotional interaction architecture inspectable and extensible.
+
+The project is a research and demonstration system, not a claim of general intelligence, consciousness, autonomy, or suitability for safety-critical work. ``Machine intelligence'' in this manual means the engineered capacity to transform input, memory, configured rules, and explicit state into context-sensitive behavior. The system's intelligence is therefore located in its representations, matching rules, state transitions, and extension code---not in an assertion that it possesses human-like understanding.
+
+This guide describes the checked-in implementation. It distinguishes current behavior from extension points so an author can make reliable changes without mistaking an interface for a bundled device or a recorded classifier result for an autonomous decision maker.
+
+\section{Quick start}
+
+\subsection{Requirements}
+
+\begin{itemize}
+  \item .NET SDK 10.
+  \item A terminal supported by the host operating system.
+  \item \LaTeX{} only when building this manual.
+\end{itemize}
+
+From the repository root, build and run the terminal host:
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=bash]
+dotnet build Aeon.Runtime/Aeon.Runtime.csproj --configuration Release
+dotnet run --project Aeon.Runtime/Aeon.Runtime.csproj --configuration Release --no-build
+\end{lstlisting}
+\end{minipage}
+
+Type dialogue and press Enter. Type \texttt{exit} to stop the process or \texttt{quit} to leave terminal mode. When enabled by configuration, type \texttt{learn} to enter the reviewed local-learning flow.
+
+Run the dependency-free regression checks after changing the library:
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=bash]
+dotnet run --project Aeon.Library.SmokeTests/Aeon.Library.SmokeTests.csproj --configuration Release
+\end{lstlisting}
+\end{minipage}
+
+\subsection{Runtime commands}
+
+Slash-prefixed input does not enter dialogue matching. It is handled by the explicit command branch.
+
+\begin{longtable}{p{0.30\linewidth}p{0.62\linewidth}}
+\toprule
+Command & Effect \\
+\midrule
+\endhead
+\texttt{/help} & Lists available library commands. \\
+\texttt{/history} & Reports the count of retained trajectory indications for the participant. \\
+\texttt{/mood} & Displays the Aeon's current parent feeling and child mood. \\
+\texttt{/mood Happy Charmed} & Sets the current mood. Parent and child values must be a valid Table~1 pair. \\
+\texttt{/trainmood 0.8} & Applies explicit normalized feedback, from 0 through 1, to the current mood's learned weight. \\
+\bottomrule
+\end{longtable}
+
+Commands still produce a \texttt{ParticipantResult} and are retained in trajectory history. They deliberately bypass category matching and template evaluation.
+
+\section{Repository map}
+
+\begin{longtable}{p{0.30\linewidth}p{0.62\linewidth}}
+\toprule
+Path & Responsibility \\
+\midrule
+\endhead
+\texttt{Aeon.Library/Core} & Runtime entities, routing, memory, mood, classifier, and output contracts. \\
+\texttt{Aeon.Library/Normalize} & Input cleanup, substitutions, case treatment, and sentence handling. \\
+\texttt{Aeon.Library/Interpreter} & AIML-like template tag handlers. \\
+\texttt{Aeon.Library/Utilities} & Loader, paths, logging, and custom-tag support. \\
+\texttt{Aeon.Runtime} & Console host, configuration, personality assets, persistence invocation, and terminal adapter. \\
+\texttt{Aeon.Library.SmokeTests} & Executable regression checks without a third-party test framework. \\
+\texttt{docs/user-manual} & This central user and extension manual. \\
+\bottomrule
+\end{longtable}
+
+\section{Architecture and theory}
+
+\subsection{Core idea}
+
+Aeon uses an explicit pipeline rather than a single opaque model. A participant request has three principal representations:
+
+\begin{enumerate}[label=\arabic*.]
+  \item \textbf{Raw input}: the literal text received from the participant.
+  \item \textbf{Trajectory}: a normalized path containing the input, prior response (\texttt{that}), and topic. This is searched in the category tree.
+  \item \textbf{Result and indication}: generated output plus a durable record of paths, response sentences, timeout state, timestamp, and sequence number.
+\end{enumerate}
+
+This separation is useful for machine-intelligence research because it makes each decision surface visible. An author can inspect a path, a matched template, participant predicates, mood state, classifier coordinates, and output adapter request independently.
+
+\subsection{Request lifecycle}
+
+For dialogue, the implemented order is:
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}
+raw dialogue
+  -> InteractionRouter identifies dialogue and records a positional parse
+  -> normalization and trajectory construction
+  -> Node category matching
+  -> InstructionTagExtractor reads tags in each matched template
+  -> template evaluation and optional feedback-aware <random> selection
+  -> ParticipantResult and TrajectoryIndication are recorded
+  -> InstructionalDisplacement classifier records x, y, t, and a block
+  -> runtime creates OutputPresentation
+  -> OutputDispatcher routes to compatible adapters
+\end{lstlisting}
+\end{minipage}
+
+For a slash command, the router instead invokes the bounded command branch before normalization and category matching. This keeps instructions explicit and avoids accidental command execution from ordinary dialogue.
+
+\subsection{Dialogue parsing}
+
+\texttt{InteractionRouter} treats any input beginning with \texttt{/} and matching a conservative command grammar as a command. All other input is dialogue. Dialogue is tokenized into a deliberately simple representation:
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}
+Input:     Alice likes blue birds
+Subject:   Alice
+Verb:      likes
+Predicate: blue birds
+\end{lstlisting}
+\end{minipage}
+
+This is a positional parse, not a grammatical parser or an intention catalogue. It is valuable as a stable extension seam: a future parser can replace or enrich \texttt{DialogueIntent} while retaining the command boundary and request lifecycle.
+
+\subsection{Participant-local state and memory}
+
+Each \texttt{Participant} owns independent predicates, reply history, and a \texttt{TrajectoryHistory}. The history is bounded to 128 indications and is written as JSON by the runtime under:
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}
+bin/<configuration>/net10.0/data/trajectories/<safe-participant-name>.json
+\end{lstlisting}
+\end{minipage}
+
+The bounded history avoids unbounded in-memory growth. It is not semantic memory in the human sense: it records interactions and supports specific implemented queries, notably repeated-input response selection.
+
+\subsection{Mood and explicit learning}
+
+\texttt{MoodState} implements the patent Table~1 wheel: eight parent feelings, each with seven child moods. A standalone mood state begins with all parent indicators off. An \texttt{Aeon} initializes one current mood randomly, and code or \texttt{/mood} can set it explicitly.
+
+The base emotive weight is the mood's fixed wheel position normalized to $(0,1]$. \texttt{EmotiveWeightModel} can calibrate that value with explicit participant feedback. Its update is a transparent running average:
+
+\[
+w_{n+1} = w_n + \frac{r - w_n}{\min(n+1,1024)}, \qquad 0 \leq r \leq 1.
+\]
+
+Here $r$ is the value supplied by \texttt{/trainmood}; the cap limits the influence of any one late observation without pretending to be a neural-network trainer. Weights persist at \texttt{data/emotive-weights.json}. No hidden model is trained, and feedback should be intentional, reviewable, and appropriate to the deployment context.
+
+\subsection{Instructional displacement}
+
+\texttt{InstructionalDisplacementClassifier} creates a record with a trajectory coordinate $x$, emotive weight $y$, execution-time seconds $t$, an equation value, a characteristic block, and extracted instruction tags. The safe arithmetic evaluator accepts only:
+
+\begin{center}
+\texttt{+ - * / \^{} ( ) x y t} and implicit multiplication such as \texttt{3x}.
+\end{center}
+
+For example:
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}
+p(x) = 1 + 3x + x^2 + 2x^3 + y + t
+\end{lstlisting}
+\end{minipage}
+
+The optional left-hand side is ignored. Function calls, member access, and non-arithmetic syntax are rejected. Tags from the matched template are normalized, sorted, recorded, and included in the stable construction of $x$. The result is mapped into one of the ten \texttt{Characteristic} values.
+
+The classifier operates after the current response is produced. A \texttt{characteristic} response constraint therefore uses the \emph{preceding} result's block on the next interaction.
+
+\subsection{Output adapters}
+
+The library defines \texttt{OutputPresentation}, \texttt{IOutputAdapter}, and \texttt{OutputDispatcher}. A presentation contains speaker, text, requested modalities, optional emotive indication, and optional instructional displacement. The bundled \texttt{TerminalOutputAdapter} supports only text. Voice, tactile, gesture, animation, and hardware are contracts for extension; they are not bundled device implementations.
+
+\section{Personality authoring}
+
+\subsection{Categories}
+
+Personality files are XML \texttt{.aeon} files. A simple category maps a pattern to a template:
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=XML]
+<category>
+  <pattern>HELLO</pattern>
+  <template>Hello. How can I help?</template>
+</category>
+\end{lstlisting}
+\end{minipage}
+
+Patterns are normalized into trajectories by the loader. The interpreter also supplies context components such as \texttt{<that>} and \texttt{<topic>}. Study the existing files in \texttt{Aeon.Runtime/personality/rhodo} before extending a production personality; matching precedence and broad wildcard categories matter.
+
+\subsection{Feedback-aware random variants}
+
+A normal \texttt{<random>} remains random when none of its \texttt{<li>} elements have feedback attributes. An annotated random block instead selects the first eligible variant with the highest number of constraints. An unannotated item is the explicit fallback.
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=XML]
+<random>
+  <li>I can say more.</li>
+  <li mood="Happy:Charmed">I am especially delighted to continue.</li>
+  <li trajectory="repeat">You asked that before; here is another angle.</li>
+  <li characteristic="Attention">Let us focus on the important part.</li>
+  <li mood="Happy:Charmed" trajectory="repeat">
+    I remember that question and am glad to revisit it.
+  </li>
+</random>
+\end{lstlisting}
+\end{minipage}
+
+The contracts are strict:
+
+\begin{itemize}
+  \item \texttt{mood} is \texttt{ParentFeeling:ChildMood}, for example \texttt{Happy:Charmed}.
+  \item \texttt{trajectory} is exactly \texttt{repeat}; it checks prior raw input history after trimming and case normalization.
+  \item \texttt{characteristic} is a \texttt{Characteristic} enum name, for example \texttt{Attention}.
+\end{itemize}
+
+Malformed attributes are XML processing errors. Do not use an annotation as a substitute for validation or safety policy.
+
+\subsection{Reviewed learning}
+
+The terminal \texttt{learn} flow asks for a literal phrase and literal response, displays a review, and saves only after the user types \texttt{yes}. Blank values, wildcards, control characters, and unconfirmed entries are rejected. Generated categories are local and use unique filenames. Treat learned content as user-supplied data: review it, test it, and do not use it to grant access to privileged behavior.
+
+\section{Writing extensions}
+
+\subsection{Add an output adapter}
+
+An adapter implements \texttt{IOutputAdapter}. The following minimal example records animation requests; a real adapter should add device lifecycle, error handling, rate limiting, and tests.
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language={[Sharp]C}]
+using Aeon.Library;
+
+public sealed class RecordingAnimationAdapter : IOutputAdapter
+{
+    public OutputModality SupportedModalities => OutputModality.Animation;
+
+    public void Present(OutputPresentation presentation)
+    {
+        var mood = presentation.EmotiveIndication?.Mood ?? "Neutral";
+        var block = presentation.InstructionalDisplacement?.Block.ToString() ?? "None";
+        Console.WriteLine($"Animate {mood}, block {block}: {presentation.Text}");
+    }
+}
+\end{lstlisting}
+\end{minipage}
+
+Register it in the host's dispatcher and request \texttt{OutputModality.Animation} for presentations intended for it. Keep hardware adapters outside the core library when they depend on device SDKs.
+
+\subsection{Add a command}
+
+Commands are implemented in \texttt{Aeon.ExecuteCommand}. Preserve these rules:
+
+\begin{enumerate}
+  \item Accept only a clearly documented command name and bounded argument grammar.
+  \item Validate every argument before changing state.
+  \item Return a participant-facing result instead of throwing for ordinary misuse.
+  \item Add smoke coverage for valid, invalid, and boundary input.
+  \item Persist state only through a deliberate, atomic model such as \texttt{TrajectoryHistory.Save} or \texttt{EmotiveWeightModel.Save}.
+\end{enumerate}
+
+For example, a command that changes a predicate should allow an explicit whitelist of predicate names rather than accepting arbitrary filesystem paths, XML, reflection targets, or shell text.
+
+\subsection{Add a template tag}
+
+Template tags are handled through \texttt{Aeon.ProcessNode} and the classes in \texttt{Aeon.Library/Interpreter}. Follow an existing handler such as \texttt{Get}, \texttt{Set}, or \texttt{RandomTag}. Tags execute in the conversation process, so they must be bounded, deterministic where possible, and defensive around XML attributes and participant input. The tag extractor will automatically record a new XML element name from the matched template; decide deliberately whether that tag should influence classification.
+
+\subsection{Extend the classifier safely}
+
+Do not replace the arithmetic parser with arbitrary code evaluation. If a new variable is needed, add it as an explicit coordinate with a documented source, range, serialization behavior, and smoke test. Keep the evaluator's syntax small enough that a user can predict its behavior from the configuration file.
+
+\section{Configuration, persistence, and diagnostics}
+
+The primary runtime settings are in \texttt{Aeon.Runtime/config/settings.xml}. Important entries include personality directories, language resources, timeout values, alone-state timing, terminal mode, and \texttt{emotiveequation}. During build, configuration and personality assets are copied beside the executable.
+
+Runtime output normally appears below:
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}
+Aeon.Runtime/bin/<configuration>/net10.0/
+  config/
+  personality/
+  logs/
+  data/trajectories/
+  data/emotive-weights.json
+\end{lstlisting}
+\end{minipage}
+
+The transcript is human-readable; trajectory and emotive-weight files are JSON. Back up the \texttt{data} directory before experiments that train moods or learn categories. Do not edit JSON while the runtime is writing it.
+
+\section{Testing and development workflow}
+
+Before committing an interpreter, state-model, or adapter change:
+
+\begin{enumerate}
+  \item Run the smoke program.
+  \item Build both \texttt{Aeon.Library} and \texttt{Aeon.Runtime}.
+  \item Run a terminal session with the relevant personality and manually exercise the changed path.
+  \item Check formatting with \texttt{git diff --check}.
+  \item Add or update the implementation tally when behavior-level evidence changes.
+\end{enumerate}
+
+The smoke program is intentionally direct. It validates state isolation, history persistence, learned-content validation, mood and weight behavior, command routing, feedback constraints, classifier safety, and adapter routing. Use it as a model for compact regression checks; keep tests deterministic and avoid depending on external devices or network services.
+
+\section{Troubleshooting}
+
+\begin{longtable}{p{0.32\linewidth}p{0.60\linewidth}}
+\toprule
+Symptom & Checks \\
+\midrule
+\endhead
+No response to dialogue & Confirm a personality loaded, inspect terminal logs, and ensure a matching category or wildcard fallback exists. \\
+Command is treated as dialogue & Use a leading slash and a name matching \texttt{/}[letter][letter/digit/hyphen]\texttt{*}. \\
+Annotated random response never appears & Check exact mood pair, whether the input really occurred in persisted prior history, and whether the preceding result has the requested characteristic block. \\
+\texttt{/trainmood} is rejected & Supply one invariant-culture number between 0 and 1, and ensure a current mood exists. \\
+Weight disappears after restart & Verify the runtime can write its \texttt{data} directory and inspect \texttt{data/emotive-weights.json}. \\
+Equation does not classify & Use only supported arithmetic and variables \texttt{x}, \texttt{y}, and \texttt{t}; inspect logs for configuration errors. \\
+Device output does nothing & Only the terminal text adapter is bundled. Register and test a concrete adapter for the requested modality. \\
+\bottomrule
+\end{longtable}
+
+\section{Responsible extension}
+
+Aeon can retain participant text, learned categories, and explicit feedback. Deploy it only with an appropriate data-retention policy, participant notice, access control, and review process. Keep commands narrow, avoid connecting device adapters to unsafe actuators without independent safeguards, and do not interpret affective labels or classifier blocks as evidence of sentience or reliable psychological assessment.
+
+\section{Further reading}
+
+The repository retains historical and technical references in \texttt{docs/patent}, \texttt{docs/development}, and \texttt{docs/validation}. The current engineering status and capability boundaries are maintained in \texttt{IMPLEMENT-PATENT.md}. Read that document alongside this manual when planning changes: this manual teaches operation and extension, while the tally records which described capabilities are actually implemented.
+
+\end{document}

@@ -16,6 +16,7 @@ The runtime loads a configured personality and supports terminal conversations. 
 | `Aeon.Runtime` | .NET console host, configuration, personalities, and runtime assets. |
 | `Aeon.Library.SmokeTests` | Dependency-free regression checks for core library contracts. |
 | `docs` | Reference material, validation documents, patent material, and development notes. |
+| `docs/user-manual` | Central LaTeX user, architecture, authoring, and extension manual. |
 | `media` | Demonstration media. |
 
 ## Run Aeon
@@ -45,6 +46,10 @@ The smoke tests currently cover participant-state isolation and request ownershi
 - Participant predicates are private to each conversation; one participant's state does not affect another's.
 - Startup exits clearly when required configuration or personality categories cannot be loaded.
 - The interpreter uses pattern-based rules; personality data should be reviewed and tested with the behavior it is intended to produce.
+
+## User manual
+
+The central guide for operation, theory, personality authoring, commands, state, extension code, testing, and responsible deployment is [the Aeon User Manual](docs/user-manual/Aeon-User-Manual.tex). Build it with `pdflatex` from `docs/user-manual`; that directory's [README](docs/user-manual/README.md) includes the exact command.
 
 ## Project history
 
