@@ -50,6 +50,15 @@ The smoke tests currently cover participant-state isolation and request ownershi
 
 Aeon originated as a conversational software project in 2003 and has been developed across several software and hardware experiments. Its current focus is a maintainable .NET runtime and a high-quality interactive experience. Historical reference material is retained in [`docs`](docs/).
 
+## Support Aeon
+
+Support helps sustain Aeon's research, maintenance, and demonstrations. Choose the option that works best for you:
+
+- [Sponsor Cartheur on Patreon](https://www.patreon.com/cartheur)
+- [Support Cartheur on Liberapay](https://liberapay.com/cartheur)
+
+GitHub also surfaces these options from the repository's **Sponsor** menu.
+
 ## License
 
 Aeon is provided under the [Aeon Proprietary Reference-Only License](LICENSE). It may be viewed, studied, and evaluated for personal or internal reference; other use requires prior written permission from Cartheur.
