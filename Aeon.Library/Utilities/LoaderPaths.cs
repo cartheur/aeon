@@ -132,5 +132,20 @@ namespace Aeon.Library
             }
         }
 
+        /// <summary>
+        /// Returns the local JSON path used to retain a participant's trajectory history.
+        /// </summary>
+        /// <param name="participantName">The participant whose history is being retained.</param>
+        /// <returns>A safe, participant-specific JSON file path.</returns>
+        public string PathToTrajectoryHistory(string participantName)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(participantName);
+            string safeName = string.Concat(participantName.Select(character =>
+                char.IsLetterOrDigit(character) || character == '-' || character == '_'
+                    ? character
+                    : '_'));
+            return Path.Combine(ActiveRuntime, "data", "trajectories", safeName + ".json");
+        }
+
     }
 }

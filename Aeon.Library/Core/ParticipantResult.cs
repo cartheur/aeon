@@ -42,9 +42,9 @@ namespace Aeon.Library
         /// </summary>
         public DateTime LastMessageTime;
         /// <summary>
-        /// Todo: Something which helps the program evolve from its own knowledge paths.
+        /// The durable trajectory indication recorded for this result.
         /// </summary>
-        //public Indication TrajectoryIndication { get; set; }
+        public TrajectoryIndication TrajectoryIndication { get; private set; }
         /// <summary>
         /// Gets or sets the trajectory indication value.
         /// </summary>
@@ -151,23 +151,21 @@ namespace Aeon.Library
             }
             return false;
         }
-        //Todo: Drawing 300, Feature 307.
         /// <summary>
-        /// Returns the trajectory indication.
+        /// Creates and retains the trajectory indication for this interaction.
         /// </summary>
-        /// <remarks>Emotive indication in <see cref="Mood"/>, trajectory indication here.</remarks>
         public void ReturnIndication()
         {
-            //TrajectoryIndication = new Indication(Boagaphish.Numeric.TransferFunction.BipolarSigmoid, EquationTrajectory)
-            //{
-               // WindowSize = Convert.ToInt32(ThisAeon.GlobalSettings.GrabSetting("windowsize")),
-                //Iterations = Convert.ToInt32(ThisAeon.GlobalSettings.GrabSetting("iterations"))
-            //};
-            // Using a simple polynomial expression to create maps in the "brain".
-            //TrajectoryIndication.TrajectoryPolynomial();
-            // Using an aggressive solution search for the trajectory indication.
-            //var trainingError = TrajectoryIndication.TrainNetwork();
-            //TrajectoryIndicationValue = TrajectoryIndication.SearchSolution();
+            var indication = new TrajectoryIndication
+            {
+                RecordedAtUtc = DateTime.UtcNow,
+                RawInput = ParticipantRequest.RawInput,
+                Paths = NormalizedTrajectories.ToList(),
+                ResponseSentences = OutputSentences.ToList(),
+                TimedOut = ParticipantRequest.HasTimedOut
+            };
+            ThisParticipant.TrajectoryHistory.Add(indication);
+            TrajectoryIndication = indication;
         }
     }
 }

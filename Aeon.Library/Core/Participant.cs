@@ -39,6 +39,10 @@ namespace Aeon.Library
 		/// </summary>
         public SettingsDictionary Predicates;
         /// <summary>
+        /// The bounded, private history of trajectory indications for this participant.
+        /// </summary>
+        public TrajectoryHistory TrajectoryHistory { get; } = new TrajectoryHistory();
+        /// <summary>
         /// The most recent result to be returned by aeon.
         /// </summary>
         public ParticipantResult LastAeonReply

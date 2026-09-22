@@ -44,6 +44,7 @@ namespace Aeon.Runtime
         public static string AeonType { get; set; }
         public static bool AeonIsAlone { get; set; }
         public static string AloneTextCurrent { get; set; }
+        private static readonly object TerminalOutputLock = new object();
 
         static async Task Main(string[] args)
         {
@@ -118,6 +119,7 @@ namespace Aeon.Runtime
             // Attach logging,  xms functionality, and spontaneous file generation.
             Logging.LogModelFile = _thisAeon.GlobalSettings.GrabSetting("logmodelfile");
             Logging.TranscriptModelFile = _thisAeon.GlobalSettings.GrabSetting("transcriptmodelfile");
+            LoadTrajectoryHistory();
             // Set the aeon type by personality.
             switch (_thisAeon.Name)
             {
@@ -188,6 +190,32 @@ namespace Aeon.Runtime
             await ProcessInput();
             return true;
         }
+        static void LoadTrajectoryHistory()
+        {
+            try
+            {
+                string path = Configuration.PathToTrajectoryHistory(_thisParticipant.Name);
+                if (_thisParticipant.TrajectoryHistory.Load(path))
+                {
+                    Logging.WriteLog("Loaded " + _thisParticipant.TrajectoryHistory.Indications.Count + " trajectory indications.", Logging.LogType.Information, Logging.LogCaller.AeonRuntime);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logging.WriteLog("Could not load trajectory history: " + ex.Message, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime);
+            }
+        }
+        static void SaveTrajectoryHistory()
+        {
+            try
+            {
+                _thisParticipant.TrajectoryHistory.Save(Configuration.PathToTrajectoryHistory(_thisParticipant.Name));
+            }
+            catch (Exception ex)
+            {
+                Logging.WriteLog("Could not save trajectory history: " + ex.Message, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime);
+            }
+        }
         // Once a mood state is realized, how does it influence the conversation?
         static async Task<bool> ProcessInput(string returnFromProcess = "")
         {
@@ -213,6 +241,7 @@ namespace Aeon.Runtime
                 _thisAeon.AeonAloneStartedOn = DateTime.Now;
                 AeonIsAlone = false;
                 AeonResult = _thisResult.Output;// Here is what the aeon has said.
+                SaveTrajectoryHistory();
                 if (LearningModeActive)
                 {                       
                 if (ParticipantInput.Equals("learn", StringComparison.OrdinalIgnoreCase))
@@ -293,6 +322,15 @@ namespace Aeon.Runtime
 
             PreviousAloneMessageOutput = AloneMessageOutput;
             AloneTextCurrent = _thisAeon.GlobalSettings.GrabSetting("alonemessage" + AloneMessageOutput);
+            if (AloneTextCurrent.Length > 0)
+            {
+                string prompt = AlonePrompt.Format(_thisAeon.Name, AloneTextCurrent);
+                lock (TerminalOutputLock)
+                {
+                    Console.WriteLine(prompt);
+                }
+                Logging.RecordTranscript(prompt);
+            }
         }
         #endregion
     }
