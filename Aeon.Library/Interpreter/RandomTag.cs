@@ -1,12 +1,13 @@
 //
-// Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
+// Copyright 2003-2026 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
 using System.Xml;
 
 namespace Aeon.Library
 {
     /// <summary>
-    /// The random element instructs the interpreter to return exactly one of its contained li elements randomly. The random element must contain one or more li elements of type defaultListItem, and cannot contain any other elements.
+    /// The random element normally returns one of its contained li elements randomly. A list item may opt into
+    /// deterministic feedback selection with mood="ParentFeeling:ChildMood" and/or trajectory="repeat".
     /// </summary>
     public class RandomTag : AeonHandler
     {
@@ -47,13 +48,53 @@ namespace Aeon.Library
                     }
                     if (listNodes.Count > 0)
                     {
-                        var r = new Random();
-                        XmlNode chosenNode = listNodes[r.Next(listNodes.Count)];
-                        return chosenNode.InnerXml;
+                        if (!listNodes.Any(HasFeedbackConstraint))
+                        {
+                            return listNodes[Random.Shared.Next(listNodes.Count)].InnerXml;
+                        }
+
+                        ResponseVariant[] variants = listNodes.Select(CreateVariant).ToArray();
+                        FeedbackSelection selection = FeedbackResponseSelector.Select(
+                            variants,
+                            ThisAeon.Mood,
+                            ThisParticipant.TrajectoryHistory,
+                            ParticipantRequest.RawInput);
+                        return selection?.Variant.Content ?? string.Empty;
                     }
                 }
             }
             return string.Empty;
+        }
+
+        private static bool HasFeedbackConstraint(XmlNode node)
+        {
+            return node.Attributes?["mood"] != null || node.Attributes?["trajectory"] != null;
+        }
+
+        private static ResponseVariant CreateVariant(XmlNode node)
+        {
+            string moodConstraint = node.Attributes?["mood"]?.Value;
+            string trajectoryConstraint = node.Attributes?["trajectory"]?.Value;
+            bool requiresRepeatedTrajectory = false;
+            if (!string.IsNullOrWhiteSpace(trajectoryConstraint))
+            {
+                if (!string.Equals(trajectoryConstraint, "repeat", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new XmlException("The random li trajectory attribute must be 'repeat'.");
+                }
+                requiresRepeatedTrajectory = true;
+            }
+            if (string.IsNullOrWhiteSpace(moodConstraint))
+            {
+                return new ResponseVariant(node.InnerXml, requiresRepeatedTrajectory: requiresRepeatedTrajectory);
+            }
+
+            string[] parts = moodConstraint.Split(':', StringSplitOptions.TrimEntries);
+            if (parts.Length != 2 || !Enum.TryParse(parts[0], true, out ParentFeeling parentFeeling))
+            {
+                throw new XmlException("The random li mood attribute must be 'ParentFeeling:ChildMood'.");
+            }
+            return new ResponseVariant(node.InnerXml, parentFeeling, parts[1], requiresRepeatedTrajectory);
         }
     }
 }

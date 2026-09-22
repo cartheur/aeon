@@ -1,5 +1,5 @@
 //
-// Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
+// Copyright 2003-2026 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
 using System.Text;
 
@@ -45,6 +45,10 @@ namespace Aeon.Library
         /// The durable trajectory indication recorded for this result.
         /// </summary>
         public TrajectoryIndication TrajectoryIndication { get; private set; }
+        /// <summary>
+        /// The Fig. 7 classifier result for this interaction, when the configured characteristic equation is valid.
+        /// </summary>
+        public InstructionalDisplacement InstructionalDisplacement { get; internal set; }
         /// <summary>
         /// Gets or sets the trajectory indication value.
         /// </summary>

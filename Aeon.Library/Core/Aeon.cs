@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
+// Copyright 2003-2026 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
 using System.Globalization;
 using System.Reflection;
@@ -264,6 +264,11 @@ namespace Aeon.Library
         /// </value>
         public bool EmotionUsed { get; set; }
         /// <summary>
+        /// Drawing 400. The aeon's current mood wheel and its deterministic emotive indication.
+        /// Response selection does not yet consume this state.
+        /// </summary>
+        public MoodState Mood { get; }
+        /// <summary>
         /// Flag to indicate if a personality is loaded.
         /// </summary>
         public static bool PersonalityLoaded;
@@ -275,6 +280,7 @@ namespace Aeon.Library
         {
             CharacteristicEquation = characteristicEquation;
             Setup();
+            Mood = MoodState.Create();
         }
 
         void Setup()
@@ -596,10 +602,17 @@ namespace Aeon.Library
             {
                 result.OutputSentences.Add(NotAcceptingInputMessage);
             }
-            // Return the indication from the process.
-            result.ReturnIndication();
             // Populate the result object and note the performance.
             result.Duration = DateTime.Now - request.StartedOn;
+            // Return the indication from the process before correlating it with the current emotive indication.
+            result.ReturnIndication();
+            InstructionalDisplacementClassifier.TryClassify(
+                CharacteristicEquation,
+                result.TrajectoryIndication,
+                Mood.GetCurrentIndication(),
+                result.Duration,
+                out InstructionalDisplacement displacement);
+            result.InstructionalDisplacement = displacement;
             request.ThisParticipant.AddResult(result);
 
             return result;

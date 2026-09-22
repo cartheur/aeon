@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
+// Copyright 2003-2026 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
 // Learning mode is active.
 //
@@ -44,7 +44,7 @@ namespace Aeon.Runtime
         public static string AeonType { get; set; }
         public static bool AeonIsAlone { get; set; }
         public static string AloneTextCurrent { get; set; }
-        private static readonly object TerminalOutputLock = new object();
+        private static readonly OutputDispatcher Output = new OutputDispatcher(new IOutputAdapter[] { new TerminalOutputAdapter() });
 
         static async Task Main(string[] args)
         {
@@ -92,6 +92,7 @@ namespace Aeon.Runtime
             StartUpTheme = Convert.ToBoolean(_thisAeon.GlobalSettings.GrabSetting("startuptheme"));
             StartUpThemeFile = _thisAeon.GlobalSettings.GrabSetting("startupthemefile");
             EmotiveEquation = _thisAeon.GlobalSettings.GrabSetting("emotiveequation");
+            _thisAeon.CharacteristicEquation = EmotiveEquation;
             TerminalMode = Convert.ToBoolean(_thisAeon.GlobalSettings.GrabSetting("terminalmode"));
             // Initialize the alone feature.
             _thisAeon.AeonAloneTimer = new System.Timers.Timer();
@@ -237,7 +238,12 @@ namespace Aeon.Runtime
                 _thisRequest = new ParticipantRequest(rawInput, _thisParticipant, _thisAeon);
                 _thisResult = _thisAeon.Chat(_thisRequest);
                 await Task.Delay(200);
-                Console.WriteLine(_thisAeon.Name + ": " + _thisResult.Output);
+                Output.Present(new OutputPresentation(
+                    _thisAeon.Name,
+                    _thisResult.Output,
+                    OutputModality.Text,
+                    _thisAeon.Mood.GetCurrentIndication(),
+                    _thisResult.InstructionalDisplacement));
                 Logging.RecordTranscript(_thisParticipant.Name + ": " + rawInput);
                 Logging.RecordTranscript(_thisAeon.Name + ": " + _thisResult.Output);
                 _aeonChatDuration = DateTime.Now - _aeonChatStartedOn;
@@ -357,10 +363,11 @@ namespace Aeon.Runtime
             if (AloneTextCurrent.Length > 0)
             {
                 string prompt = AlonePrompt.Format(_thisAeon.Name, AloneTextCurrent);
-                lock (TerminalOutputLock)
-                {
-                    Console.WriteLine(prompt);
-                }
+                Output.Present(new OutputPresentation(
+                    _thisAeon.Name,
+                    AloneTextCurrent,
+                    OutputModality.Text,
+                    _thisAeon.Mood.GetCurrentIndication()));
                 Logging.RecordTranscript(prompt);
             }
         }

@@ -1,113 +1,164 @@
 # Patent implementation tally
 
-Baseline assessment of `docs/patent/US20180204107A1.pdf` against this repository's executable .NET runtime.
+Engineering assessment of `docs/patent/US20180204107A1.pdf` against this repository's checked-in .NET runtime, reconciled after implementation steps 1–7.
 
-**Current implementation completeness: 54% (18.5 of 34 weighted feature units).**
+**Current implementation completeness: 82% (28.0 of 34 weighted feature units).**
 
-This is an engineering progress tally, not a legal claim chart or an opinion about patent scope, validity, or infringement. It tracks the technical capabilities described by the patent drawings and claims. A feature counts as:
+This is an engineering progress tally, not a legal claim chart or an opinion about patent scope, validity, or infringement. It measures executable capabilities only:
 
-- **Complete (1.0):** executable behavior with a direct implementation in the checked-in runtime.
-- **Partial (0.5):** a working subset or a connected implementation that does not meet the described behavior.
-- **Not implemented (0.0):** only a declaration, setting, comment, TODO, or no corresponding code.
+- **Complete (1.0):** checked-in behavior implements the capability and is covered by a focused smoke assertion where practical.
+- **Partial (0.5):** a connected subset, contract, or recorded result exists, but an important part of the described behavior is absent.
+- **Not implemented (0.0):** only a declaration, configuration value, comment, TODO, or no corresponding code exists.
 
-The denominator deliberately excludes generic details that are not independently testable (for example, ordinary time passing or a generic hardware host), and it avoids double-counting the same capability where a later claim repeats it.
+The 34-unit baseline excludes generic execution details and avoids counting the same behavior twice when it appears in multiple figures or claims.
 
 ## Snapshot by patent drawing
 
 | Drawing / area | Units | Complete | Partial | Score | Completion |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Fig. 1 — presence, startup, interaction flow | 7 | 6 | 0 | 6.0 | 86% |
+| Fig. 1 — presence, startup, interaction flow | 7 | 7 | 0 | 7.0 | 100% |
 | Fig. 2 — input processing | 5 | 3 | 1 | 3.5 | 70% |
-| Fig. 3 — trajectory processing and learning | 5 | 3 | 1 | 3.5 | 70% |
-| Fig. 4 — emotional engine | 4 | 0 | 0 | 0.0 | 0% |
-| Fig. 5 — output/embodiment | 5 | 1 | 0 | 1.0 | 20% |
+| Fig. 3 — trajectory processing and learning | 5 | 4 | 0 | 4.0 | 80% |
+| Fig. 4 — emotional engine | 4 | 3 | 1 | 3.5 | 88% |
+| Fig. 5 — output and embodiment | 5 | 1 | 4 | 3.0 | 60% |
 | Fig. 6 — alone state and response memory | 4 | 4 | 0 | 4.0 | 100% |
-| Fig. 7 — instructional displacement | 4 | 0 | 1 | 0.5 | 13% |
-| **Total** | **34** | **17** | **3** | **18.5** | **54%** |
+| Fig. 7 — instructional displacement | 4 | 2 | 2 | 3.0 | 75% |
+| **Total** | **34** | **24** | **8** | **28.0** | **82%** |
 
-Fig. 6 is now complete for this narrow tally: a configured prompt is emitted to the terminal and written to the transcript after alone detection. The stored history still does **not** influence behavior; that capability belongs to the separate Fig. 3 trajectory work.
+## Executable interaction path
+
+```text
+participant input
+  -> normalized trajectory and category match
+  -> template response
+  -> trajectory indication and bounded persisted history
+  -> optional annotated <random> feedback selection (prior history + current mood)
+  -> instructional-displacement record (x, y, t, characteristic block)
+  -> OutputDispatcher -> TerminalOutputAdapter
+```
+
+The current trajectory is appended after its template has been processed. Therefore `trajectory="repeat"` compares the new raw input with prior participant history, not with itself. The classifier and output adapters record and receive contextual state; they do not rewrite a generated response.
 
 ## Evidence and status
 
-### Fig. 1 — presence, startup, and interaction flow (6.0 / 7)
+### Fig. 1 — presence, startup, and interaction flow (7.0 / 7)
 
 | Capability | Status | Evidence |
 | --- | --- | --- |
-| Presence/runtime object | Complete | `Aeon.Library/Core/Aeon.cs` defines the `Aeon` runtime object. |
-| Startup and configuration load | Complete | `Aeon.Runtime/Program.cs` loads settings and dictionaries before accepting input. |
-| File-backed personality load | Complete | `Aeon.Library/Utilities/AeonLoader.cs` deterministically loads `*.aeon` files. |
-| Participant model | Complete | `Aeon.Library/Core/Participant.cs` represents the interacting participant. |
-| Verbal/text interaction | Complete | `Aeon.Runtime/Program.cs` reads terminal input and sends it through `Aeon.Chat`. |
-| Text response presentation | Complete | `Aeon.Runtime/Program.cs` writes `ParticipantResult.Output` to the console. |
-| Feedback affecting the next execution cycle | Not implemented | Logging exists, but no executed feedback path changes matching, trajectory, mood, or output selection. |
+| Presence/runtime object | Complete | `Aeon.Library/Core/Aeon.cs` defines the runtime object and owns mood and characteristic-equation state. |
+| Startup and configuration load | Complete | `Aeon.Runtime/Program.cs` loads settings and dictionaries before accepting interaction; it applies `emotiveequation` as `CharacteristicEquation`. |
+| File-backed personality load | Complete | `Aeon.Library/Utilities/AeonLoader.cs` loads `*.aeon` categories into the matcher. |
+| Participant model | Complete | `Aeon.Library/Core/Participant.cs` holds participant-local predicates, replies, and trajectory history. |
+| Verbal/text interaction | Complete | The terminal host reads input and calls `Aeon.Chat`. |
+| Text response presentation | Complete | `OutputDispatcher` routes an `OutputPresentation` to the active `TerminalOutputAdapter`. |
+| Feedback affecting a later execution cycle | Complete | `FeedbackResponseSelector` can select an annotated random-response variant from prior trajectory history and current mood. |
 
 ### Fig. 2 — input processing (3.5 / 5)
 
 | Capability | Status | Evidence |
 | --- | --- | --- |
-| Receive and normalize textual input | Complete | `ParticipantRequest` and the normalizer pipeline prepare terminal input for matching. |
-| Discover and search response categories | Complete | `AeonLoader.GenerateTrajectory` builds paths and the core node matcher resolves categories. |
-| Execute response/template instructions | Complete | The interpreter handlers process template tags such as `condition`, `set`, `srai`, and `think`. |
-| Explicit command-versus-dialogue routing | Partial | Interpreter tags provide instruction behavior, but the runtime does not implement the patent's separate command detection and instruction-processing branch. |
-| Subject–verb–predicate/intention parse | Not implemented | No parser or intent model corresponding to Fig. 2's syntax parse and intention catalogue is executed. |
+| Receive and normalize textual input | Complete | `ParticipantRequest`, `SplitIntoSentences`, and the normalizer pipeline prepare textual input. |
+| Discover and search response categories | Complete | `AeonLoader.GenerateTrajectory` builds paths and `Node.Evaluate` resolves categories. |
+| Execute response/template instructions | Complete | Interpreter handlers process template tags including `condition`, `set`, `srai`, `think`, and `random`. |
+| Explicit command-versus-dialogue routing | Partial | Template instructions exist, but there is no dedicated command detector and separate instruction-processing branch. |
+| Subject–verb–predicate/intention parse | Not implemented | No syntactic parser or intention catalogue is executed. |
 
-### Fig. 3 — trajectory processing, storage, and learning (3.5 / 5)
-
-| Capability | Status | Evidence |
-| --- | --- | --- |
-| Categorical input path (“trajectory”) | Complete | `ParticipantQuery.Trajectory` and `AeonLoader.GenerateTrajectory` create and use a normalized matching path. |
-| Trajectory indication/encapsulation | Complete | `ParticipantResult.ReturnIndication` creates a serializable `TrajectoryIndication` with raw input, normalized paths, response sentences, timeout state, UTC timestamp, and an ordered sequence number. |
-| Ordered trajectory memory used for later context | Partial | Each participant now has a bounded 128-entry JSON history, reloaded at runtime startup and saved after each interaction. The interpreter does not yet use history to alter matching or decisions. |
-| Neural-network weighting/training | Not implemented | No neural-network implementation or invocation is present; the only proposed calls are commented out in `ReturnIndication`. |
-| Runtime growth by writing and reloading learned files | Complete | `learn` opens a participant-driven review flow: a literal phrase and response are validated, previewed, explicitly confirmed, saved to a unique local `.aeon` file, then loaded into the current runtime. Wildcards, blank values, control characters, and unconfirmed entries are rejected. |
-
-### Fig. 4 — emotional engine (0.0 / 4)
+### Fig. 3 — trajectory processing, storage, and learning (4.0 / 5)
 
 | Capability | Status | Evidence |
 | --- | --- | --- |
-| Parent-feeling/child-mood inventory | Not implemented | No Table 1 emotion/mood model is represented in executable code. |
-| Create and update a current mood | Not implemented | `emotionused` is read from configuration, but no current mood state is created or updated. |
-| Emotive indication/weighting | Not implemented | There is no emotive indication calculation or neural weighting. |
-| Mood filters or changes a response | Not implemented | `Program.cs` notes this question, but output selection does not consume mood. |
+| Categorical input path (“trajectory”) | Complete | `ParticipantQuery.Trajectory` and `AeonLoader.GenerateTrajectory` create and use normalized matching paths. |
+| Trajectory indication/encapsulation | Complete | `ParticipantResult.ReturnIndication` records raw input, paths, response sentences, timeout state, UTC timestamp, and sequence. |
+| Ordered trajectory memory used for later context | Complete | `TrajectoryHistory` is bounded to 128 entries, persisted by the runtime, and queried by `trajectory="repeat"`. |
+| Neural-network weighting/training | Not implemented | There is no neural-network implementation, trained model, or invocation. |
+| Runtime growth by writing and reloading learned files | Complete | `learn` validates and previews a literal phrase/response pair, requires confirmation, saves a unique local `.aeon` file, and loads it into the active runtime. |
 
-### Fig. 5 — output and embodiment (1.0 / 5)
+### Fig. 4 — emotional engine (3.5 / 4)
 
 | Capability | Status | Evidence |
 | --- | --- | --- |
-| Textual response output | Complete | The terminal runtime displays the generated response. |
-| Voice/audial output | Not implemented | Startup audio is a placeholder and no speech synthesis or audio-response adapter is executed. |
-| Tactile/vibrational output | Not implemented | No adapter or device-control implementation exists. |
-| Gesture/animation output | Not implemented | No visual, gestural, or animation response pipeline exists. |
-| Robot/external-hardware interaction | Not implemented | No device interface is wired into the runtime. |
+| Parent-feeling/child-mood inventory | Complete | `MoodState.Catalog` contains all eight parent feelings and seven Table 1 child moods per parent. |
+| Create and update a current mood | Complete | A standalone `MoodState` begins with each parent off; each `Aeon` creates a constrained random current mood and supports explicit or constrained updates while retaining per-parent 1–7 indicators. |
+| Emotive indication/weighting | Partial | `MoodState` emits a stable normalized wheel-position weight. It is not neural-network weighting. |
+| Mood filters or changes a response | Complete | An annotated `<random><li mood="ParentFeeling:ChildMood">` is eligible only for the matching current mood. |
+
+### Fig. 5 — output and embodiment (3.0 / 5)
+
+| Capability | Status | Evidence |
+| --- | --- | --- |
+| Textual response output | Complete | `TerminalOutputAdapter` is registered with the runtime’s `OutputDispatcher` and presents dialogue and alone prompts. |
+| Voice/audial output | Partial | `IOutputAdapter` and `OutputModality.Voice` define a contextual integration contract; no speech engine is included. |
+| Tactile/vibrational output | Partial | `OutputModality.Tactile` is routable; no device adapter is included. |
+| Gesture/animation output | Partial | Distinct `Gesture` and `Animation` modalities can receive emotive and classifier context; no renderer is included. |
+| Robot/external-hardware interaction | Partial | `OutputModality.Hardware` provides the adapter boundary; no hardware driver is included. |
 
 ### Fig. 6 — alone state and response memory (4.0 / 4)
 
 | Capability | Status | Evidence |
 | --- | --- | --- |
-| Configured interval and elapsed-time tracking | Complete | `Program.cs` configures `AeonAloneTimer` from `alonetimecheck` and records `AeonAloneStartedOn`. |
-| Alone detection | Complete | `Aeon.IsAlone` is invoked from the timer event. |
-| Store interaction responses in a non-volatile transcript | Complete | `Logging.RecordTranscript` writes each input and response. |
-| Prompt a participant when alone | Complete | `AeonAloneText` selects an `alonemessage`, formats it with `AlonePrompt`, writes it to the terminal, and records it in the transcript. The smoke tests cover the exact participant-facing format and reject blank messages. |
+| Configured interval and elapsed-time tracking | Complete | The runtime configures `AeonAloneTimer` from `alonetimecheck` and tracks `AeonAloneStartedOn`. |
+| Alone detection | Complete | The timer event calls `Aeon.IsAlone`. |
+| Store interaction responses in non-volatile memory | Complete | `Logging.RecordTranscript` records participant input and Aeon output; `TrajectoryHistory` separately persists structured interaction records. |
+| Prompt a participant when alone | Complete | `AeonAloneText` selects an `alonemessage`, presents it through the terminal adapter, and records the formatted prompt in the transcript. |
 
-### Fig. 7 — instructional displacement (0.5 / 4)
+### Fig. 7 — instructional displacement (3.0 / 4)
 
 | Capability | Status | Evidence |
 | --- | --- | --- |
-| Declared characteristic domains | Partial | `Characteristic` declares the ten domains shown in Fig. 7, but no runtime path assigns or uses them. |
-| Correlate trajectory, mood, and query instruction tags | Not implemented | No execution path combines these inputs. |
-| Produce coordinate values and temporal parameter | Not implemented | No coordinate calculation or execution-time parameterization is implemented. |
-| Characteristic equation/block classifier drives behavior | Not implemented | `CharacteristicEquation` is a property only; there is no evaluator or classifier. |
+| Declared characteristic domains | Complete | `InstructionalDisplacementClassifier` maps a valid equation result into one of the ten `Characteristic` values. |
+| Correlate trajectory, mood, and query instruction tags | Partial | Completed requests supply trajectory and emotive indications; no query instruction-tag extractor or correlator exists. |
+| Produce coordinate values and temporal parameter | Complete | The classifier creates stable trajectory `x`, emotive `y`, and execution-time-seconds `t` coordinates. |
+| Characteristic equation/block classifier drives behavior | Partial | A bounded evaluator supports `+`, `-`, `*`, `/`, `^`, parentheses, `x`, `y`, `t`, and implicit multiplication; it records `InstructionalDisplacement` and supplies it to output presentations, but does not yet alter response selection or an adapter’s visible behavior. Unsupported syntax is rejected without execution. |
 
-## Implementation order suggested by the baseline
+## Implemented configuration and authoring contracts
 
-1. **Completed — Fig. 6 prompt delivery.** The timer-selected message is presented and transcribed; the smoke tests cover its format.
-2. **Completed — Fig. 3 trajectory foundation.** Each interaction creates a serializable indication and appends it to bounded, participant-specific history that is saved and reloaded locally. It does not yet influence selection.
-3. **Completed — reviewed local learning.** `learn` collects and validates a literal phrase/response pair, requires a `yes` review, saves it locally without overwriting prior categories, and loads it into the active runtime.
-4. Implement the **mood/emotive state model** (Fig. 4) before coupling it to response selection.
-5. Connect **trajectory history and mood** to response selection so the new state can influence a response in a constrained, testable feedback loop.
-6. Add the **Fig. 7 equation/classifier** only after trajectory and emotive inputs have concrete, testable representations.
-7. Add output adapters (voice, tactile, gesture, animation, hardware) behind interfaces so the terminal host remains a supported adapter.
+### Feedback variants
 
-## Reassessment rule
+Feedback is opt-in within a standard `<random>` template. A list with no feedback attributes remains random.
 
-Update this document when a feature gains a behavior-level test or when its integration is removed. A new total should preserve the 34-unit baseline unless a capability is split into independently testable units; if it is split, record the reason and recalculate every affected subtotal.
+```xml
+<random>
+  <li>Explicit fallback.</li>
+  <li mood="Happy:Charmed">Mood-specific response.</li>
+  <li trajectory="repeat">Repeated-input response.</li>
+  <li mood="Happy:Charmed" trajectory="repeat">Most-specific response.</li>
+</random>
+```
+
+`mood` must be exactly `ParentFeeling:ChildMood`; `trajectory` must be exactly `repeat`. When annotations are present, the first eligible variant with the most constraints wins. An unannotated list item is the fallback. Invalid annotation values are rejected as XML processing errors rather than executed as unconstrained content.
+
+### Characteristic equations
+
+The runtime sets `Aeon.CharacteristicEquation` from `config/settings.xml`’s `emotiveequation`. The evaluator accepts arithmetic only, such as:
+
+```text
+p(x) = 1 + 3x + x^2 + 2x^3 + y + t
+```
+
+The optional left-hand side is discarded. Function calls, member access, and all non-arithmetic syntax are rejected.
+
+### Output adapters
+
+`OutputPresentation` carries speaker, text, requested modalities, optional `EmotiveIndication`, and optional `InstructionalDisplacement`. `IOutputAdapter` implementations declare supported modalities; `OutputDispatcher` sends a presentation only to compatible adapters. The terminal adapter supports `Text` and is the only bundled device implementation.
+
+## Verification snapshot
+
+Validated after the full seven-step implementation:
+
+- `dotnet run --project Aeon.Library.SmokeTests/Aeon.Library.SmokeTests.csproj`
+- `dotnet build Aeon.Library/Aeon.Library.csproj`
+- `dotnet build Aeon.Runtime/Aeon.Runtime.csproj`
+- `git diff --check`
+
+The smoke program covers participant predicate isolation, alone-prompt formatting, bounded trajectory persistence, reviewed learning validation, mood inventory/state/indication, constrained feedback selection and interpreter integration, safe equation classification, and modality-aware output dispatch.
+
+## Remaining gaps and reassessment rule
+
+The next meaningful work is behavior-level completion of the remaining partial and absent capabilities:
+
+1. Implement a real command/dialogue router and a testable intention parser.
+2. Replace deterministic emotive weighting with an explicit trainable model, if that remains a project goal.
+3. Extract and correlate query instruction tags, then use characteristic blocks to make a constrained, observable response or adapter decision.
+4. Add concrete voice, tactile, gesture/animation, or hardware adapters with device-level tests.
+
+Update this document only when a capability gains behavior-level evidence or loses an integration. Keep the 34-unit baseline unless a capability is split into independently testable units; record the split and recalculate every affected subtotal.
