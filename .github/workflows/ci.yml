@@ -1,0 +1,38 @@
+name: Continuous Integration
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    name: Build and smoke test (.NET 10)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore runtime dependencies
+        run: dotnet restore Aeon.Runtime/Aeon.Runtime.csproj
+
+      - name: Restore smoke-test dependencies
+        run: dotnet restore Aeon.Library.SmokeTests/Aeon.Library.SmokeTests.csproj
+
+      - name: Build runtime
+        run: dotnet build Aeon.Runtime/Aeon.Runtime.csproj --configuration Release --no-restore
+
+      - name: Build smoke tests
+        run: dotnet build Aeon.Library.SmokeTests/Aeon.Library.SmokeTests.csproj --configuration Release --no-restore
+
+      - name: Run smoke tests
+        run: dotnet run --project Aeon.Library.SmokeTests/Aeon.Library.SmokeTests.csproj --configuration Release --no-build

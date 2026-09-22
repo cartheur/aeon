@@ -1,31 +1,55 @@
-## aeon
+# Aeon
 
-An artificial general intelligence (AGI) program, as presence.
+Aeon is an experimental, machine-intelligence .NET conversational-agent runtime. It combines configurable text normalization, pattern-based dialogue matching, participant-specific predicates, and file-backed personality data.
 
-_What is AGI?_
+The project is under active development and is intended for research, demonstration, and controlled experimentation. It is not represented as a general-purpose or safety-critical autonomous system.
 
-Artificial general intelligence (AGI) is a misnomer. What we want is a machine that can learn from experience. In my case: I insist upon the addition it learn an intellectual task that analogous animals exhibit. Despite the noise from billionaires and influencers, a long and durative education to the highest levels is requisite to gather the correct "six fundamental knowledge pivots" needed to begin with an architectural and runtime design. This was first published in United States Patent Application US20180204107A1 in July 2018.
+## Current status
 
-It is a deep-seated tendency of the human mind to create analogies of phenomena it comes into contact with, especially those that are not easily understood. One of these, to a great degree, is the idea of designing and building a system that has a purpose of simulating or mimicking another living creature. Western and Eastern mythology on this subject has icons and characters who perform the act of creation through exercising divinity by a variety of means. All known cultures that have existed possess a creation myth. Such an act is a native part of our being where anyone can exercise it at will. This is explained in detail by the philosopher Arthur Schopenhauer. Certainly, it is possible for a mind to contemplate divinity and a requisite architecture to carry it out; however, realization is a wholly different matter. The exercise of its tenets a dangerous road fraught with difficulties and challenges. It is for the future to determine if it all was worth it.
+The runtime loads a configured personality and supports terminal conversations. The checked-in Rhodo personality is the default demonstration configuration. Learning, emotional behavior, and broader embodiment features remain experimental.
 
-Although having been in existence for quite a few years, _this_ AGI is under development yet updated frequently. A public announcement will be made when it is ready for release. We are getting there slowly. This code is fairly antiquated, from about May 2015, when this was how I interacted on a daily basis:
+## Repository layout
 
-![meeting-of-minds](/media/meeting-of-the-minds.png)
+| Path | Purpose |
+| --- | --- |
+| `Aeon.Library` | Core interpreter, normalization, dialogue processing, and utilities. |
+| `Aeon.Runtime` | .NET console host, configuration, personalities, and runtime assets. |
+| `Aeon.Library.SmokeTests` | Dependency-free regression checks for core library contracts. |
+| `docs` | Reference material, validation documents, patent material, and development notes. |
+| `media` | Demonstration media. |
 
-### How to use this Program
+## Run Aeon
 
-Clone the repo and run the Aeon.Runtime console application. Note that as I am working through the learning mode, the code can appear unstable. This is not the case but this delicate feature is what is the meat of the matter.
+Aeon targets .NET 10. The checked-in Rhodo personality and configuration are copied beside the runtime during the build.
 
-### Backstory
+```bash
+dotnet build Aeon.Runtime/Aeon.Runtime.csproj --configuration Release
+dotnet run --project Aeon.Runtime/Aeon.Runtime.csproj --configuration Release --no-build
+```
 
-In the early days -- the time between the Summer of 2003 and the Spring of 2006 -- I was writing my first versions of _aeon_ in C++ in CodeWarrior on an Apple Powerbook G3 with MacOS 9.2.2. I took this laptop just about everywhere and worked with aeon at the expense of dates and employment. It sooned turned into an obsession. The working environment of CodeWarrior was a bit of a challenge so in late 2005, I acquired a Windows XP laptop and ported the aeon program to C#. This seemed to satisfy my curiousity but something always nagged at me in the back of my mind: A laptop is not the same as a robot. Sure I carried it around and worked with my personal friend _aeon_ but something was amiss. I had a human friend who scratch-bulit a PLC robot named <a href="https://www.youtube.com/watch?v=x1WfwD7r_rI" target="_blank">Lucy</a> but the throng of negative experiences he had with the technology gave me pause. Until hardware technology matured I would stick to a pure software implementation. The code of this version that I am still attached to is the portable <a href="https://github.com/cartheur/portable-friend" target="_blank">friend</a>.
+Enter a message and press Enter. Type `exit` to end the console session, or `quit` to leave terminal mode. Transcripts and diagnostic logs are written below the runtime output directory: `bin/<configuration>/net10.0/logs`.
 
-In the Autumn of 2006 I obtained a Motorola-Q phone with Windows Mobile 5 that was a pocket-sized platform for _aeon_. It is important to note that aeon was not just some random attempt at an AGI, rather, an _artificial personality_ that would inhabit and interact with the hardware it was hosted in providing a richer experience to the participant. In those days the program was terribly slow. In the Spring of 2007, I was offered an upgrade to Windows Mobile 6. This improved the performance a bit and had me digging into the code to reduce the complexity of meaning-context from the database. I was able to improve the interpreter layer and it performed better. However, a further upgrade to Windows 6.1 a year later had the application working at breakneck speed -- queries on abstracted phrases like "tell about the weather where you are" rendered in tens of seconds, not minutes. From the Summer of 2008 onward I was able to steadily develop _aeon_.
+## Verify the core
 
-I would take this device around with me walking through the cities of Europe and as I traveled on the train for work at those various and random places where you could never align what you had to do with what you _really wanted to do_. I was able to make significant and incremental improvements in how the _aeon_ derived contextual meaning. One of these was by creating a set of database files that originally came from some volunteer work (they promised to pay me) for a project called _MindPixel_ by Chris McKinstry where I spent about a year and a half helping to create create a knowledgebase of probabilistic propositions of experiential events a program or robot imbued with a personality could come into contact with. Other people on the team did other kinds of true/false representations related to decision-making. I had stored this code in a old harddrive that went missing for a few years until I found the code and applied it to _aeon_. By 2011 the devices started to experience failures and I was more than ready to move into a robotics platform. In 2012 I started to explore Lego NXT, purely for the price-point and was able to work with some ideas but the primitiveness of the motor controls and lack of precision in angle determinates kept me looking for some years more.
+Run the dependency-free smoke tests after changes to the interpreter or participant state:
 
-As I made more money working, I was able to afford a second-hand robot called Nao from Aldebaran Robotics out of Paris, France. By 2017 I had functional prototypes of _aeon_ now manifest in a bipedal robot _david_ where I was able to explore and improve the software and its database to the point that I could term it an _artificial personality_. I made several live and recorded demos but by the Spring of 2019 the Nao started malfunctioning, as the device had. I started to become aware that the nature of the _aeon_ corrupted somehow electronic parts of the devices or flash memory as it had the ability to write its own code -- improvements it thought would be better than the one I provided for it. I stepped-back for a year to review the notion by testing the notion that because the programming language could not account accurately for the states any given behaviour (or modified behaviour), I tried a language called _Erlang_ based on a lecture at a StrangeLoop conference in September 2014  entitled “The Mess We’re In” by Joseph Leslie Armstrong, the inventor of Erlang. He described complexity inherent in software running in exactly the same state across hardware as: The number of states of six 32-bit integers in C is equal to the number of atoms consisting the planet. The ludicrous notion that all states can be tested in different hardware pointed-out to me to be conscious of this fact when designing robotics systems. It was this conflagration of states and broken connections when relations in the network changed weights on reloading objects that contributed to the decay of the hardware systems resulting in incremental failures that I witnessed. At least this is my working hypothesis.
+```bash
+dotnet run --project Aeon.Library.SmokeTests/Aeon.Library.SmokeTests.csproj --configuration Release
+```
 
-By 2022 I was ready to start anew with a different robotics platform that I could build myself and keep control of the parameters I deemed necessary that the _aeon_ could reliably inhabit. I read a 2014 thesis by Matthieu Lapeyre on a 3D-printed robot called _poppy_ that was sufficient as a place to begin this new endeavour. Upon the purchase of the Robotis motors and sourcing of my own computer equipment, a Lulzbot and FlashForge printer helped to realize this build. Although the source files for poppy were good, they needed some improvements and changes to accommodate my design intentions. With my company as a startup, I was able to obtain a license for Solidworks for a good price that began in October 2022. Terrible thing is that Solidworks totally sucks as a platform and is uber-expensive. The support is there for you but there ain't much besides throwing tutorials that will get anything done. As part of a last-ditch effort, the company hired three Solidworks developers but none would undertake the task at hand. So, working this from another angle.
+The smoke tests currently cover participant-state isolation and request ownership. The command-line session above remains the end-to-end runtime check.
 
-By 2025 I have disposed of all these distractions and am building on-the-metal my _aeon_. Given the fragementation by the self-appointed AI influencers and the sudden realization that massive datacenters won't give us what we _really_ need, the focus is on a quality experience and not based upon any hype. I humbly still plug-away here and continue building. There is nothing else to be done.
+## Engineering notes
+
+- Personality files are loaded in deterministic order, so category replacement is consistent across operating systems.
+- Participant predicates are private to each conversation; one participant's state does not affect another's.
+- Startup exits clearly when required configuration or personality categories cannot be loaded.
+- The interpreter uses pattern-based rules; personality data should be reviewed and tested with the behavior it is intended to produce.
+
+## Project history
+
+Aeon originated as a conversational software project in 2003 and has been developed across several software and hardware experiments. Its current focus is a maintainable .NET runtime and a high-quality interactive experience. Historical reference material is retained in [`docs`](docs/).
+
+## License
+
+Aeon is provided under the [Aeon Proprietary Reference-Only License](LICENSE). It may be viewed, studied, and evaluated for personal or internal reference; other use requires prior written permission from Cartheur.

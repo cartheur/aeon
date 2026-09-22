@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2003 - 2025, all rights reserved. No rights are explicitly granted to persons who have obtained this source code whose sole purpose is to illustrate the method of attaining AGI. Contact m.e. at: cartheur@pm.me.
+// Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
 using System.Reflection;
 
@@ -59,10 +59,12 @@ namespace Aeon.Library
         public static bool LoadPersonality(this Aeon thisAeon, LoaderPaths configuration)
         {
             ThisAeon = thisAeon;
+            int categoriesBeforeLoad = ThisAeon.Size;
             try
             {
                 var loader = new AeonLoader(ThisAeon);
                 ThisAeon.IsAcceptingParticipantInput = false;
+                ThisAeon.IsAcceptingInput = false;
                 // Load in the proper order.
                 if (ThisAeon.Name.ToLower() == "blank")
                 {
@@ -84,13 +86,22 @@ namespace Aeon.Library
                     loader.LoadAeon(configuration.PathToUpdate);
                     loader.LoadAeon(configuration.PathToFragments);
                 }
+                if (ThisAeon.Size == categoriesBeforeLoad)
+                {
+                    Logging.WriteLog("No categories were loaded for personality " + ThisAeon.Name + ".", Logging.LogType.Error, Logging.LogCaller.SharedFunction);
+                    return false;
+                }
                 Logging.WriteLog(@"Personality loaded, baseline personality is set to " + ThisAeon.Name.ToLower(), Logging.LogType.Information, Logging.LogCaller.SharedFunction);
-                ThisAeon.IsAcceptingParticipantInput = true;
             }
             catch (Exception ex)
             {
                 Logging.WriteLog(ex.Message, Logging.LogType.Error, Logging.LogCaller.SharedFunction);
                 return false;
+            }
+            finally
+            {
+                ThisAeon.IsAcceptingParticipantInput = true;
+                ThisAeon.IsAcceptingInput = true;
             }
             return true;
         }
@@ -103,18 +114,29 @@ namespace Aeon.Library
         public static bool LoadBlank(this Aeon thisAeon, LoaderPaths configuration)
         {
             ThisAeon = thisAeon;
+            int categoriesBeforeLoad = ThisAeon.Size;
             try
             {
                 var loader = new AeonLoader(ThisAeon);
                 ThisAeon.IsAcceptingParticipantInput = false;
+                ThisAeon.IsAcceptingInput = false;
                 loader.LoadAeon(configuration.PathToBlankFile);
+                if (ThisAeon.Size == categoriesBeforeLoad)
+                {
+                    Logging.WriteLog("No categories were loaded for the blank personality.", Logging.LogType.Error, Logging.LogCaller.SharedFunction);
+                    return false;
+                }
                 Logging.WriteLog(@"Blank robot loaded", Logging.LogType.Information, Logging.LogCaller.SharedFunction);
-                ThisAeon.IsAcceptingParticipantInput = true;
             }
             catch (Exception ex)
             {
                 Logging.WriteLog(ex.Message, Logging.LogType.Error, Logging.LogCaller.SharedFunction);
                 return false;
+            }
+            finally
+            {
+                ThisAeon.IsAcceptingParticipantInput = true;
+                ThisAeon.IsAcceptingInput = true;
             }
             return true;
         }

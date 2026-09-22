@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2003 - 2025, all rights reserved. No rights are explicitly granted to persons who have obtained this source code whose sole purpose is to illustrate the method of attaining AGI. Contact m.e. at: cartheur@pm.me.
+// Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
 // Learning mode is active.
 //
@@ -52,8 +52,24 @@ namespace Aeon.Runtime
             // Create the aeon and load its basic parameters from a config file.
             _thisAeon = new Library.Aeon("1+2i");
             AeonLoader = new AeonLoader(_thisAeon);
-            await Task.Run(() => _thisAeon.LoadSettings(Configuration.PathToSettings));
+            try
+            {
+                await Task.Run(() => _thisAeon.LoadSettings(Configuration.PathToSettings));
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("Aeon could not load its settings: " + ex.Message);
+                Logging.WriteLog(ex.Message, Logging.LogType.Error, Logging.LogCaller.AeonRuntime);
+                Environment.ExitCode = 1;
+                return;
+            }
             SettingsLoaded = await Task.Run(() => _thisAeon.LoadDictionaries(Configuration));
+            if (!SettingsLoaded)
+            {
+                Console.Error.WriteLine("Aeon could not load its language configuration. See the log for details.");
+                Environment.ExitCode = 1;
+                return;
+            }
             _thisParticipant = new Participant(_thisAeon.GlobalSettings.GrabSetting("participantname"), _thisAeon);
             LearningModeActive = Convert.ToBoolean(_thisAeon.GlobalSettings.GrabSetting("learningmodeactive"));
             Console.WriteLine(_thisAeon.GlobalSettings.GrabSetting("product") + " - Version " + _thisAeon.GlobalSettings.GrabSetting("version") + ".");
@@ -64,8 +80,7 @@ namespace Aeon.Runtime
             Thread.Sleep(700);
             Console.WriteLine("------ Begin help ------");
             Console.WriteLine("While in terminal mode, type 'exit' to quit the application.");
-            Thread.Sleep(700);
-            Console.WriteLine("If you want to dissolve your aeon while in non-terminal mode, type 'aeon quit'.");
+            Console.WriteLine("Type 'quit' to leave terminal mode.");
             Console.WriteLine("------ End help------");
             Thread.Sleep(700);
             Console.WriteLine("Continuing to construct the personality...");
@@ -90,11 +105,16 @@ namespace Aeon.Runtime
                 AeonLoaded = _thisAeon.LoadPersonality(Configuration);
                 _thisConfig = new Library.Builder.ExtendSystem(Configuration);
             }
-                AeonLoaded = _thisAeon.LoadPersonality(Configuration);
             if (_thisAeon.Name == "Blank" && SettingsLoaded)
                 AeonLoaded = _thisAeon.LoadBlank(Configuration);
             if (_thisAeon.Name == "Samantha" && SettingsLoaded)
                 AeonLoaded = _thisAeon.LoadPersonality(Configuration);
+            if (!AeonLoaded)
+            {
+                Console.Error.WriteLine("Aeon could not load its personality. See the log for details.");
+                Environment.ExitCode = 1;
+                return;
+            }
             // Attach logging,  xms functionality, and spontaneous file generation.
             Logging.LogModelFile = _thisAeon.GlobalSettings.GrabSetting("logmodelfile");
             Logging.TranscriptModelFile = _thisAeon.GlobalSettings.GrabSetting("transcriptmodelfile");
@@ -140,25 +160,25 @@ namespace Aeon.Runtime
                 }
 
                 // Todo: Trigger the terminal for typing commands.
-                while (true && ParticipantInput != "quit")
+                while (true)
                 {
-                    ParticipantInput = "";
                     ParticipantInput = Console.ReadLine();
-                    if (ParticipantInput != null)
+                    if (ParticipantInput is null)
+                    {
+                        break;
+                    }
+                    ParticipantInput = ParticipantInput.Trim();
+                    if (ParticipantInput.Equals("exit", StringComparison.OrdinalIgnoreCase))
+                    {
+                        break;
+                    }
+                    if (ParticipantInput.Equals("quit", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Console.WriteLine("Leaving terminal mode.");
+                        break;
+                    }
+                    if (ParticipantInput.Length > 0)
                         await ProcessTerminal();
-                    if (ParticipantInput == "quit")
-                    {
-                        Console.WriteLine("Leaving terminal mode and starting a conversational aeon.");
-                        Thread.Sleep(2000);
-                        break;
-                    }
-                    if (ParticipantInput == "exit")
-                    {
-                        Console.WriteLine("Leaving terminal mode and exiting the application.");
-                        Thread.Sleep(2000);
-                        Environment.Exit(0);
-                        break;
-                    }
                 }
             }
         }
@@ -195,18 +215,12 @@ namespace Aeon.Runtime
                 AeonResult = _thisResult.Output;// Here is what the aeon has said.
                 if (LearningModeActive)
                 {                       
-                    if (ParticipantInput.Contains("learn"))
-                    {
+                if (ParticipantInput.Equals("learn", StringComparison.OrdinalIgnoreCase))
+                {
                         Console.WriteLine("Detected 'learn'...entering learning mode.");
                         Thread.Sleep(2000);
                         await LearningMode();
                     }
-                }
-                if (ParticipantInput == "exit")
-                {
-                    Console.WriteLine("Detected 'exit'...quitting the application.");
-                    Thread.Sleep(2000);
-                    Environment.Exit(0);
                 }
             }
             else
@@ -271,23 +285,11 @@ namespace Aeon.Runtime
         }
         static void AeonAloneText()
         {
-            AloneMessageVariety = StaticRandom.Next(1, 1750);
-            if (AloneMessageVariety.IsBetween(1, 250))
-                AloneMessageOutput = 0;
-            if (AloneMessageVariety.IsBetween(251, 500))
-                AloneMessageOutput = 1;
-            if (AloneMessageVariety.IsBetween(501, 750))
-                AloneMessageOutput = 2;
-            if (AloneMessageVariety.IsBetween(751, 1000))
-                AloneMessageOutput = 3;
-            if (AloneMessageVariety.IsBetween(1001, 1250))
-                AloneMessageOutput = 4;
-            if (AloneMessageVariety.IsBetween(1001, 1250))
-                AloneMessageOutput = 5;
-            if (AloneMessageVariety.IsBetween(1251, 1500))
-                AloneMessageOutput = 6;
-            if (AloneMessageVariety.IsBetween(1501, 1750))
-                AloneMessageOutput = 7;
+            do
+            {
+                AloneMessageOutput = StaticRandom.Next(0, 10);
+            }
+            while (AloneMessageOutput == PreviousAloneMessageOutput);
 
             PreviousAloneMessageOutput = AloneMessageOutput;
             AloneTextCurrent = _thisAeon.GlobalSettings.GrabSetting("alonemessage" + AloneMessageOutput);

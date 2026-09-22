@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2003 - 2025, all rights reserved. No rights are explicitly granted to persons who have obtained this source code whose sole purpose is to illustrate the method of attaining AGI. Contact m.e. at: cartheur@pm.me.
+// Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
 using System.Globalization;
 using System.Reflection;
@@ -122,7 +122,10 @@ namespace Aeon.Library
         {
             get
             {
-                return GlobalSettings.GrabSetting("notacceptinginputmessage");
+                string message = GlobalSettings.GrabSetting("notacceptinginputmessage");
+                return message.Length > 0
+                    ? message
+                    : GlobalSettings.GrabSetting("notacceptinguserinputmessage");
             }
         }
         /// <summary>
@@ -250,7 +253,7 @@ namespace Aeon.Library
         public int Persistence()
         {
             if (PersonalityLoaded)
-                return (DateTime.Now - AeonStartedOn).Milliseconds;
+                return (int)(DateTime.Now - AeonStartedOn).TotalMilliseconds;
             return 0;
         }
         /// <summary>
@@ -528,6 +531,12 @@ namespace Aeon.Library
         /// <returns>The result to be output to the participant.</returns>
         public ParticipantResult Chat(ParticipantRequest request)
         {
+            ArgumentNullException.ThrowIfNull(request);
+            if (!ReferenceEquals(request.ThisAeon, this))
+            {
+                throw new ArgumentException("The request belongs to a different aeon.", nameof(request));
+            }
+            request.RawInput ??= string.Empty;
             var result = new ParticipantResult(request.ThisParticipant, this, request, CharacteristicEquation);
             // Todo: Set the emotion, where used. It is now known to the core.
             //result.ThisUser.Predicates.UpdateSetting("EMOTION", Mood.CurrentMood);

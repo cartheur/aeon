@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2003 - 2025, all rights reserved. No rights are explicitly granted to persons who have obtained this source code whose sole purpose is to illustrate the method of attaining AGI. Contact m.e. at: cartheur@pm.me.
+// Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
 using System.Xml;
 
@@ -209,6 +209,21 @@ namespace Aeon.Library
                 return _orderedKeys.Contains(normalizedName);
             }
             return false;
+        }
+        /// <summary>
+        /// Creates an independent copy of this dictionary for another aeon-owned object.
+        /// Participant predicates must not share mutable state.
+        /// </summary>
+        /// <param name="theAeon">The aeon that owns the new dictionary.</param>
+        /// <returns>A copy with the same keys, values, and ordering.</returns>
+        public SettingsDictionary CloneFor(Aeon theAeon)
+        {
+            var copy = new SettingsDictionary(theAeon);
+            foreach (string key in _orderedKeys)
+            {
+                copy.AddSetting(key, _settingsHash[key]);
+            }
+            return copy;
         }
         /// <summary>
         /// Returns a collection of the names of all the settings defined in the dictionary.

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2003 - 2025, all rights reserved. No rights are explicitly granted to persons who have obtained this source code whose sole purpose is to illustrate the method of attaining AGI. Contact m.e. at: cartheur@pm.me.
+// Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
 namespace Aeon.Library
 {
@@ -9,6 +9,7 @@ namespace Aeon.Library
     public static class Logging
     {
         private static bool _fileCreated = false;
+        private static readonly object WriteLock = new object();
         /// <summary>
         /// Default logging and transcripting if the setting is left blank in the config file.
         /// </summary>
@@ -41,7 +42,7 @@ namespace Aeon.Library
         {
             if (TestExecution)
                 return TestingPath;
-            return Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\"));
+            return AppContext.BaseDirectory;
         }
         /// <summary>
         /// The type of log to write.
@@ -266,26 +267,30 @@ namespace Aeon.Library
             }
             LastMessage = message;
 			// Use FilePath() when outside of a test framework.
-            StreamWriter stream = new StreamWriter(FilePath() + @"\logs\" + LogModelFile + @".txt", true);
-            switch (logType)
+            lock (WriteLock)
             {
-                case LogType.Error:
-                    stream.WriteLine(DateTime.Now + " - " + " ERROR " + " - " + message + " from class " + caller + ".");
-                    break;
-                case LogType.Warning:
-                    stream.WriteLine(DateTime.Now + " - " + " WARNING " + " - " + message + " from class " + caller + ".");
-                    break;
-                case LogType.Information:
-                    stream.WriteLine(DateTime.Now + " - " + message + ". This was called from the class " + caller + ".");
-                    break;
+                string logDirectory = Path.Combine(FilePath(), "logs");
+                Directory.CreateDirectory(logDirectory);
+                using StreamWriter stream = new StreamWriter(Path.Combine(logDirectory, LogModelFile + ".txt"), true);
+                switch (logType)
+                {
+                    case LogType.Error:
+                        stream.WriteLine(DateTime.Now + " - " + " ERROR " + " - " + message + " from class " + caller + ".");
+                        break;
+                    case LogType.Warning:
+                        stream.WriteLine(DateTime.Now + " - " + " WARNING " + " - " + message + " from class " + caller + ".");
+                        break;
+                    case LogType.Information:
+                        stream.WriteLine(DateTime.Now + " - " + message + ". This was called from the class " + caller + ".");
+                        break;
                     case LogType.Temporal:
-                    stream.WriteLine(DateTime.Now + " - " + message + ".");
-                    break;
-                case LogType.Gossip:
-                    stream.WriteLine(DateTime.Now + " - " + message + ".");
-                    break;
+                        stream.WriteLine(DateTime.Now + " - " + message + ".");
+                        break;
+                    case LogType.Gossip:
+                        stream.WriteLine(DateTime.Now + " - " + message + ".");
+                        break;
+                }
             }
-            stream.Close();
             if (!Equals(null, ReturnedToConsole))
             {
                 ReturnedToConsole();
@@ -301,7 +306,8 @@ namespace Aeon.Library
         {
             try
             {
-                StreamWriter stream = new StreamWriter(FilePath() + @"\logs\transcript.txt", true);
+                Directory.CreateDirectory(Path.Combine(FilePath(), "logs"));
+                StreamWriter stream = new StreamWriter(Path.Combine(FilePath(), "logs", "transcript.txt"), true);
                 if (!_fileCreated && fileNumber == 0)
                 {
                     // File has not been created previously, write the header to the file.
@@ -344,7 +350,8 @@ namespace Aeon.Library
             try
             {
 				// Use FilePath() when outside of a test framework.
-                StreamWriter stream = new StreamWriter(FilePath() + @"\logs\" + TranscriptModelFile + @".txt", true);
+                Directory.CreateDirectory(Path.Combine(FilePath(), "logs"));
+                StreamWriter stream = new StreamWriter(Path.Combine(FilePath(), "logs", TranscriptModelFile + ".txt"), true);
                 stream.WriteLine(DateTime.Now + " - " + message);
                 stream.Close();
             }
@@ -360,7 +367,8 @@ namespace Aeon.Library
         /// <param name="objects">The objects.</param>
         public static void Debug(params object[] objects)
         {
-            StreamWriter stream = new StreamWriter(FilePath() + @"\logs\debugdump.txt", true);
+            Directory.CreateDirectory(Path.Combine(FilePath(), "logs"));
+            StreamWriter stream = new StreamWriter(Path.Combine(FilePath(), "logs", "debugdump.txt"), true);
             foreach (object obj in objects)
             {
                 stream.WriteLine(obj);

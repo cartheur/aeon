@@ -1,5 +1,5 @@
 //
-// Copyright 2003 - 2025, all rights reserved. No rights are explicitly granted to persons who have obtained this source code whose sole purpose is to illustrate the method of attaining AGI. Contact m.e. at: cartheur@pm.me.
+// Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
 using System.Text;
 using System.Xml;
@@ -31,7 +31,9 @@ namespace Aeon.Library
                 // Log the loading activity.
                 Logging.WriteLog("Starting to process files found in the directory " + path, Logging.LogType.Information, Logging.LogCaller.AeonLoader);
 
-                string[] fileEntries = Directory.GetFiles(path, "*.aeon");
+                string[] fileEntries = Directory.GetFiles(path, "*.aeon")
+                    .OrderBy(filename => filename, StringComparer.Ordinal)
+                    .ToArray();
                 if (fileEntries.Length > 0)
                 {
                     foreach (string filename in fileEntries)

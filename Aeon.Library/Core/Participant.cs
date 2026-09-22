@@ -1,5 +1,5 @@
 //
-// Copyright 2003 - 2025, all rights reserved. No rights are explicitly granted to persons who have obtained this source code whose sole purpose is to illustrate the method of attaining AGI. Contact m.e. at: cartheur@pm.me.
+// Copyright 2003-2025 Cartheur. All rights reserved. Reference-only use is permitted under the LICENSE file.
 //
 namespace Aeon.Library
 {
@@ -60,8 +60,9 @@ namespace Aeon.Library
             {
                 Name = participantName;
                 ParticipantAeon = aeon;
-                Predicates = new SettingsDictionary(ParticipantAeon);
-                Predicates = ParticipantAeon.DefaultPredicates;
+                // Each participant needs private predicate state: <set> for one
+                // conversation must never alter another participant's context.
+                Predicates = ParticipantAeon.DefaultPredicates.CloneFor(ParticipantAeon);
             }
             else
             {
