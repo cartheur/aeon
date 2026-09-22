@@ -7,7 +7,12 @@
     <Nullable>disable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux')) and '$(RuntimeIdentifier)' == ''">
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+  </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="Cartheur.AeonVoice.Private" Version="0.3.1" />
     <PackageReference Include="System.Windows.Extensions" Version="10.0.0" />
   </ItemGroup>
 

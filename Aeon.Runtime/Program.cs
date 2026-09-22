@@ -435,7 +435,8 @@ namespace Aeon.Runtime
             }
             Output.Add(new SpeechOutputAdapter(
                 backend.Value,
-                _thisAeon.GlobalSettings.GrabSetting("aeonvoicecommand"),
+                _thisAeon.GlobalSettings.GrabSetting("voiceprofile"),
+                _thisAeon.GlobalSettings.GrabSetting("linuxaudioplayer"),
                 TimeSpan.FromMilliseconds(timeoutMilliseconds),
                 message => Logging.WriteLog(message, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime)));
         }
