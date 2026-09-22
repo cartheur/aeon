@@ -17,6 +17,10 @@ namespace Aeon.Library
         /// </summary>
         public string Template = string.Empty;
         /// <summary>
+        /// The distinct interpreter instruction tags found in the matched template.
+        /// </summary>
+        public IReadOnlyList<string> InstructionTags { get; internal set; } = Array.Empty<string>();
+        /// <summary>
         /// If the raw input matches a wildcard then this attribute will contain the block of text that the participant has inputted that is matched by the wildcard.
         /// </summary>
         public List<string> InputStar = new List<string>();

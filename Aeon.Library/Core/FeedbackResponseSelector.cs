@@ -9,7 +9,7 @@ namespace Aeon.Library
     public sealed class ResponseVariant
     {
         /// <summary>Initializes a response candidate.</summary>
-        public ResponseVariant(string content, ParentFeeling? parentFeeling = null, string mood = null, bool requiresRepeatedTrajectory = false)
+        public ResponseVariant(string content, ParentFeeling? parentFeeling = null, string mood = null, bool requiresRepeatedTrajectory = false, Characteristic? requiredCharacteristic = null)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(content);
             if (parentFeeling.HasValue != !string.IsNullOrWhiteSpace(mood))
@@ -25,6 +25,7 @@ namespace Aeon.Library
             ParentFeeling = parentFeeling;
             Mood = mood?.Trim();
             RequiresRepeatedTrajectory = requiresRepeatedTrajectory;
+            RequiredCharacteristic = requiredCharacteristic;
         }
 
         /// <summary>Gets the response markup or text to return when this variant is selected.</summary>
@@ -39,8 +40,11 @@ namespace Aeon.Library
         /// <summary>Gets whether the current raw input must have occurred in prior trajectory history.</summary>
         public bool RequiresRepeatedTrajectory { get; }
 
+        /// <summary>Gets the optional required characteristic block from the preceding interaction.</summary>
+        public Characteristic? RequiredCharacteristic { get; }
+
         /// <summary>Gets the number of explicit feedback constraints on this candidate.</summary>
-        public int Specificity => (ParentFeeling.HasValue ? 1 : 0) + (RequiresRepeatedTrajectory ? 1 : 0);
+        public int Specificity => (ParentFeeling.HasValue ? 1 : 0) + (RequiresRepeatedTrajectory ? 1 : 0) + (RequiredCharacteristic.HasValue ? 1 : 0);
     }
 
     /// <summary>
@@ -56,7 +60,7 @@ namespace Aeon.Library
         /// <summary>
         /// Selects the first most-specific eligible variant. An unannotated variant is an explicit fallback.
         /// </summary>
-        public static FeedbackSelection Select(IEnumerable<ResponseVariant> variants, MoodState moodState, TrajectoryHistory trajectoryHistory, string rawInput)
+        public static FeedbackSelection Select(IEnumerable<ResponseVariant> variants, MoodState moodState, TrajectoryHistory trajectoryHistory, string rawInput, InstructionalDisplacement precedingDisplacement = null)
         {
             ArgumentNullException.ThrowIfNull(variants);
             ArgumentNullException.ThrowIfNull(moodState);
@@ -71,14 +75,14 @@ namespace Aeon.Library
             bool isRepeatedTrajectory = IsRepeatedTrajectory(trajectoryHistory, rawInput);
             EmotiveIndication indication = moodState.GetCurrentIndication();
             ResponseVariant selected = candidates
-                .Where(candidate => IsEligible(candidate, indication, isRepeatedTrajectory))
+                .Where(candidate => IsEligible(candidate, indication, isRepeatedTrajectory, precedingDisplacement))
                 .OrderByDescending(candidate => candidate.Specificity)
                 .FirstOrDefault();
 
             return selected == null ? null : new FeedbackSelection(selected, isRepeatedTrajectory, indication);
         }
 
-        private static bool IsEligible(ResponseVariant candidate, EmotiveIndication indication, bool isRepeatedTrajectory)
+        private static bool IsEligible(ResponseVariant candidate, EmotiveIndication indication, bool isRepeatedTrajectory, InstructionalDisplacement precedingDisplacement)
         {
             if (candidate.RequiresRepeatedTrajectory && !isRepeatedTrajectory)
             {
@@ -86,9 +90,10 @@ namespace Aeon.Library
             }
             if (!candidate.ParentFeeling.HasValue)
             {
-                return true;
+                return !candidate.RequiredCharacteristic.HasValue || precedingDisplacement?.Block == candidate.RequiredCharacteristic.Value;
             }
-            return indication != null
+            return (!candidate.RequiredCharacteristic.HasValue || precedingDisplacement?.Block == candidate.RequiredCharacteristic.Value)
+                && indication != null
                 && indication.ParentFeeling == candidate.ParentFeeling.Value
                 && string.Equals(indication.Mood, candidate.Mood, StringComparison.OrdinalIgnoreCase);
         }

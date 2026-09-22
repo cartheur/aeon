@@ -2,7 +2,7 @@
 
 Engineering assessment of `docs/patent/US20180204107A1.pdf` against this repository's checked-in .NET runtime, reconciled after implementation steps 1–7.
 
-**Current implementation completeness: 82% (28.0 of 34 weighted feature units).**
+**Current implementation completeness: 90% (30.5 of 34 weighted feature units).**
 
 This is an engineering progress tally, not a legal claim chart or an opinion about patent scope, validity, or infringement. It measures executable capabilities only:
 
@@ -17,20 +17,20 @@ The 34-unit baseline excludes generic execution details and avoids counting the 
 | Drawing / area | Units | Complete | Partial | Score | Completion |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Fig. 1 — presence, startup, interaction flow | 7 | 7 | 0 | 7.0 | 100% |
-| Fig. 2 — input processing | 5 | 3 | 1 | 3.5 | 70% |
+| Fig. 2 — input processing | 5 | 4 | 1 | 4.5 | 90% |
 | Fig. 3 — trajectory processing and learning | 5 | 4 | 0 | 4.0 | 80% |
-| Fig. 4 — emotional engine | 4 | 3 | 1 | 3.5 | 88% |
+| Fig. 4 — emotional engine | 4 | 4 | 0 | 4.0 | 100% |
 | Fig. 5 — output and embodiment | 5 | 1 | 4 | 3.0 | 60% |
 | Fig. 6 — alone state and response memory | 4 | 4 | 0 | 4.0 | 100% |
-| Fig. 7 — instructional displacement | 4 | 2 | 2 | 3.0 | 75% |
-| **Total** | **34** | **24** | **8** | **28.0** | **82%** |
+| Fig. 7 — instructional displacement | 4 | 4 | 0 | 4.0 | 100% |
+| **Total** | **34** | **28** | **5** | **30.5** | **90%** |
 
 ## Executable interaction path
 
 ```text
 participant input
   -> normalized trajectory and category match
-  -> template response
+  -> template response and instruction-tag extraction
   -> trajectory indication and bounded persisted history
   -> optional annotated <random> feedback selection (prior history + current mood)
   -> instructional-displacement record (x, y, t, characteristic block)
@@ -60,8 +60,8 @@ The current trajectory is appended after its template has been processed. Theref
 | Receive and normalize textual input | Complete | `ParticipantRequest`, `SplitIntoSentences`, and the normalizer pipeline prepare textual input. |
 | Discover and search response categories | Complete | `AeonLoader.GenerateTrajectory` builds paths and `Node.Evaluate` resolves categories. |
 | Execute response/template instructions | Complete | Interpreter handlers process template tags including `condition`, `set`, `srai`, `think`, and `random`. |
-| Explicit command-versus-dialogue routing | Partial | Template instructions exist, but there is no dedicated command detector and separate instruction-processing branch. |
-| Subject–verb–predicate/intention parse | Not implemented | No syntactic parser or intention catalogue is executed. |
+| Explicit command-versus-dialogue routing | Complete | `InteractionRouter` routes slash-prefixed input to the command branch before category matching; `/help`, `/history`, and `/mood` are executed there. |
+| Subject–verb–predicate/intention parse | Partial | Dialogue input receives a bounded positional subject–verb–predicate parse. It is not a grammatical or intention-catalogue parser. |
 
 ### Fig. 3 — trajectory processing, storage, and learning (4.0 / 5)
 
@@ -79,7 +79,7 @@ The current trajectory is appended after its template has been processed. Theref
 | --- | --- | --- |
 | Parent-feeling/child-mood inventory | Complete | `MoodState.Catalog` contains all eight parent feelings and seven Table 1 child moods per parent. |
 | Create and update a current mood | Complete | A standalone `MoodState` begins with each parent off; each `Aeon` creates a constrained random current mood and supports explicit or constrained updates while retaining per-parent 1–7 indicators. |
-| Emotive indication/weighting | Partial | `MoodState` emits a stable normalized wheel-position weight. It is not neural-network weighting. |
+| Emotive indication/weighting | Complete | `EmotiveWeightModel` applies explicit 0–1 participant feedback as a persisted, bounded running-average calibration for the current mood. It is transparent and deliberately not described as a neural network. |
 | Mood filters or changes a response | Complete | An annotated `<random><li mood="ParentFeeling:ChildMood">` is eligible only for the matching current mood. |
 
 ### Fig. 5 — output and embodiment (3.0 / 5)
@@ -106,9 +106,9 @@ The current trajectory is appended after its template has been processed. Theref
 | Capability | Status | Evidence |
 | --- | --- | --- |
 | Declared characteristic domains | Complete | `InstructionalDisplacementClassifier` maps a valid equation result into one of the ten `Characteristic` values. |
-| Correlate trajectory, mood, and query instruction tags | Partial | Completed requests supply trajectory and emotive indications; no query instruction-tag extractor or correlator exists. |
+| Correlate trajectory, mood, and query instruction tags | Complete | `InstructionTagExtractor` records template instruction tags; the classifier includes them in the trajectory coordinate alongside the emotive indication. |
 | Produce coordinate values and temporal parameter | Complete | The classifier creates stable trajectory `x`, emotive `y`, and execution-time-seconds `t` coordinates. |
-| Characteristic equation/block classifier drives behavior | Partial | A bounded evaluator supports `+`, `-`, `*`, `/`, `^`, parentheses, `x`, `y`, `t`, and implicit multiplication; it records `InstructionalDisplacement` and supplies it to output presentations, but does not yet alter response selection or an adapter’s visible behavior. Unsupported syntax is rejected without execution. |
+| Characteristic equation/block classifier drives behavior | Complete | A bounded evaluator supports `+`, `-`, `*`, `/`, `^`, parentheses, `x`, `y`, `t`, and implicit multiplication. A prior classified block can select an annotated `<random><li characteristic="Attention">` variant on the next interaction. Unsupported syntax is rejected without execution. |
 
 ## Implemented configuration and authoring contracts
 
@@ -122,10 +122,11 @@ Feedback is opt-in within a standard `<random>` template. A list with no feedbac
   <li mood="Happy:Charmed">Mood-specific response.</li>
   <li trajectory="repeat">Repeated-input response.</li>
   <li mood="Happy:Charmed" trajectory="repeat">Most-specific response.</li>
+  <li characteristic="Attention">Response after an Attention-classified interaction.</li>
 </random>
 ```
 
-`mood` must be exactly `ParentFeeling:ChildMood`; `trajectory` must be exactly `repeat`. When annotations are present, the first eligible variant with the most constraints wins. An unannotated list item is the fallback. Invalid annotation values are rejected as XML processing errors rather than executed as unconstrained content.
+`mood` must be exactly `ParentFeeling:ChildMood`; `trajectory` must be exactly `repeat`; and `characteristic` must name a `Characteristic` enum value such as `Attention`. A characteristic constraint evaluates the preceding participant result, so it affects a later interaction. When annotations are present, the first eligible variant with the most constraints wins. An unannotated list item is the fallback. Invalid annotation values are rejected as XML processing errors rather than executed as unconstrained content.
 
 ### Characteristic equations
 
@@ -135,7 +136,7 @@ The runtime sets `Aeon.CharacteristicEquation` from `config/settings.xml`’s `e
 p(x) = 1 + 3x + x^2 + 2x^3 + y + t
 ```
 
-The optional left-hand side is discarded. Function calls, member access, and all non-arithmetic syntax are rejected.
+The optional left-hand side is discarded. `InstructionTagExtractor` records distinct interpreter tags from the matched template and includes them in the stable `x` coordinate, while `y` remains the current emotive weight and `t` is execution seconds. Function calls, member access, and all non-arithmetic syntax are rejected.
 
 ### Output adapters
 
@@ -150,15 +151,15 @@ Validated after the full seven-step implementation:
 - `dotnet build Aeon.Runtime/Aeon.Runtime.csproj`
 - `git diff --check`
 
-The smoke program covers participant predicate isolation, alone-prompt formatting, bounded trajectory persistence, reviewed learning validation, mood inventory/state/indication, constrained feedback selection and interpreter integration, safe equation classification, and modality-aware output dispatch.
+The smoke program covers participant predicate isolation, command/dialogue routing, command-driven and persisted emotive-weight training, alone-prompt formatting, bounded trajectory persistence, reviewed learning validation, mood inventory/state/indication, constrained mood/trajectory/characteristic feedback selection, interpreter integration, instruction-tag extraction, safe equation classification, and modality-aware output dispatch.
 
-## Remaining gaps and reassessment rule
+## Follow-on roadmap and reassessment rule
 
-The next meaningful work is behavior-level completion of the remaining partial and absent capabilities:
+The first two follow-on improvements are complete. Remaining work is behavior-level completion of the remaining partial and absent capabilities:
 
-1. Implement a real command/dialogue router and a testable intention parser.
-2. Replace deterministic emotive weighting with an explicit trainable model, if that remains a project goal.
-3. Extract and correlate query instruction tags, then use characteristic blocks to make a constrained, observable response or adapter decision.
+1. **Completed — command/dialogue routing foundation.** Slash commands have an explicit branch and dialogue has a bounded subject–verb–predicate representation. A grammatical intention catalogue remains future work.
+2. **Completed — explicit trainable emotive weighting.** `/trainmood <0-1>` calibrates the current mood using a bounded running average; the model persists locally in `data/emotive-weights.json`.
+3. **Completed — tag-aware characteristic feedback.** Template instruction tags are correlated into classification, and a preceding characteristic block can select an annotated response variant.
 4. Add concrete voice, tactile, gesture/animation, or hardware adapters with device-level tests.
 
 Update this document only when a capability gains behavior-level evidence or loses an integration. Keep the 34-unit baseline unless a capability is split into independently testable units; record the split and recalculate every affected subtotal.

@@ -269,6 +269,10 @@ namespace Aeon.Library
         /// </summary>
         public MoodState Mood { get; }
         /// <summary>
+        /// The locally persisted, participant-trained calibration model for emotive indications.
+        /// </summary>
+        public EmotiveWeightModel EmotiveWeights { get; }
+        /// <summary>
         /// Flag to indicate if a personality is loaded.
         /// </summary>
         public static bool PersonalityLoaded;
@@ -280,7 +284,8 @@ namespace Aeon.Library
         {
             CharacteristicEquation = characteristicEquation;
             Setup();
-            Mood = MoodState.Create();
+            EmotiveWeights = new EmotiveWeightModel();
+            Mood = MoodState.Create(weightProvider: EmotiveWeights);
         }
 
         void Setup()
@@ -543,57 +548,65 @@ namespace Aeon.Library
                 throw new ArgumentException("The request belongs to a different aeon.", nameof(request));
             }
             request.RawInput ??= string.Empty;
+            request.Route = InteractionRouter.Route(request.RawInput);
             var result = new ParticipantResult(request.ThisParticipant, this, request, CharacteristicEquation);
             // Todo: Set the emotion, where used. It is now known to the core.
             //result.ThisUser.Predicates.UpdateSetting("EMOTION", Mood.CurrentMood);
 
             if (IsAcceptingInput)
             {
-                // Normalize the input.
-                AeonLoader loader = new AeonLoader(this);
-                SplitIntoSentences splitter = new SplitIntoSentences(this);
-                string[] rawSentences = splitter.Transform(request.RawInput);
-                foreach (string sentence in rawSentences)
+                if (request.Route.Kind == InteractionKind.Command)
                 {
-                    result.InputSentences.Add(sentence);
-                    string trajectoryGenerated;
-                    if (EmotionUsed)
-                    {
-                        trajectoryGenerated = loader.GenerateTrajectory(sentence, request.ThisParticipant.GetLastAeonOutput(), request.ThisParticipant.Topic, request.ThisParticipant.Emotion, true);
-                        result.NormalizedTrajectories.Add(trajectoryGenerated);
-                    }
-                    else
-                    {
-                        trajectoryGenerated = loader.GenerateTrajectory(sentence, request.ThisParticipant.GetLastAeonOutput(), request.ThisParticipant.Topic, true);
-                        result.NormalizedTrajectories.Add(trajectoryGenerated);
-                    }
-
+                    result.OutputSentences.Add(ExecuteCommand(request.Route.Command, request.ThisParticipant));
                 }
-                // Grab the templates for the various sentences.
-                foreach (string trajectory in result.NormalizedTrajectories)
+                else
                 {
-                    ParticipantQuery query = new ParticipantQuery(trajectory);
-                    query.Template = ThisNode.Evaluate(trajectory, query, request, MatchState.ParticipantInput, new StringBuilder());
-                    result.SubQueries.Add(query);
-                }
-                // Process the templates into appropriate output.
-                foreach (ParticipantQuery query in result.SubQueries)
-                {
-                    if (query.Template.Length > 0)
+                    // Normalize the input.
+                    AeonLoader loader = new AeonLoader(this);
+                    SplitIntoSentences splitter = new SplitIntoSentences(this);
+                    string[] rawSentences = splitter.Transform(request.RawInput);
+                    foreach (string sentence in rawSentences)
                     {
-                        try
+                        result.InputSentences.Add(sentence);
+                        string trajectoryGenerated;
+                        if (EmotionUsed)
                         {
-                            XmlNode templateNode = AeonHandler.GetNode(query.Template);
-                            string outputSentence = ProcessNode(templateNode, query, request, result, request.ThisParticipant);
-                            // Integrate the learned output with this query response.
-                            if (outputSentence.Length > 0)
-                            {
-                                result.OutputSentences.Add(outputSentence);
-                            }
+                            trajectoryGenerated = loader.GenerateTrajectory(sentence, request.ThisParticipant.GetLastAeonOutput(), request.ThisParticipant.Topic, request.ThisParticipant.Emotion, true);
+                            result.NormalizedTrajectories.Add(trajectoryGenerated);
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Logging.WriteLog("A problem was encountered when trying to process the input: " + request.RawInput + " with the template: \"" + query.Template + ". The following exception message was noted: " + ex.Message, Logging.LogType.Warning, Logging.LogCaller.Aeon);
+                            trajectoryGenerated = loader.GenerateTrajectory(sentence, request.ThisParticipant.GetLastAeonOutput(), request.ThisParticipant.Topic, true);
+                            result.NormalizedTrajectories.Add(trajectoryGenerated);
+                        }
+                    }
+                    // Grab the templates for the various sentences.
+                    foreach (string trajectory in result.NormalizedTrajectories)
+                    {
+                        ParticipantQuery query = new ParticipantQuery(trajectory);
+                        query.Template = ThisNode.Evaluate(trajectory, query, request, MatchState.ParticipantInput, new StringBuilder());
+                        query.InstructionTags = InstructionTagExtractor.Extract(query.Template);
+                        result.SubQueries.Add(query);
+                    }
+                    // Process the templates into appropriate output.
+                    foreach (ParticipantQuery query in result.SubQueries)
+                    {
+                        if (query.Template.Length > 0)
+                        {
+                            try
+                            {
+                                XmlNode templateNode = AeonHandler.GetNode(query.Template);
+                                string outputSentence = ProcessNode(templateNode, query, request, result, request.ThisParticipant);
+                                // Integrate the learned output with this query response.
+                                if (outputSentence.Length > 0)
+                                {
+                                    result.OutputSentences.Add(outputSentence);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logging.WriteLog("A problem was encountered when trying to process the input: " + request.RawInput + " with the template: \"" + query.Template + ". The following exception message was noted: " + ex.Message, Logging.LogType.Warning, Logging.LogCaller.Aeon);
+                            }
                         }
                     }
                 }
@@ -611,11 +624,60 @@ namespace Aeon.Library
                 result.TrajectoryIndication,
                 Mood.GetCurrentIndication(),
                 result.Duration,
+                result.SubQueries.SelectMany(query => query.InstructionTags),
                 out InstructionalDisplacement displacement);
             result.InstructionalDisplacement = displacement;
             request.ThisParticipant.AddResult(result);
 
             return result;
+        }
+
+        private string ExecuteCommand(CommandInstruction command, Participant participant)
+        {
+            switch (command.Name)
+            {
+                case "help":
+                    return "Commands: /help, /mood [ParentFeeling ChildMood], /trainmood <0-1>, /history";
+                case "history":
+                    return "Stored trajectory indications: " + participant.TrajectoryHistory.Indications.Count;
+                case "mood":
+                    if (command.Arguments.Count == 0)
+                    {
+                        MoodSelection currentMood = Mood.CurrentMood;
+                        return currentMood == null ? "Current mood: off" : "Current mood: " + currentMood.ParentFeeling + " / " + currentMood.Mood;
+                    }
+                    if (command.Arguments.Count != 2 || !Enum.TryParse(command.Arguments[0], true, out ParentFeeling parentFeeling))
+                    {
+                        return "Usage: /mood ParentFeeling ChildMood";
+                    }
+                    try
+                    {
+                        EmotiveIndication indication = Mood.SetMood(parentFeeling, command.Arguments[1]);
+                        return "Current mood: " + indication.ParentFeeling + " / " + indication.Mood;
+                    }
+                    catch (ArgumentException)
+                    {
+                        return "That child mood is not valid for " + parentFeeling + ".";
+                    }
+                case "trainmood":
+                    if (command.Arguments.Count != 1 || !double.TryParse(command.Arguments[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double target))
+                    {
+                        return "Usage: /trainmood <0-1>";
+                    }
+                    try
+                    {
+                        EmotiveIndication indication = Mood.GetCurrentIndication();
+                        if (indication == null) return "No current mood is available to train.";
+                        EmotiveWeight learned = EmotiveWeights.Train(indication, target);
+                        return "Learned mood weight: " + learned.Weight.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture) + " from " + learned.Observations + " observation(s)";
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        return "Usage: /trainmood <0-1>";
+                    }
+                default:
+                    return "Unknown command: /" + command.Name + ". Type /help for available commands.";
+            }
         }
         /// <summary>
         /// Recursively evaluates the template nodes returned from aeon.

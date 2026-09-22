@@ -33,6 +33,10 @@ namespace Aeon.Library
         /// </summary>
         public bool HasTimedOut = false;
         /// <summary>
+        /// The command or bounded dialogue interpretation created from the raw input.
+        /// </summary>
+        public InteractionRoute Route { get; internal set; }
+        /// <summary>
         /// Initializes a new instance of the <see cref="ParticipantRequest"/> class.
         /// </summary>
         /// <param name="rawInput">The raw input from the participant.</param>
@@ -44,6 +48,7 @@ namespace Aeon.Library
             ThisParticipant = thisParticipant;
             ThisAeon = thisAeon;
             StartedOn = DateTime.Now;
+            Route = InteractionRouter.Route(rawInput);
         }
     }
 }

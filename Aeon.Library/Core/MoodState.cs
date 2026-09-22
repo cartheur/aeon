@@ -26,7 +26,7 @@ namespace Aeon.Library
     public sealed record MoodSelection(ParentFeeling ParentFeeling, string Mood, int Index);
 
     /// <summary>
-    /// A deterministic, normalized indication of the current mood. It is deliberately not a neural-network weight.
+    /// A normalized indication of the current mood, optionally calibrated by explicit learned feedback.
     /// </summary>
     public sealed record EmotiveIndication(ParentFeeling ParentFeeling, string Mood, int Index, double Weight);
 
@@ -51,6 +51,7 @@ namespace Aeon.Library
                 });
 
         private readonly object _sync = new object();
+        private readonly IEmotiveWeightProvider _weightProvider;
         private readonly Dictionary<ParentFeeling, int> _lastMoodIndices = Enum
             .GetValues<ParentFeeling>()
             .ToDictionary(feeling => feeling, _ => 0);
@@ -74,14 +75,15 @@ namespace Aeon.Library
         }
 
         /// <summary>Creates a mood state with each parent in the initial off state.</summary>
-        public MoodState()
+        public MoodState(IEmotiveWeightProvider weightProvider = null)
         {
+            _weightProvider = weightProvider;
         }
 
         /// <summary>Creates a randomly selected mood from the allowed parent-feeling scope.</summary>
-        public static MoodState Create(Random random = null, IEnumerable<ParentFeeling> allowedFeelings = null)
+        public static MoodState Create(Random random = null, IEnumerable<ParentFeeling> allowedFeelings = null, IEmotiveWeightProvider weightProvider = null)
         {
-            var state = new MoodState();
+            var state = new MoodState(weightProvider);
             state.Randomize(random ?? Random.Shared, allowedFeelings);
             return state;
         }
@@ -120,7 +122,7 @@ namespace Aeon.Library
             return SetMood(parentFeeling, moods[random.Next(moods.Count)]);
         }
 
-        /// <summary>Returns the current deterministic emotive indication, or <see langword="null"/> if all parents are off.</summary>
+        /// <summary>Returns the current calibrated emotive indication, or <see langword="null"/> if all parents are off.</summary>
         public EmotiveIndication GetCurrentIndication()
         {
             lock (_sync)
@@ -141,10 +143,10 @@ namespace Aeon.Library
             return -1;
         }
 
-        private static EmotiveIndication ToIndication(MoodSelection mood)
+        private EmotiveIndication ToIndication(MoodSelection mood)
         {
-            // The 56 positions in the fixed wheel map to (0, 1]. A future neural model may replace this explicit baseline.
-            double weight = (((int)mood.ParentFeeling * 7) + mood.Index) / 56.0;
+            double baseline = (((int)mood.ParentFeeling * 7) + mood.Index) / 56.0;
+            double weight = _weightProvider?.GetWeight(mood.ParentFeeling, mood.Mood, baseline) ?? baseline;
             return new EmotiveIndication(mood.ParentFeeling, mood.Mood, mood.Index, weight);
         }
     }

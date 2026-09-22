@@ -147,5 +147,8 @@ namespace Aeon.Library
             return Path.Combine(ActiveRuntime, "data", "trajectories", safeName + ".json");
         }
 
+        /// <summary>Gets the local JSON path for learned emotive weights.</summary>
+        public string PathToEmotiveWeights => Path.Combine(ActiveRuntime, "data", "emotive-weights.json");
+
     }
 }

@@ -14,7 +14,8 @@ namespace Aeon.Library
         double EmotiveCoordinate,
         double TimeCoordinate,
         double Value,
-        Characteristic Block);
+        Characteristic Block,
+        IReadOnlyList<string> InstructionTags);
 
     /// <summary>
     /// Safely evaluates a small arithmetic characteristic equation over trajectory (x), emotive (y), and time (t) coordinates.
@@ -26,6 +27,14 @@ namespace Aeon.Library
         /// </summary>
         public static bool TryClassify(string equation, TrajectoryIndication trajectory, EmotiveIndication emotive, TimeSpan executionTime, out InstructionalDisplacement displacement)
         {
+            return TryClassify(equation, trajectory, emotive, executionTime, Array.Empty<string>(), out displacement);
+        }
+
+        /// <summary>
+        /// Creates a characteristic displacement and correlates instruction tags with the trajectory coordinate.
+        /// </summary>
+        public static bool TryClassify(string equation, TrajectoryIndication trajectory, EmotiveIndication emotive, TimeSpan executionTime, IEnumerable<string> instructionTags, out InstructionalDisplacement displacement)
+        {
             displacement = null;
             if (string.IsNullOrWhiteSpace(equation) || trajectory == null)
             {
@@ -34,7 +43,13 @@ namespace Aeon.Library
 
             try
             {
-                double x = ToTrajectoryCoordinate(trajectory);
+                string[] tags = (instructionTags ?? Array.Empty<string>())
+                    .Where(tag => !string.IsNullOrWhiteSpace(tag))
+                    .Select(tag => tag.Trim().ToLowerInvariant())
+                    .Distinct(StringComparer.Ordinal)
+                    .OrderBy(tag => tag, StringComparer.Ordinal)
+                    .ToArray();
+                double x = ToTrajectoryCoordinate(trajectory, tags);
                 double y = emotive?.Weight ?? 0;
                 double t = Math.Max(0, executionTime.TotalSeconds);
                 double value = new EquationParser(ExtractExpression(equation), x, y, t).Parse();
@@ -45,7 +60,7 @@ namespace Aeon.Library
 
                 Characteristic[] blocks = Enum.GetValues<Characteristic>();
                 int blockIndex = (int)Math.Floor(ToUnitInterval(value) * blocks.Length);
-                displacement = new InstructionalDisplacement(equation, x, y, t, value, blocks[Math.Min(blockIndex, blocks.Length - 1)]);
+                displacement = new InstructionalDisplacement(equation, x, y, t, value, blocks[Math.Min(blockIndex, blocks.Length - 1)], tags);
                 return true;
             }
             catch (ArgumentException)
@@ -61,8 +76,16 @@ namespace Aeon.Library
         /// <summary>Returns a stable [0, 1) coordinate for an indication's normalized trajectory and raw input.</summary>
         public static double ToTrajectoryCoordinate(TrajectoryIndication trajectory)
         {
+            return ToTrajectoryCoordinate(trajectory, Array.Empty<string>());
+        }
+
+        /// <summary>Returns a stable [0, 1) coordinate that includes normalized trajectory content and instruction tags.</summary>
+        public static double ToTrajectoryCoordinate(TrajectoryIndication trajectory, IEnumerable<string> instructionTags)
+        {
             ArgumentNullException.ThrowIfNull(trajectory);
-            string text = string.Join("\n", trajectory.Paths ?? Enumerable.Empty<string>()) + "\n" + (trajectory.RawInput ?? string.Empty).Trim().ToUpperInvariant();
+            string text = string.Join("\n", trajectory.Paths ?? Enumerable.Empty<string>())
+                + "\n" + (trajectory.RawInput ?? string.Empty).Trim().ToUpperInvariant()
+                + "\n" + string.Join("\n", instructionTags ?? Array.Empty<string>());
             uint hash = 2166136261;
             foreach (char character in text)
             {

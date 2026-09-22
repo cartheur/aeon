@@ -23,6 +23,10 @@ namespace Aeon.Library
         /// </summary>
         public ParticipantRequest ParticipantRequest;
         /// <summary>
+        /// The input route used to produce this result.
+        /// </summary>
+        public InteractionRoute InteractionRoute => ParticipantRequest.Route;
+        /// <summary>
         /// The normalized sentence(s) (paths) fed into the brain.
         /// </summary>
         public List<string> NormalizedTrajectories = new List<string>();

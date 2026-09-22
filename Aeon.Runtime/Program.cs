@@ -121,6 +121,7 @@ namespace Aeon.Runtime
             Logging.LogModelFile = _thisAeon.GlobalSettings.GrabSetting("logmodelfile");
             Logging.TranscriptModelFile = _thisAeon.GlobalSettings.GrabSetting("transcriptmodelfile");
             LoadTrajectoryHistory();
+            LoadEmotiveWeights();
             // Set the aeon type by personality.
             switch (_thisAeon.Name)
             {
@@ -222,6 +223,28 @@ namespace Aeon.Runtime
                 Logging.WriteLog("Could not save trajectory history: " + ex.Message, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime);
             }
         }
+        static void LoadEmotiveWeights()
+        {
+            try
+            {
+                _thisAeon.EmotiveWeights.Load(Configuration.PathToEmotiveWeights);
+            }
+            catch (Exception ex)
+            {
+                Logging.WriteLog("Could not load emotive weights: " + ex.Message, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime);
+            }
+        }
+        static void SaveEmotiveWeights()
+        {
+            try
+            {
+                _thisAeon.EmotiveWeights.Save(Configuration.PathToEmotiveWeights);
+            }
+            catch (Exception ex)
+            {
+                Logging.WriteLog("Could not save emotive weights: " + ex.Message, Logging.LogType.Warning, Logging.LogCaller.AeonRuntime);
+            }
+        }
         // Once a mood state is realized, how does it influence the conversation?
         static async Task<bool> ProcessInput(string returnFromProcess = "")
         {
@@ -253,6 +276,7 @@ namespace Aeon.Runtime
                 AeonIsAlone = false;
                 AeonResult = _thisResult.Output;// Here is what the aeon has said.
                 SaveTrajectoryHistory();
+                SaveEmotiveWeights();
             }
             else
             {

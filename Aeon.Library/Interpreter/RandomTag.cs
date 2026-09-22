@@ -7,7 +7,7 @@ namespace Aeon.Library
 {
     /// <summary>
     /// The random element normally returns one of its contained li elements randomly. A list item may opt into
-    /// deterministic feedback selection with mood="ParentFeeling:ChildMood" and/or trajectory="repeat".
+    /// deterministic feedback selection with mood="ParentFeeling:ChildMood", trajectory="repeat", and/or characteristic="Characteristic".
     /// </summary>
     public class RandomTag : AeonHandler
     {
@@ -58,7 +58,8 @@ namespace Aeon.Library
                             variants,
                             ThisAeon.Mood,
                             ThisParticipant.TrajectoryHistory,
-                            ParticipantRequest.RawInput);
+                            ParticipantRequest.RawInput,
+                            ThisParticipant.LastAeonReply?.InstructionalDisplacement);
                         return selection?.Variant.Content ?? string.Empty;
                     }
                 }
@@ -75,6 +76,7 @@ namespace Aeon.Library
         {
             string moodConstraint = node.Attributes?["mood"]?.Value;
             string trajectoryConstraint = node.Attributes?["trajectory"]?.Value;
+            string characteristicConstraint = node.Attributes?["characteristic"]?.Value;
             bool requiresRepeatedTrajectory = false;
             if (!string.IsNullOrWhiteSpace(trajectoryConstraint))
             {
@@ -86,7 +88,7 @@ namespace Aeon.Library
             }
             if (string.IsNullOrWhiteSpace(moodConstraint))
             {
-                return new ResponseVariant(node.InnerXml, requiresRepeatedTrajectory: requiresRepeatedTrajectory);
+                return new ResponseVariant(node.InnerXml, requiresRepeatedTrajectory: requiresRepeatedTrajectory, requiredCharacteristic: ParseCharacteristic(characteristicConstraint));
             }
 
             string[] parts = moodConstraint.Split(':', StringSplitOptions.TrimEntries);
@@ -94,7 +96,17 @@ namespace Aeon.Library
             {
                 throw new XmlException("The random li mood attribute must be 'ParentFeeling:ChildMood'.");
             }
-            return new ResponseVariant(node.InnerXml, parentFeeling, parts[1], requiresRepeatedTrajectory);
+            return new ResponseVariant(node.InnerXml, parentFeeling, parts[1], requiresRepeatedTrajectory, ParseCharacteristic(characteristicConstraint));
+        }
+
+        private static Characteristic? ParseCharacteristic(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return null;
+            if (!Enum.TryParse(value, true, out Characteristic characteristic))
+            {
+                throw new XmlException("The random li characteristic attribute must name a Characteristic value.");
+            }
+            return characteristic;
         }
     }
 }
